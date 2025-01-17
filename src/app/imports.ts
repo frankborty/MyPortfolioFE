@@ -7,9 +7,13 @@ import { FormsModule } from '@angular/forms';
 import { CalendarModule } from 'primeng/calendar';
 import { InputIcon } from 'primeng/inputicon';
 import { IconField } from 'primeng/iconfield';
+import { DialogModule } from 'primeng/dialog';
+import { TableModule } from 'primeng/table';
+import { CommonModule } from '@angular/common';
 
 @NgModule({
     imports: [
+        CommonModule,
         ButtonModule,
         FloatLabelModule,
         InputTextModule,
@@ -17,9 +21,12 @@ import { IconField } from 'primeng/iconfield';
         FormsModule,
         CalendarModule,
         InputIcon,
-        IconField
+        IconField,
+        DialogModule,
+        TableModule
     ],
     exports: [
+        CommonModule,
         ButtonModule,
         FloatLabelModule,
         InputTextModule,
@@ -27,7 +34,9 @@ import { IconField } from 'primeng/iconfield';
         FormsModule,
         CalendarModule,
         InputIcon, 
-        IconField
+        IconField,
+        DialogModule,
+        TableModule
     ],
     providers: [  ]
   })
