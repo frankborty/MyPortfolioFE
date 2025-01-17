@@ -14,3 +14,14 @@
       <p-datepicker [(ngModel)]="date" [showIcon]="true" inputId="buttondisplay" [showOnFocus]="false" />
   </div>
 </div>
+
+<div class="card flex flex-wrap justify-center gap-4">
+  <p-iconfield>
+      <p-inputicon styleClass="pi pi-search" />
+      <input type="text" pInputText placeholder="Search" />
+  </p-iconfield>
+  <p-iconfield>
+      <input type="text" pInputText />
+      <p-inputicon styleClass="pi pi-spinner pi-spin" />
+  </p-iconfield>
+</div>
