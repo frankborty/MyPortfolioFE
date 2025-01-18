@@ -30,7 +30,7 @@
       </ng-template>
     </p-table>
   
-    <p-dialog header="Add Expense" [(visible)]="displayAddExpenseDialog" [modal]="true" [closable]="true" [style]="{width: '50vw'}">
+    <p-dialog header="Add Expense" [styleClass]="'w-[60vh] h-[80vh]'" [(visible)]="displayAddExpenseDialog" [modal]="true" [closable]="true">
       <app-add-expense></app-add-expense>
     </p-dialog>
   </div>

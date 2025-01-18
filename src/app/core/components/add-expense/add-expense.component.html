@@ -1,25 +1,52 @@
-<form>
-    <div>
-        <label for="expenseName">Expense Name:</label>
-        <input type="text" id="expenseName" name="expenseName" required>
+<form [formGroup]="testForm" (ngSubmit)="onUserSave()">
+
+    <p-floatlabel class="m-3" variant="on">
+        <input [fluid]="true" pInputText id="expName" formControlName="expName" autocomplete="off" required/>
+        <label for="expName">Name</label>
+    </p-floatlabel>
+
+    <p-floatlabel class="m-3" variant="on">
+        <p-datepicker
+            [fluid]="true"
+            formControlName="expDate" 
+            inputId="expDate" 
+            iconDisplay="input" 
+            dateFormat="dd/mm/yy" 
+            showIcon />
+        <label for="expDate">Date</label>
+    </p-floatlabel>
+    
+    <p-floatlabel class="m-3" variant="on">
+        <p-select 
+            (onChange)="changeSelectedType($event)"
+            formControlName="expType" 
+            [options]="expenseTypes"
+            [fluid]="true"
+            optionLabel="name" 
+            placeholder="Type"
+            [filter]="true" 
+            filterBy="name"/>
+        <label for="expType">Type</label>
+    </p-floatlabel>
+    
+    <p-floatlabel class="m-3" variant="on">
+        <input [fluid]="true" pInputText id="expCategory" formControlName="expCategory" variant="filled" readonly/>
+        <label for="expCategory">Category</label>
+    </p-floatlabel>
+
+    <p-floatlabel class="m-3" variant="on">
+        <p-inputnumber [fluid]="true" formControlName="expAmount" inputId="expAmount" mode="currency" currency="EUR" locale="it-IT" />
+        <label for="expAmount">Amount</label>
+    </p-floatlabel>  
+    
+    <p-floatlabel class="m-3" variant="on">
+        <input [fluid]="true" pInputText id="expNote" formControlName="expNote" autocomplete="off"/>
+        <label for="expNote">Note</label>
+    </p-floatlabel>
+
+    <hr class="m-3">    
+    
+    <div class="flex justify-center">
+        <p-button  type="submit">Add Expense</p-button>
     </div>
-    <div>
-        <label for="expenseAmount">Amount:</label>
-        <input type="number" id="expenseAmount" name="expenseAmount" required>
-    </div>
-    <div>
-        <label for="expenseDate">Date:</label>
-        <input type="date" id="expenseDate" name="expenseDate" required>
-    </div>
-    <div>
-        <label for="expenseCategory">Category:</label>
-        <select id="expenseCategory" name="expenseCategory" required>
-            <option value="food">Food</option>
-            <option value="transportation">Transportation</option>
-            <option value="utilities">Utilities</option>
-            <option value="entertainment">Entertainment</option>
-            <option value="other">Other</option>
-        </select>
-    </div>
-    <button type="submit">Add Expense</button>
 </form>
