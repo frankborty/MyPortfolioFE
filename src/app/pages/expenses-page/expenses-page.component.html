@@ -1,35 +1,131 @@
-<div>
+<div class="grid grid-cols-12 gap-4">
     <div class="fab-container">
       <p-button type="button" icon="pi pi-plus" class="p-button-rounded p-button-primary" (click)="showAddExpenseDialog()"></p-button>
     </div>
-    <p-table [value]="expenseList" [tableStyle]="{ 'min-width': '50rem' }">
-      <ng-template pTemplate="header">
-        <tr>
-          <th pSortableColumn="description">Description</th>
-          <th pSortableColumn="amount">Amount</th>
-          <th pSortableColumn="type">Type</th>
-          <th pSortableColumn="category">Category</th>
-          <th pSortableColumn="date">Date</th>
-          <th pSortableColumn="note">Note</th>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="body" let-expense>
-        <tr>
-          <td>{{ expense.description }}</td>
-          <td>{{ expense.amount }}</td>
-          <td>{{ expense.expenseType.name }}</td>
-          <td>{{ expense.expenseType.category.name }}</td>
-          <td>{{ expense.date | date: 'dd/MM/yyyy'}}</td>
-          <td>{{ expense.note }}</td>
-        </tr>
-      </ng-template>
-      <ng-template pTemplate="emptymessage">
-        <tr>
-          <td colspan="6">No expenses found.</td>
-        </tr>
-      </ng-template>
-    </p-table>
-  
+    
+    
+    
+    
+    <div class="col-span-12 mt-5 mb-5 border-2 rounded-lg">
+      <p-table 
+        [scrollable]="true"
+        [value]="expenseList"  
+        [resizableColumns]="true"
+        [size]="'small'" 
+        showGridlines 
+        stripedRows 
+        [paginator]="true"
+        [rows]="10"
+        [rowsPerPageOptions]="[5, 10, 20]"
+        >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pResizableColumn pSortableColumn="description" class="text-left w-80">Description
+              <p-columnFilter type="text" field="description" display="menu" />
+            </th>
+            <th pResizableColumn pSortableColumn="amount" class="text-right w-20">Cost €
+              <p-columnFilter type="numeric" field="amount" display="menu" currency="EUR" />
+            </th>
+            <th pResizableColumn pSortableColumn="expenseType.name" class="text-right w-40">Type
+              <p-columnFilter field="expenseType.name" matchMode="in" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false" class="ml-auto">
+                <ng-template #filter let-value let-filter="filterCallback">
+                  <p-multiselect 
+                    [filter]="true" 
+                    [ngModel]="value" 
+                    [options]="expenseTypesString" 
+                    placeholder="Any" 
+                    (onChange)="filter($event.value)" 
+                    class="w-full">
+                    <ng-template let-type #item>
+                      <div class="flex items-center gap-2">
+                        <span>{{ type }}</span>
+                      </div>
+                    </ng-template>
+                  </p-multiselect>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th pResizableColumn pSortableColumn="expenseType.category.name   " class="text-right w-40">Category
+              <p-columnFilter field="expenseType.category.name" matchMode="in" display="menu" [showMatchModes]="false" [showOperator]="false" [showAddButton]="false" class="ml-auto">
+                <ng-template #filter let-value let-filter="filterCallback">
+                  <p-multiselect 
+                    [filter]="true" 
+                    [ngModel]="value" 
+                    [options]="expenseCategoriesString" 
+                    placeholder="Any" 
+                    (onChange)="filter($event.value)" 
+                    class="w-full">
+                    <ng-template let-category #item>
+                      <div class="flex items-center gap-2">
+                        <span>{{ category }}</span>
+                      </div>
+                    </ng-template>
+                  </p-multiselect>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th pResizableColumn pSortableColumn="date" class="text-right w-32">Date
+              <!--<p-columnFilter type="date" field="date" display="menu" />-->
+              <p-columnFilter type="date" field="date" display="menu">
+                <ng-template pTemplate="filter" let-value let-filter="filterCallback">
+                   <p-calendar  [ngModel]="value" (onSelect)="filter($event)" dateFormat="dd/mm/yy"></p-calendar>
+                </ng-template>
+              </p-columnFilter>
+            </th>
+            <th pResizableColumn pSortableColumn="note">Note</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-expense>
+          <tr>
+            <td>{{ expense.description }}</td>
+            <td class="text-right">{{ expense.amount  | number:'1.1-1' }}</td>
+            <td class="text-right">{{ expense.expenseType.name }}</td>
+            <td class="text-right">{{ expense.expenseType.category.name }}</td>
+            <td class="text-right">{{ expense.date | date: 'dd/MM/yyyy'}}</td>
+            <td>{{ expense.note }}</td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr>
+            <td colspan="6">No expenses found.</td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+
+    <div class="col-span-5">
+      <p-table #expTypes [value]="expenseTypes" sortField="category.name" [scrollable]="true" scrollHeight="400px" rowGroupMode="subheader" groupRowsBy="category.name">
+          <ng-template #header>
+              <tr>
+                  <th>Name</th>
+                  <th>Action</th>
+              </tr>
+          </ng-template>
+          <ng-template #groupheader let-type>
+              <tr pRowGroupHeader>
+                  <td>
+                      <div class="flex items-center gap-2">
+                        <span class="font-bold">{{ type.category.name }}</span>
+                      </div>
+                  </td>
+                  <td>
+                    Agiungere icone di azione
+                  </td>
+              </tr>
+          </ng-template>
+          <ng-template #body let-type>
+              <tr>
+                  <td>
+                      {{type.name}}
+                  </td>
+                  <td>
+                    Agiungere icone di azione
+                  </td>
+              </tr>
+          </ng-template>
+      </p-table>
+  </div>
+
     <p-dialog header="Add Expense" [styleClass]="'w-[60vh] h-[80vh]'" [(visible)]="displayAddExpenseDialog" [modal]="true" [closable]="true">
       <app-add-expense></app-add-expense>
     </p-dialog>

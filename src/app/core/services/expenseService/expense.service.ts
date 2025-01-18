@@ -24,4 +24,14 @@ export class ExpenseService {
     return this.http.get(`${this.apiUrl}/ExpenseType`, this.options)
     .pipe(tap(console.debug), catchError(this.errorHandler.handleError)); 
   }
+
+  getExpenseCategories() {
+    return this.http.get(`${this.apiUrl}/ExpenseCategory`, this.options)
+    .pipe(tap(console.debug), catchError(this.errorHandler.handleError)); 
+  }
+
+  getExpenseCategoryTypes() {
+    return this.http.get(`${this.apiUrl}/categoriesAndTypes`, this.options)
+    .pipe(tap(console.debug), catchError(this.errorHandler.handleError)); 
+  }
 }

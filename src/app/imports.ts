@@ -13,6 +13,8 @@ import { CommonModule } from '@angular/common';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
+import { SelectButtonModule } from 'primeng/selectbutton';
+import { MultiSelectModule } from 'primeng/multiselect';
 
 @NgModule({
     imports: [
@@ -31,7 +33,9 @@ import { SelectModule } from 'primeng/select';
         TableModule,
         InputNumberModule,
         TextareaModule,
-        SelectModule
+        SelectModule,
+        SelectButtonModule,
+        MultiSelectModule,
     ],
     exports: [
         CommonModule,
@@ -49,7 +53,9 @@ import { SelectModule } from 'primeng/select';
         TableModule,
         InputNumberModule,
         TextareaModule,
-        SelectModule
+        SelectModule,
+        SelectButtonModule,
+        MultiSelectModule
     ],
     providers: [  ]
   })

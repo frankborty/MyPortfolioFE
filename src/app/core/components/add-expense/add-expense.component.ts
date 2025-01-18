@@ -13,7 +13,6 @@ import { SelectChangeEvent } from 'primeng/select';
   styleUrl: './add-expense.component.css'
 })
 export class AddExpenseComponent implements OnInit {
-
   expenseTypes: ExpenseType[] = [];
   selectedType: ExpenseType | undefined;
   testForm : FormGroup;
@@ -52,9 +51,7 @@ export class AddExpenseComponent implements OnInit {
 
   onUserSave() {
     const formValue = this.testForm.value;
-    if(this.testForm.valid) {
-      console.log(formValue);
-    }
+    
   }
     
 }
