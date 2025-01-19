@@ -4,7 +4,15 @@ export interface Expense {
     id: number;
     description: string;
     amount: number;
-    date: Date;
+    date: string | Date;
     note: string;
     type: ExpenseType;
+}
+
+export interface ExpenseToAdd { 
+    description : string;
+    amount : number;
+    date : string;
+    note : string;
+    expenseType : string;
 }

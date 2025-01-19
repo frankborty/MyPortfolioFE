@@ -15,6 +15,8 @@ import { TextareaModule } from 'primeng/textarea';
 import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { MultiSelectModule } from 'primeng/multiselect';
+import { ContextMenuModule } from 'primeng/contextmenu';
+
 
 @NgModule({
     imports: [
@@ -36,6 +38,7 @@ import { MultiSelectModule } from 'primeng/multiselect';
         SelectModule,
         SelectButtonModule,
         MultiSelectModule,
+        ContextMenuModule,
     ],
     exports: [
         CommonModule,
@@ -55,7 +58,8 @@ import { MultiSelectModule } from 'primeng/multiselect';
         TextareaModule,
         SelectModule,
         SelectButtonModule,
-        MultiSelectModule
+        MultiSelectModule,
+        ContextMenuModule
     ],
     providers: [  ]
   })

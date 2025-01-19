@@ -1,13 +1,32 @@
 <div class="grid grid-cols-12 gap-4">
-    <div class="fab-container">
-      <p-button type="button" icon="pi pi-plus" class="p-button-rounded p-button-primary" (click)="showAddExpenseDialog()"></p-button>
+    <div class="add-container">
+      <p-button 
+        styleClass="action-button" 
+        severity="success" 
+        icon="pi pi-plus" 
+        [rounded]="true" 
+        (click)="showAddExpenseDialog()">
+      </p-button>
+    </div> 
+    
+    <div class="del-container">
+      <p-button *ngIf="selectedExpenseList.length > 0" 
+        styleClass="action-button del-button" 
+        severity="danger" 
+        icon="pi pi-trash"
+        (click)="deleteExpenseList()">
+      </p-button>
     </div>
-    
-    
-    
-    
+
     <div class="col-span-12 mt-5 mb-5 border-2 rounded-lg">
+      <p-contextmenu #cm [model]="contextMenuItems" />
+    
       <p-table 
+        [(contextMenuSelection)]="selectedExpense" 
+        [contextMenu]="cm"
+        [(selection)]="selectedExpenseList"
+        selectionMode="multiple"
+        dataKey="id"
         [scrollable]="true"
         [value]="expenseList"  
         [resizableColumns]="true"
@@ -65,7 +84,6 @@
               </p-columnFilter>
             </th>
             <th pResizableColumn pSortableColumn="date" class="text-right w-32">Date
-              <!--<p-columnFilter type="date" field="date" display="menu" />-->
               <p-columnFilter type="date" field="date" display="menu">
                 <ng-template pTemplate="filter" let-value let-filter="filterCallback">
                    <p-calendar  [ngModel]="value" (onSelect)="filter($event)" dateFormat="dd/mm/yy"></p-calendar>
@@ -75,8 +93,8 @@
             <th pResizableColumn pSortableColumn="note">Note</th>
           </tr>
         </ng-template>
-        <ng-template pTemplate="body" let-expense>
-          <tr>
+        <ng-template pTemplate="body" let-expense let-rowIndex="rowIndex">
+          <tr [pContextMenuRow]="expense"[pSelectableRow]="expense" [pSelectableRowIndex]="rowIndex">
             <td>{{ expense.description }}</td>
             <td class="text-right">{{ expense.amount  | number:'1.1-1' }}</td>
             <td class="text-right">{{ expense.expenseType.name }}</td>
@@ -127,6 +145,8 @@
   </div>
 
     <p-dialog header="Add Expense" [styleClass]="'w-[60vh] h-[80vh]'" [(visible)]="displayAddExpenseDialog" [modal]="true" [closable]="true">
-      <app-add-expense></app-add-expense>
+      <app-add-expense (addNewExpenseCallBack)="addNewExpense($event)"></app-add-expense>
     </p-dialog>
   </div>
+
+  

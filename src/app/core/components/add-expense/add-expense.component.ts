@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ImportsModule } from '../../../imports';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ExpenseService } from '../../services/expenseService/expense.service';
-import { Expense } from '../../interfaces/expense';
+import { Expense, ExpenseToAdd } from '../../interfaces/expense';
 import { ExpenseType } from '../../interfaces/expenseType';
 import { SelectChangeEvent } from 'primeng/select';
 
@@ -13,6 +13,8 @@ import { SelectChangeEvent } from 'primeng/select';
   styleUrl: './add-expense.component.css'
 })
 export class AddExpenseComponent implements OnInit {
+  @Output() addNewExpenseCallBack = new EventEmitter<ExpenseToAdd>();
+
   expenseTypes: ExpenseType[] = [];
   selectedType: ExpenseType | undefined;
   testForm : FormGroup;
@@ -50,8 +52,20 @@ export class AddExpenseComponent implements OnInit {
   }
 
   onUserSave() {
-    const formValue = this.testForm.value;
+    if(this.testForm.invalid){
+      console.log('Form is invalid');
+    }
     
+    const formValue = this.testForm.value;
+    const expenseToAdd : ExpenseToAdd= {
+      description: formValue.expName,
+      amount: formValue.expAmount,
+      date: formValue.expDate,
+      note: formValue.expNote,
+      expenseType: formValue.expType.name
+    };
+    this.addNewExpenseCallBack.emit(expenseToAdd);
+    this.testForm.reset();
   }
     
 }
