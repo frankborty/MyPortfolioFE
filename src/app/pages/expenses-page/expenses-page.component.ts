@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ImportsModule } from '../../imports';
 import { Expense, ExpenseToAdd } from '../../core/interfaces/expense';
 import { AddExpenseComponent } from '../../core/components/add-expense/add-expense.component';
@@ -6,15 +6,20 @@ import { ExpenseService } from '../../core/services/expenseService/expense.servi
 import { ExpenseType } from '../../core/interfaces/expenseType';
 import { ExpenseCategory } from '../../core/interfaces/expenseCategory';
 import { GlobalUtilityService } from '../../core/services/utils/global-utility.service';
-import { MenuItem } from 'primeng/api';
+import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
+import { ParamConfirmationDialogComponent } from '../../core/components/param-confirmation-dialog/param-confirmation-dialog.component';
+import { OperationResult } from '../../core/enum/operationResult';
 
 @Component({
   selector: 'app-expenses-page',
-  imports: [ImportsModule, AddExpenseComponent],
+  imports: [ImportsModule, AddExpenseComponent, ParamConfirmationDialogComponent],
+  providers: [ConfirmationService, MessageService],
   templateUrl: './expenses-page.component.html',
   styleUrl: './expenses-page.component.css'
 })
 export class ExpensesPageComponent implements OnInit {
+  @ViewChild(ParamConfirmationDialogComponent) confirmDialog!: ParamConfirmationDialogComponent;
+
   displayAddExpenseDialog: boolean = false;
   expenseTypes: ExpenseType[] = [];
   expenseTypesString: ExpenseType[] = [];
@@ -25,8 +30,9 @@ export class ExpensesPageComponent implements OnInit {
   selectedExpense: Expense | null = null;
   contextMenuItems!: MenuItem[];
 
-  constructor(public expenseService : ExpenseService,
-    private globalUtils : GlobalUtilityService
+  constructor(private expenseService : ExpenseService,
+    private globalUtils : GlobalUtilityService,
+    private messageService : MessageService
   ) { }
 
   ngOnInit() {
@@ -96,32 +102,50 @@ export class ExpensesPageComponent implements OnInit {
     this.hideAddExpenseDialog();
   }
 
-  deleteExpenseList(){
-    const idToDeleteList :number[]=this.selectedExpenseList.map(expense => expense.id);
-    this.expenseService.deleteExpense(idToDeleteList).subscribe({
-      next: () => {
-        this.loadExpenses();
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
+  deleteExpenseList(): void {
+    this.confirmDialog.confirmDelete("Sei sicuro di cancellare le spese selezionate?").then((confirmed) => {
+      if (confirmed) {
+        const expenseIds = this.selectedExpenseList.map(expense => expense.id);
+        this.expenseService.deleteExpense(expenseIds).subscribe({
+          next: () => {
+            this.globalUtils.showOperationResult(this.messageService, OperationResult.OK, "Spese cancellate con successo");
+            this.loadExpenses();
+          },
+          error: (error: any) => {
+            this.globalUtils.showOperationResult(this.messageService, OperationResult.OK, 'Errore durante la cancellazione delle spese: '+error);
+          }
+        });
+      } else {
+        this.globalUtils.showOperationResult(this.messageService, OperationResult.INFO, 'Cancellazione annullata');
+      }
     });
   }
 
+
   deleteExpense(): void {
-    if(this.selectedExpense){
-      this.expenseService.deleteExpense([this.selectedExpense.id]).subscribe({
-        next: () => {
-          this.loadExpenses();
-          this.selectedExpense = null;
-        },
-        error: (error: any) => {
-          console.error(error);
-          this.selectedExpense = null;
-        },
+    if (this.selectedExpense) {
+      this.confirmDialog.confirmDelete("Sei sicuro di cancellare la spesa selezionata?").then((confirmed) => {
+        if (confirmed) {
+          this.expenseService.deleteExpense([this.selectedExpense!.id]).subscribe({
+            next: () => {
+              this.loadExpenses();
+              this.selectedExpense = null;
+              this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Spesa cancellata con successo' });
+            },
+            error: (error: any) => {
+              console.error(error);
+              this.selectedExpense = null;
+              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Errore durante la cancellazione della spesa' });
+            }
+          });
+        } else {
+          this.messageService.add({ severity: 'info', summary: 'Cancelled', detail: 'Cancellazione annullata' });
+        }
       });
     }
   }
+
+
   editExpense(): void {
     throw new Error('Method not implemented.');
   }
