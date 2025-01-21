@@ -1,4 +1,4 @@
-<form [formGroup]="addForm" (ngSubmit)="onUserSave()">
+<form [formGroup]="editExpenseForm" (ngSubmit)="onUserSave()">
 
     <p-floatlabel class="m-3" variant="on">
         <input [fluid]="true" pInputText id="expName" formControlName="expName" autocomplete="off" required/>
@@ -47,6 +47,6 @@
     <hr class="m-3">    
     
     <div class="flex justify-center">
-        <p-button label="Add Expense" severity="success" type="submit" icon="pi pi-save" />
+        <p-button label="Edit Expense" severity="warn" type="submit" icon="pi pi-pencil" />
     </div>
 </form>

@@ -147,6 +147,11 @@
     <p-dialog header="Add Expense" [styleClass]="'w-[60vh] h-[80vh]'" [(visible)]="displayAddExpenseDialog" [modal]="true" [closable]="true">
       <app-add-expense (addNewExpenseCallBack)="addNewExpense($event)"></app-add-expense>
     </p-dialog>
+
+    
+    <p-dialog header="Edit Expense" [styleClass]="'w-[60vh] h-[80vh]'" [(visible)]="displayEditExpenseDialog" [modal]="true" [closable]="true">
+      <app-edit-expense (editNewExpenseCallBack)="editNewExpense($event)"></app-edit-expense>
+    </p-dialog>
   </div>
 
   

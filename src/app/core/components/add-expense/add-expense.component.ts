@@ -2,7 +2,7 @@ import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { ImportsModule } from '../../../imports';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ExpenseService } from '../../services/expenseService/expense.service';
-import { Expense, ExpenseToAdd } from '../../interfaces/expense';
+import { ExpenseToAdd } from '../../interfaces/expense';
 import { ExpenseType } from '../../interfaces/expenseType';
 import { SelectChangeEvent } from 'primeng/select';
 
@@ -17,11 +17,11 @@ export class AddExpenseComponent implements OnInit {
 
   expenseTypes: ExpenseType[] = [];
   selectedType: ExpenseType | undefined;
-  testForm : FormGroup;
+  addForm : FormGroup;
 
   constructor(private expenseService: ExpenseService) { 
-    this.testForm = new FormGroup({
-      expName: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    this.addForm = new FormGroup({
+      expName: new FormControl('PPP', [Validators.required, Validators.minLength(3)]),
       expAmount: new FormControl('', [Validators.required, Validators.min(0.01)]),
       expDate: new FormControl(new Date(), Validators.required),
       expType: new FormControl(this.selectedType, Validators.required),
@@ -36,8 +36,8 @@ export class AddExpenseComponent implements OnInit {
         this.expenseTypes = data;
         if (this.expenseTypes.length > 0) {
           this.selectedType = this.expenseTypes[0];
-          this.testForm.get('expType')?.setValue(this.selectedType);
-          this.testForm.get('expCategory')?.setValue(this.expenseTypes[0].category.name);
+          this.addForm.get('expType')?.setValue(this.selectedType);
+          this.addForm.get('expCategory')?.setValue(this.expenseTypes[0].category.name);
         }
       },
       error: (error: any) => {
@@ -48,15 +48,15 @@ export class AddExpenseComponent implements OnInit {
 
   changeSelectedType($event: SelectChangeEvent) {
     this.selectedType = $event.value;
-    this.testForm.get('expCategory')?.setValue(this.selectedType?.category.name); 
+    this.addForm.get('expCategory')?.setValue(this.selectedType?.category.name); 
   }
 
   onUserSave() {
-    if(this.testForm.invalid){
+    if(this.addForm.invalid){
       console.log('Form is invalid');
     }
     
-    const formValue = this.testForm.value;
+    const formValue = this.addForm.value;
     const expenseToAdd : ExpenseToAdd= {
       description: formValue.expName,
       amount: formValue.expAmount,
@@ -65,7 +65,7 @@ export class AddExpenseComponent implements OnInit {
       expenseType: formValue.expType.name
     };
     this.addNewExpenseCallBack.emit(expenseToAdd);
-    this.testForm.reset();
+    this.addForm.reset();
   }
     
 }

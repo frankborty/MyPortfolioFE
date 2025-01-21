@@ -6,7 +6,7 @@ export interface Expense {
     amount: number;
     date: string | Date;
     note: string;
-    type: ExpenseType;
+    expenseType: ExpenseType;
 }
 
 export interface ExpenseToAdd { 

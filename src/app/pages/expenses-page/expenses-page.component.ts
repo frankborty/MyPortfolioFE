@@ -9,18 +9,21 @@ import { GlobalUtilityService } from '../../core/services/utils/global-utility.s
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { ParamConfirmationDialogComponent } from '../../core/components/param-confirmation-dialog/param-confirmation-dialog.component';
 import { OperationResult } from '../../core/enum/operationResult';
+import { EditExpenseComponent } from '../../core/components/edit-expense/edit-expense.component';
 
 @Component({
   selector: 'app-expenses-page',
-  imports: [ImportsModule, AddExpenseComponent, ParamConfirmationDialogComponent],
+  imports: [ImportsModule, AddExpenseComponent, EditExpenseComponent, ParamConfirmationDialogComponent],
   providers: [ConfirmationService, MessageService],
   templateUrl: './expenses-page.component.html',
   styleUrl: './expenses-page.component.css'
 })
 export class ExpensesPageComponent implements OnInit {
   @ViewChild(ParamConfirmationDialogComponent) confirmDialog!: ParamConfirmationDialogComponent;
+  @ViewChild(EditExpenseComponent) editExpenseDialog!: EditExpenseComponent;
 
   displayAddExpenseDialog: boolean = false;
+  displayEditExpenseDialog: boolean = false;
   expenseTypes: ExpenseType[] = [];
   expenseTypesString: ExpenseType[] = [];
   expenseCategories: ExpenseCategory[] = [];
@@ -40,7 +43,7 @@ export class ExpensesPageComponent implements OnInit {
     this.loadExpenseTypes();
     this.loadExpenseCategories();
     this.contextMenuItems = [
-      { label: 'Edit', icon: 'pi pi-fw pi-pencil', command: () => this.editExpense() },
+      { label: 'Edit', icon: 'pi pi-fw pi-pencil', command: () => this.showEditExpenseDialog() },
       { label: 'Delete', icon: 'pi pi-fw pi-times', command: () => this.deleteExpense() }
   ];
   }
@@ -102,6 +105,27 @@ export class ExpensesPageComponent implements OnInit {
     this.hideAddExpenseDialog();
   }
 
+  
+
+  editNewExpense(expenseToAdd: ExpenseToAdd){
+    if(this.selectedExpense){
+      expenseToAdd.date=this.globalUtils.convertDateToString(expenseToAdd.date);
+      this.expenseService.editExpense(this.selectedExpense.id, expenseToAdd).subscribe({
+        next: () => {
+          this.loadExpenses();
+        },
+        error: (error: any) => {
+          console.error(error);
+        },
+      });
+    }
+    else
+    {
+      console.error('No expense selected to edit');
+    }
+    this.hideEditExpenseDialog();
+  }
+
   deleteExpenseList(): void {
     this.confirmDialog.confirmDelete("Sei sicuro di cancellare le spese selezionate?").then((confirmed) => {
       if (confirmed) {
@@ -145,16 +169,22 @@ export class ExpensesPageComponent implements OnInit {
     }
   }
 
-
-  editExpense(): void {
-    throw new Error('Method not implemented.');
+  showAddExpenseDialog(){
+    this.displayAddExpenseDialog = true ;
   }
 
-  showAddExpenseDialog(){
-    this.displayAddExpenseDialog = true;
+  showEditExpenseDialog(){
+    if(this.selectedExpense){
+      this.editExpenseDialog.setExpenseToEdit(this.selectedExpense);
+      this.displayEditExpenseDialog = true;
+    }
   }
 
   hideAddExpenseDialog(){
     this.displayAddExpenseDialog = false;
+  }
+
+  hideEditExpenseDialog(){
+    this.displayEditExpenseDialog = false;
   }
 }

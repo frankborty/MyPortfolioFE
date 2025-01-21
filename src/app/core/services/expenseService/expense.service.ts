@@ -53,4 +53,12 @@ export class ExpenseService {
     }).pipe(catchError(this.errorHandler.handleError));
   }
   //#endregion
+
+  //region EDIT DATA
+  editExpense(expenseId: number, expenseToAdd: ExpenseToAdd) {
+    return this.http.put(`${this.apiUrl}/Expense/${expenseId}`, expenseToAdd, this.options)
+    .pipe(catchError(this.errorHandler.handleError)); 
+  }
+
+  //#endregion
 }
