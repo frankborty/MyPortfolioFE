@@ -10,6 +10,7 @@ import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { ParamConfirmationDialogComponent } from '../../core/components/param-confirmation-dialog/param-confirmation-dialog.component';
 import { OperationResult } from '../../core/enum/operationResult';
 import { EditExpenseComponent } from '../../core/components/edit-expense/edit-expense.component';
+import { Nullable } from 'primeng/ts-helpers';
 
 @Component({
   selector: 'app-expenses-page',
@@ -28,10 +29,14 @@ export class ExpensesPageComponent implements OnInit {
   expenseTypesString: ExpenseType[] = [];
   expenseCategories: ExpenseCategory[] = [];
   expenseCategoriesString: string[] = [];
+  originalExpenseList : Expense[] = [];
   expenseList : Expense[] = [];
   selectedExpenseList: any[] = [];
   selectedExpense: Expense | null = null;
   contextMenuItems!: MenuItem[];
+
+  selectedYear : Date | Nullable = new Date();
+  selectedMonth : Date | Nullable = new Date();
 
   constructor(private expenseService : ExpenseService,
     private globalUtils : GlobalUtilityService,
@@ -53,10 +58,12 @@ export class ExpensesPageComponent implements OnInit {
     this.selectedExpenseList=[];
     this.expenseService.getExpenses().subscribe({
       next: (data: any) => {
+        this.originalExpenseList = data;
         this.expenseList = data;
         this.expenseList.map((expense: Expense) => {
           expense.date = this.globalUtils.convertStringToDate(expense.date.toString());
         });
+        this.filterExpenses();
       },
       error: (error: any) => {
         console.error(error);
@@ -186,5 +193,40 @@ export class ExpensesPageComponent implements OnInit {
 
   hideEditExpenseDialog(){
     this.displayEditExpenseDialog = false;
+  }
+
+  
+  filterExpenses() {
+    if(this.selectedYear){
+      this.filterYear();  
+        this.filterMonth();
+        if (this.selectedMonth) {
+          this.selectedMonth = new Date(this.selectedMonth.setFullYear(this.selectedYear.getFullYear()));
+        }
+    }
+    else{
+      this.expenseList = this.originalExpenseList;
+      this.selectedMonth = null;
+    }
+  }
+
+  filterYear() {
+    this.expenseList = this.originalExpenseList.filter((expense: Expense) => {
+      if(expense.date instanceof Date){
+        return expense.date.getFullYear() === this.selectedYear?.getFullYear();
+      }
+      return false;
+    });
+  }
+
+  filterMonth() { 
+    if(this.selectedMonth){
+      this.expenseList = this.originalExpenseList.filter((expense: Expense) => {
+        if(expense.date instanceof Date){
+          return expense.date.getMonth() === this.selectedYear?.getMonth();
+        }
+        return false;
+      });
+    }
   }
 }
