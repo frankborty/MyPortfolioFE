@@ -27,8 +27,8 @@
       showGridlines 
       stripedRows 
       [paginator]="true"
-      [rows]="10"
-      [rowsPerPageOptions]="[5, 10, 20]"
+      [rows]="30"
+      [rowsPerPageOptions]="[10, 30, 50, 100]"
       >
       <ng-template pTemplate="header">
         <tr>
@@ -103,6 +103,13 @@
       </ng-template>
     </p-table>
   </div>
+
+  <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
+    <div class="w-96 bg-red-600 h-40 mb-4"></div>
+    <div class="w-96 bg-yellow-300 h-40 mb-4"></div>
+    <div class="w-96 bg-blue-700 h-40 mb-4"></div>
+  </div>
+
 
   <p-dialog header="Add Expense" [styleClass]="'w-[60vh] h-[80vh]'" [(visible)]="displayAddExpenseDialog" [modal]="true" [closable]="true">
     <app-add-expense (addNewExpenseCallBack)="addNewExpense($event)"></app-add-expense>

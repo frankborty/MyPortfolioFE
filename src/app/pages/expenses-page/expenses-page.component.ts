@@ -221,7 +221,7 @@ export class ExpensesPageComponent implements OnInit {
 
   filterMonth() { 
     if(this.selectedMonth){
-      this.expenseList = this.originalExpenseList.filter((expense: Expense) => {
+      this.expenseList = this.expenseList.filter((expense: Expense) => {
         if(expense.date instanceof Date){
           return expense.date.getMonth() === this.selectedYear?.getMonth();
         }
