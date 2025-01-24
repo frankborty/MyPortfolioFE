@@ -11,17 +11,20 @@ import { ParamConfirmationDialogComponent } from '../../core/components/param-co
 import { OperationResult } from '../../core/enum/operationResult';
 import { EditExpenseComponent } from '../../core/components/edit-expense/edit-expense.component';
 import { Nullable } from 'primeng/ts-helpers';
+import { ExpenseTableComponent } from '../../core/components/expenseTable/expenseTable.component';
 
 @Component({
   selector: 'app-expenses-page',
-  imports: [ImportsModule, AddExpenseComponent, EditExpenseComponent, ParamConfirmationDialogComponent],
+  imports: [ExpenseTableComponent, ImportsModule, AddExpenseComponent, EditExpenseComponent, ParamConfirmationDialogComponent],
   providers: [ConfirmationService, MessageService],
   templateUrl: './expenses-page.component.html',
   styleUrl: './expenses-page.component.css'
 })
 export class ExpensesPageComponent implements OnInit {
+
   @ViewChild(ParamConfirmationDialogComponent) confirmDialog!: ParamConfirmationDialogComponent;
   @ViewChild(EditExpenseComponent) editExpenseDialog!: EditExpenseComponent;
+  @ViewChild(ExpenseTableComponent) expenseTable!: ExpenseTableComponent;
 
   displayAddExpenseDialog: boolean = false;
   displayEditExpenseDialog: boolean = false;
@@ -30,10 +33,7 @@ export class ExpensesPageComponent implements OnInit {
   expenseCategories: ExpenseCategory[] = [];
   expenseCategoriesString: string[] = [];
   originalExpenseList : Expense[] = [];
-  expenseList : Expense[] = [];
-  selectedExpenseList: any[] = [];
-  selectedExpense: Expense | null = null;
-  contextMenuItems!: MenuItem[];
+  filteredExpenseList : Expense[] = [];
 
   selectedYear : Date | Nullable = new Date();
   selectedMonth : Date | Nullable = new Date();
@@ -47,20 +47,14 @@ export class ExpensesPageComponent implements OnInit {
     this.loadExpenses();
     this.loadExpenseTypes();
     this.loadExpenseCategories();
-    this.contextMenuItems = [
-      { label: 'Edit', icon: 'pi pi-fw pi-pencil', command: () => this.showEditExpenseDialog() },
-      { label: 'Delete', icon: 'pi pi-fw pi-times', command: () => this.deleteExpense() }
-  ];
   }
   
 
   loadExpenses(){
-    this.selectedExpenseList=[];
     this.expenseService.getExpenses().subscribe({
       next: (data: any) => {
         this.originalExpenseList = data;
-        this.expenseList = data;
-        this.expenseList.map((expense: Expense) => {
+        this.originalExpenseList.map((expense: Expense) => {
           expense.date = this.globalUtils.convertStringToDate(expense.date.toString());
         });
         this.filterExpenses();
@@ -99,6 +93,7 @@ export class ExpensesPageComponent implements OnInit {
     });
   }
 
+  //#region Add Expense
   addNewExpense(expenseToAdd: ExpenseToAdd){
     expenseToAdd.date=this.globalUtils.convertDateToString(expenseToAdd.date);
     this.expenseService.postExpense(expenseToAdd).subscribe({
@@ -112,31 +107,20 @@ export class ExpensesPageComponent implements OnInit {
     this.hideAddExpenseDialog();
   }
 
-  
-
-  editNewExpense(expenseToAdd: ExpenseToAdd){
-    if(this.selectedExpense){
-      expenseToAdd.date=this.globalUtils.convertDateToString(expenseToAdd.date);
-      this.expenseService.editExpense(this.selectedExpense.id, expenseToAdd).subscribe({
-        next: () => {
-          this.loadExpenses();
-        },
-        error: (error: any) => {
-          console.error(error);
-        },
-      });
-    }
-    else
-    {
-      console.error('No expense selected to edit');
-    }
-    this.hideEditExpenseDialog();
+  showAddExpenseDialog(){
+    this.displayAddExpenseDialog = true ;
   }
 
+  hideAddExpenseDialog(){
+    this.displayAddExpenseDialog = false;
+  }
+  //#endregion
+
+  //#region Delete Expense
   deleteExpenseList(): void {
-    this.confirmDialog.confirmDelete("Sei sicuro di cancellare le spese selezionate?").then((confirmed) => {
+   this.confirmDialog.confirmDelete("Sei sicuro di cancellare le spese selezionate?").then((confirmed) => {
       if (confirmed) {
-        const expenseIds = this.selectedExpenseList.map(expense => expense.id);
+        const expenseIds = this.expenseTable.selectedExpenseList.map(expense => expense.id);
         this.expenseService.deleteExpense(expenseIds).subscribe({
           next: () => {
             this.globalUtils.showOperationResult(this.messageService, OperationResult.OK, "Spese cancellate con successo");
@@ -152,20 +136,18 @@ export class ExpensesPageComponent implements OnInit {
     });
   }
 
-
   deleteExpense(): void {
-    if (this.selectedExpense) {
+    if (this.expenseTable?.selectedExpense) {
+      const expenseId = this.expenseTable.selectedExpense.id;
       this.confirmDialog.confirmDelete("Sei sicuro di cancellare la spesa selezionata?").then((confirmed) => {
         if (confirmed) {
-          this.expenseService.deleteExpense([this.selectedExpense!.id]).subscribe({
+          this.expenseService.deleteExpense([expenseId]).subscribe({
             next: () => {
               this.loadExpenses();
-              this.selectedExpense = null;
               this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Spesa cancellata con successo' });
             },
             error: (error: any) => {
-              console.error(error);
-              this.selectedExpense = null;
+              console.error(error)
               this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Errore durante la cancellazione della spesa' });
             }
           });
@@ -176,26 +158,46 @@ export class ExpensesPageComponent implements OnInit {
     }
   }
 
-  showAddExpenseDialog(){
-    this.displayAddExpenseDialog = true ;
-  }
-
+  //#endregion
+  
+  //#region Edit Expense
   showEditExpenseDialog(){
-    if(this.selectedExpense){
-      this.editExpenseDialog.setExpenseToEdit(this.selectedExpense);
-      this.displayEditExpenseDialog = true;
+    if(this.expenseTable?.selectedExpense){
+      const expenseId = this.expenseTable.selectedExpense.id;
+      const expense = this.originalExpenseList.find(expense => expense.id === expenseId);
+      if(expense){
+        this.editExpenseDialog.setExpenseToEdit(expense);
+        this.displayEditExpenseDialog = true;
+      }
     }
-  }
-
-  hideAddExpenseDialog(){
-    this.displayAddExpenseDialog = false;
   }
 
   hideEditExpenseDialog(){
     this.displayEditExpenseDialog = false;
   }
 
+  editNewExpense(expenseToAdd: ExpenseToAdd){
+    if(expenseToAdd){
+      const expenseId = this.expenseTable.selectedExpense!.id;
+      expenseToAdd.date=this.globalUtils.convertDateToString(expenseToAdd.date);
+      this.expenseService.editExpense(expenseId, expenseToAdd).subscribe({
+        next: () => {
+          this.loadExpenses();
+        },
+        error: (error: any) => {
+          console.error(error);
+        },
+      });
+    }
+    else
+    {
+      console.error('No expense selected to edit');
+    }
+    this.hideEditExpenseDialog();
+  }
+//#endregion
   
+  //#region Filters
   filterExpenses() {
     if(this.selectedYear){
       this.filterYear();  
@@ -205,13 +207,13 @@ export class ExpensesPageComponent implements OnInit {
         }
     }
     else{
-      this.expenseList = this.originalExpenseList;
+      this.filteredExpenseList = this.originalExpenseList;
       this.selectedMonth = null;
     }
   }
 
   filterYear() {
-    this.expenseList = this.originalExpenseList.filter((expense: Expense) => {
+    this.filteredExpenseList = this.originalExpenseList.filter((expense: Expense) => {
       if(expense.date instanceof Date){
         return expense.date.getFullYear() === this.selectedYear?.getFullYear();
       }
@@ -221,12 +223,14 @@ export class ExpensesPageComponent implements OnInit {
 
   filterMonth() { 
     if(this.selectedMonth){
-      this.expenseList = this.expenseList.filter((expense: Expense) => {
+      this.filteredExpenseList = this.filteredExpenseList.filter((expense: Expense) => {
         if(expense.date instanceof Date){
-          return expense.date.getMonth() === this.selectedYear?.getMonth();
+          return expense.date.getMonth() === this.selectedMonth?.getMonth();
         }
         return false;
       });
     }
   }
+  //#endregion
+    
 }
