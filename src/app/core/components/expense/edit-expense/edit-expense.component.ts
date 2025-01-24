@@ -1,9 +1,9 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { ImportsModule } from '../../../imports';
+import { ImportsModule } from '../../../../imports';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ExpenseService } from '../../services/expenseService/expense.service';
-import { Expense, ExpenseToAdd } from '../../interfaces/expense';
-import { ExpenseType } from '../../interfaces/expenseType';
+import { ExpenseService } from '../../../services/expenseService/expense.service';
+import { Expense, ExpenseToAdd } from '../../../interfaces/expense';
+import { ExpenseType } from '../../../interfaces/expenseType';
 import { SelectChangeEvent } from 'primeng/select';
 
 @Component({

@@ -11,8 +11,7 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 })
 export class ParamConfirmationDialogComponent {
   public messageToShow : string = "";
-  constructor(private confirmationService: ConfirmationService, 
-    private messageService: MessageService) { }
+  constructor(private confirmationService: ConfirmationService) { }
 
     confirmDelete(messageToShow:string): Promise<boolean> {
       return new Promise((resolve) => {

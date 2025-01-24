@@ -1,5 +1,5 @@
 <div class="grid grid-cols-12 gap-4">
-  <div class="flex col-span-12 mt-3 mb-3 gap-3 rounded-lg">
+  <div class="grow flex flex-wrap col-span-12 mt-3 mb-3 gap-3 rounded-lg">
     <p-floatlabel variant="on">
       <p-datepicker [(ngModel)]="selectedYear" (ngModelChange)="filterExpenses()" view="year" dateFormat="yy" [showButtonBar]="true" ngModel showIcon iconDisplay="input"/>
       <label for="YearLabel">Year</label>
@@ -10,6 +10,19 @@
        [(ngModel)]="selectedMonth"  (ngModelChange)="filterExpenses()" view="month" dateFormat="mm/yy" [showButtonBar]="true" showIcon  iconDisplay="input"/>
       <label for="MonthLabel">Month</label>
     </p-floatlabel>
+
+    <p-floatlabel variant="on">
+      <input pInputText id="expenseCount" readonly autocomplete="off" [(ngModel)]="filteredExpenseList.length" />
+      <label for="expenseCount">Count</label>
+    </p-floatlabel>
+
+    <p-floatlabel variant="on">
+      <p-inputnumber [(ngModel)]="totalMoneySpent" inputId="expenseTotal" mode="currency" currency="EUR" locale="en-US" />
+      <label for="expenseTotal">Total</label>
+    </p-floatlabel>
+
+    <p-button label="Clean Selection" severity="secondary" icon="pi pi-times" />
+
   </div>
   <div class="col-span-12 border-2 rounded-lg">
     <app-expenseTable 

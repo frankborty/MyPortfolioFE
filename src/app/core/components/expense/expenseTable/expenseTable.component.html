@@ -17,6 +17,7 @@
     [rowsPerPageOptions]="[10, 30, 50, 100]">
     <ng-template pTemplate="header">
       <tr>
+        <th>#</th>
         <th pResizableColumn pSortableColumn="description" class="text-left w-80">Description
           <p-columnFilter type="text" field="description" display="menu" />
         </th>
@@ -73,6 +74,7 @@
     </ng-template>
     <ng-template pTemplate="body" let-expense let-rowIndex="rowIndex">
       <tr [pContextMenuRow]="expense"[pSelectableRow]="expense" [pSelectableRowIndex]="rowIndex">
+        <td>{{ rowIndex+1 }}</td>
         <td>{{ expense.description }}</td>
         <td class="text-right">{{ expense.amount  | number:'1.1-1' }}</td>
         <td class="text-right">{{ expense.expenseType.name }}</td>
@@ -83,7 +85,7 @@
     </ng-template>
     <ng-template pTemplate="emptymessage">
       <tr>
-        <td colspan="6">No expenses found.</td>
+        <td colspan="7">No expenses found.</td>
       </tr>
     </ng-template>
   </p-table>

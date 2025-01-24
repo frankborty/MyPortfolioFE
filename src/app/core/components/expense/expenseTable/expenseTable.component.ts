@@ -1,10 +1,8 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
-import { ImportsModule } from '../../../imports';
+import { ImportsModule } from '../../../../imports';
 import { MenuItem } from 'primeng/api';
-import { Expense } from '../../interfaces/expense';
-import { ExpenseType } from '../../interfaces/expenseType';
-import { GlobalUtilityService } from '../../services/utils/global-utility.service';
-import { TableRowSelectEvent, TableRowUnSelectEvent } from 'primeng/table';
+import { Expense } from '../../../interfaces/expense';
+import { ExpenseType } from '../../../interfaces/expenseType';
 
 @Component({
   selector: 'app-expenseTable',

@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ImportsModule } from '../../imports';
 import { Expense, ExpenseToAdd } from '../../core/interfaces/expense';
-import { AddExpenseComponent } from '../../core/components/add-expense/add-expense.component';
 import { ExpenseService } from '../../core/services/expenseService/expense.service';
 import { ExpenseType } from '../../core/interfaces/expenseType';
 import { ExpenseCategory } from '../../core/interfaces/expenseCategory';
@@ -9,9 +8,14 @@ import { GlobalUtilityService } from '../../core/services/utils/global-utility.s
 import { ConfirmationService, MenuItem, MessageService } from 'primeng/api';
 import { ParamConfirmationDialogComponent } from '../../core/components/param-confirmation-dialog/param-confirmation-dialog.component';
 import { OperationResult } from '../../core/enum/operationResult';
-import { EditExpenseComponent } from '../../core/components/edit-expense/edit-expense.component';
+import { EditExpenseComponent } from '../../core/components/expense/edit-expense/edit-expense.component';
 import { Nullable } from 'primeng/ts-helpers';
-import { ExpenseTableComponent } from '../../core/components/expenseTable/expenseTable.component';
+import { ExpenseTableComponent } from '../../core/components/expense/expenseTable/expenseTable.component';
+import { AddExpenseComponent } from '../../core/components/expense/add-expense/add-expense.component';
+import { registerLocaleData } from '@angular/common';
+import localeIt from '@angular/common/locales/it';
+
+registerLocaleData(localeIt); // Registra il locale italiano
 
 @Component({
   selector: 'app-expenses-page',
@@ -37,6 +41,7 @@ export class ExpensesPageComponent implements OnInit {
 
   selectedYear : Date | Nullable = new Date();
   selectedMonth : Date | Nullable = new Date();
+  totalMoneySpent: number = 0;
 
   constructor(private expenseService : ExpenseService,
     private globalUtils : GlobalUtilityService,
@@ -210,6 +215,10 @@ export class ExpensesPageComponent implements OnInit {
       this.filteredExpenseList = this.originalExpenseList;
       this.selectedMonth = null;
     }
+    this.totalMoneySpent = 0;
+      for (let i = 0; i < this.filteredExpenseList.length; i++) {
+        this.totalMoneySpent += this.filteredExpenseList[i].amount;
+      }
   }
 
   filterYear() {
