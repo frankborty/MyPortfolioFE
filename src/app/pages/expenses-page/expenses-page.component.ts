@@ -14,12 +14,15 @@ import { ExpenseTableComponent } from '../../core/components/expense/expenseTabl
 import { AddExpenseComponent } from '../../core/components/expense/add-expense/add-expense.component';
 import { registerLocaleData } from '@angular/common';
 import localeIt from '@angular/common/locales/it';
+import { ExpenseTotalLinearChartComponent } from '../../core/components/charts/expenseTotalLinearChart/expenseTotalLinearChart.component';
 
 registerLocaleData(localeIt); // Registra il locale italiano
 
 @Component({
   selector: 'app-expenses-page',
-  imports: [ExpenseTableComponent, ImportsModule, AddExpenseComponent, EditExpenseComponent, ParamConfirmationDialogComponent],
+  imports: [ExpenseTableComponent, ImportsModule, 
+    AddExpenseComponent, EditExpenseComponent, 
+    ParamConfirmationDialogComponent, ExpenseTotalLinearChartComponent],
   providers: [ConfirmationService, MessageService],
   templateUrl: './expenses-page.component.html',
   styleUrl: './expenses-page.component.css'

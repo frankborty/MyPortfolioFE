@@ -16,10 +16,9 @@ import { SelectModule } from 'primeng/select';
 import { SelectButtonModule } from 'primeng/selectbutton';
 import { MultiSelectModule } from 'primeng/multiselect';
 import { ContextMenuModule } from 'primeng/contextmenu';
-
-import { ConfirmationService, MessageService } from 'primeng/api';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
+import { ChartModule } from 'primeng/chart';
 
 
 @NgModule({
@@ -45,7 +44,8 @@ import { ToastModule } from 'primeng/toast';
         ContextMenuModule,
         ConfirmDialog, 
         ToastModule, 
-        ButtonModule
+        ButtonModule,
+        ChartModule
     ],
     exports: [
         CommonModule,
@@ -69,7 +69,8 @@ import { ToastModule } from 'primeng/toast';
         ContextMenuModule,
         ConfirmDialog, 
         ToastModule, 
-        ButtonModule
+        ButtonModule,
+        ChartModule
     ],
     providers: [ ]
   })

@@ -46,7 +46,9 @@
   
 
   <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
-    <div class="w-96 bg-red-600 h-40 mb-4"></div>
+    <div class="mb-4 w-full">
+      <app-expenseTotalLinearChart [expenseList]="originalExpenseList"></app-expenseTotalLinearChart>
+    </div>
     <div class="w-96 bg-yellow-300 h-40 mb-4"></div>
     <div class="w-96 bg-blue-700 h-40 mb-4"></div>
   </div>
