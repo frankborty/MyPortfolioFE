@@ -1,4 +1,11 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  Input,
+  OnChanges,
+  OnInit,
+  SimpleChanges,
+} from '@angular/core';
 import { ImportsModule } from '../../../../imports';
 import { Expense } from '../../../interfaces/expense';
 
@@ -6,11 +13,11 @@ import { Expense } from '../../../interfaces/expense';
   selector: 'app-expenseTotalLinearChart',
   imports: [ImportsModule],
   templateUrl: './expenseTotalLinearChart.component.html',
-  styleUrls: ['./expenseTotalLinearChart.component.css']
+  styleUrls: ['./expenseTotalLinearChart.component.css'],
 })
-export class ExpenseTotalLinearChartComponent  implements OnInit, OnChanges {
+export class ExpenseTotalLinearChartComponent implements OnInit, OnChanges {
   @Input() expenseList: Expense[] = [];
-  inputData: any; 
+  inputData: any;
   options: any;
   constructor(private cd: ChangeDetectorRef) {}
 
@@ -19,7 +26,6 @@ export class ExpenseTotalLinearChartComponent  implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     // Controlla se expenseList è stato modificato
     if (changes['expenseList']) {
-
       this.initChart();
     }
   }
@@ -34,88 +40,113 @@ export class ExpenseTotalLinearChartComponent  implements OnInit, OnChanges {
       '--p-content-border-color'
     );
 
-    
-    let data2023 = this.groupExpensesByMonth(this.expenseList.filter(expense => new Date(expense.date).getFullYear() === 2023));
-    let data2024 = this.groupExpensesByMonth(this.expenseList.filter(expense => new Date(expense.date).getFullYear() === 2024));
-    let data2025 = this.groupExpensesByMonth(this.expenseList.filter(expense => new Date(expense.date).getFullYear() === 2025));
+    let data2023 = this.groupExpensesByMonth(
+      this.expenseList.filter(
+        (expense) => new Date(expense.date).getFullYear() === 2023
+      )
+    );
+    let data2024 = this.groupExpensesByMonth(
+      this.expenseList.filter(
+        (expense) => new Date(expense.date).getFullYear() === 2024
+      )
+    );
+    let data2025 = this.groupExpensesByMonth(
+      this.expenseList.filter(
+        (expense) => new Date(expense.date).getFullYear() === 2025
+      )
+    );
 
     this.inputData = {
-      labels: ['Gen', 'Feb', 'Mar', 'Apr', 'Mag', 'Giu', 'Lug', 'Ago', 'Set', 'Ott', 'Nov', 'Dic'],
+      labels: [
+        'Gen',
+        'Feb',
+        'Mar',
+        'Apr',
+        'Mag',
+        'Giu',
+        'Lug',
+        'Ago',
+        'Set',
+        'Ott',
+        'Nov',
+        'Dic',
+      ],
       datasets: [
-      {
-      type: 'line',
-      label: '2023MC',
-      borderColor: 'rgb(255, 0, 100)', // Red
-      borderWidth: 2,
-      fill: false,
-      tension: 0.5,
-      data: this.calcolaMediaCumulativa(data2023)
-      },
-      {
-      type: 'line',
-      label: '2024MC',
-      borderColor: 'rgb(0, 100, 255)',
-      borderWidth: 2,
-      fill: false,
-      tension: 0.5,
-      data: this.calcolaMediaCumulativa(data2024)
-      },
-      {
-      type: 'line',
-      label: '2025MC',
-      borderColor: 'rgb(100, 255, 0)',
-      borderWidth: 2,
-      fill: false,
-      tension: 0.5,
-      data: this.calcolaMediaCumulativa(data2025)
-      },
-      {
-      type: 'line',
-      hidden: true,
-      label: '2023SC',
-      borderColor: 'rgb(255, 159, 64)', 
-      borderWidth: 2,
-      fill: false,
-      tension: 0.5,
-      data: this.calcolaSommaCumulativa(data2023)
-      },
-      {
-      type: 'line',
-      hidden: true,
-      label: '2024SC',
-      borderColor: 'rgb(153, 102, 255)',
-      borderWidth: 2,
-      fill: false,
-      tension: 0.5,
-      data: this.calcolaSommaCumulativa(data2024)
-      },
-      {
-      type: 'line',
-      label: '2025SC',
-      borderColor: 'rgb(20, 100, 20)', // Dark Green
-      borderWidth: 2,
-      fill: false,
-      tension: 0.5,
-      data: this.calcolaSommaCumulativa(data2025)
-      },
-      {
-      type: 'bar',
-      label: '2023',
-      backgroundColor: 'rgb(255, 100, 130)', // Red
-      data : data2023
-      },
-      {
-      type: 'bar',
-      label: '2024',
-      backgroundColor: 'rgb(100, 130, 255)', // Blue
-      data : data2024
-      },
-      {
-      type: 'bar',
-      label: '2025',
-      backgroundColor: 'rgb(130, 192, 192)', // Teal
-      data : data2025
-      },
+        {
+          type: 'line',
+          label: '2023MC',
+          borderColor: 'rgb(255, 0, 100)', // Red
+          borderWidth: 2,
+          fill: false,
+          tension: 0.5,
+          data: this.calcolaMediaCumulativa(data2023),
+        },
+        {
+          type: 'line',
+          label: '2024MC',
+          borderColor: 'rgb(0, 100, 255)',
+          borderWidth: 2,
+          fill: false,
+          tension: 0.5,
+          data: this.calcolaMediaCumulativa(data2024),
+        },
+        {
+          type: 'line',
+          label: '2025MC',
+          borderColor: 'rgb(100, 255, 0)',
+          borderWidth: 2,
+          fill: false,
+          tension: 0.5,
+          data: this.calcolaMediaCumulativa(data2025),
+        },
+        {
+          type: 'line',
+          hidden: true,
+          label: '2023SC',
+          borderColor: 'rgb(255, 159, 64)',
+          borderWidth: 2,
+          fill: false,
+          tension: 0.5,
+          data: this.calcolaSommaCumulativa(data2023),
+        },
+        {
+          type: 'line',
+          hidden: true,
+          label: '2024SC',
+          borderColor: 'rgb(153, 102, 255)',
+          borderWidth: 2,
+          fill: false,
+          tension: 0.5,
+          data: this.calcolaSommaCumulativa(data2024),
+        },
+        {
+          type: 'line',
+          hidden: true,
+          label: '2025SC',
+          borderColor: 'rgb(20, 100, 20)', // Dark Green
+          borderWidth: 2,
+          fill: false,
+          tension: 0.5,
+          data: this.calcolaSommaCumulativa(data2025),
+        },
+        {
+          type: 'bar',
+          label: '2023',
+          backgroundColor: 'rgb(255, 100, 130)', // Red
+          data: data2023,
+        },
+        {
+          type: 'bar',
+          label: '2024',
+          backgroundColor: 'rgb(100, 130, 255)', // Blue
+          data: data2024,
+        },
+        {
+          type: 'bar',
+          label: '2025',
+          backgroundColor: 'rgb(130, 192, 192)', // Teal
+          data: data2025,
+        },
       ],
     };
 
@@ -124,9 +155,23 @@ export class ExpenseTotalLinearChartComponent  implements OnInit, OnChanges {
       aspectRatio: 0.8,
       plugins: {
         legend: {
+          title: {
+            display: true, // Mostra il titolo
+            text: 'Spese Totali', // Testo del titolo
+            font: {
+              size: 18, // Dimensione del carattere
+              weight: 'bold', // Spessore del carattere
+            },
+            color: 'rgba(0, 0, 0, 0.8)', // Colore del titolo
+            align: 'center', // Allineamento: può essere 'start', 'center', o 'end'
+            padding: {
+              top: 10,
+              bottom: 20,
+            },
+          },
           labels: {
             color: textColor,
-            boxWidth: 10, 
+            boxWidth: 10,
             boxHeight: 10,
           },
         },
@@ -188,7 +233,6 @@ export class ExpenseTotalLinearChartComponent  implements OnInit, OnChanges {
     });
     return cumulativeAverages;
   }
-  
 
   calcolaSommaCumulativa(data: number[]): number[] {
     const cumulativeSumArray: number[] = [];

@@ -33,7 +33,7 @@
       icon="pi pi-times" />
 
   </div>
-  <div class="col-span-12 border-2 rounded-lg">
+  <div class="col-span-12">
     <app-expenseTable 
       #expenseTable
       [expenseList]="filteredExpenseList"
@@ -46,11 +46,18 @@
   
 
   <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
-    <div class="mb-4 w-full">
+    <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
+      <div class="mb-4 border-2">
+        <app-expenseTypePieChart [expenseList]="filteredExpenseList"></app-expenseTypePieChart>
+      </div>
+      <div class="mb-4 border-2">
+        <app-expenseCategoryPieChart [expenseList]="filteredExpenseList"></app-expenseCategoryPieChart>
+      </div>
+    </div>
+    
+    <div class="mb-4 w-full border-2">
       <app-expenseTotalLinearChart [expenseList]="originalExpenseList"></app-expenseTotalLinearChart>
     </div>
-    <div class="w-96 bg-yellow-300 h-40 mb-4"></div>
-    <div class="w-96 bg-blue-700 h-40 mb-4"></div>
   </div>
 
 
