@@ -3,6 +3,7 @@ import { ImportsModule } from '../../../../imports';
 import { MenuItem } from 'primeng/api';
 import { Expense } from '../../../interfaces/expense';
 import { ExpenseType } from '../../../interfaces/expenseType';
+import { ExpenseCategory } from '../../../interfaces/expenseCategory';
 
 @Component({
   selector: 'app-expenseTable',
@@ -11,18 +12,16 @@ import { ExpenseType } from '../../../interfaces/expenseType';
   styleUrls: ['./expenseTable.component.css']
 })
 export class ExpenseTableComponent implements OnInit {
-  
   @Input() expenseList : Expense[] = [];
+  @Input() expenseTypeList : ExpenseType[] = [];
+  @Input() expenseCategoryList : ExpenseCategory[] = [];
   @Output() editExpenseEvent = new EventEmitter<Expense>();
   @Output() deleteExpenseEvent = new EventEmitter<Expense>();
 
   contextMenuItems!: MenuItem[];
-
   selectedExpenseList: Expense[] = [];
   selectedExpense: Expense | null = null;
-  expenseTypesString: ExpenseType[] = [];
-  expenseCategoriesString: string[] = [];
-  
+
   constructor(){ }
 
   ngOnInit() {
@@ -43,5 +42,4 @@ export class ExpenseTableComponent implements OnInit {
       this.deleteExpenseEvent.emit();
     }
   }
-
 }

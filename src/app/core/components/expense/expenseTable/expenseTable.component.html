@@ -17,11 +17,11 @@
     [rowsPerPageOptions]="[10, 30, 50, 100]">
     <ng-template pTemplate="header">
       <tr>
-        <th>#</th>
+        <th class="w-5">#</th>
         <th pResizableColumn pSortableColumn="description" class="text-left w-80">Description
           <p-columnFilter type="text" field="description" display="menu" />
         </th>
-        <th pResizableColumn pSortableColumn="amount" class="text-right w-20">Cost €
+        <th pResizableColumn pSortableColumn="amount" class="text-right w-20">Cost
           <p-columnFilter type="numeric" field="amount" display="menu" currency="EUR" />
         </th>
         <th pResizableColumn pSortableColumn="expenseType.name" class="text-right w-40">Type
@@ -30,13 +30,15 @@
               <p-multiselect 
                 [filter]="true" 
                 [ngModel]="value" 
-                [options]="expenseTypesString" 
+                [options]="expenseTypeList" 
+                optionLabel="name"
+                optionValue="name"
                 placeholder="Any" 
                 (onChange)="filter($event.value)" 
                 class="w-full">
                 <ng-template let-type #item>
                   <div class="flex items-center gap-2">
-                    <span>{{ type }}</span>
+                    <span>{{ type.name }}</span>
                   </div>
                 </ng-template>
               </p-multiselect>
@@ -49,13 +51,15 @@
               <p-multiselect 
                 [filter]="true" 
                 [ngModel]="value" 
-                [options]="expenseCategoriesString" 
+                [options]="expenseCategoryList" 
+                optionLabel="name"
+                optionValue="name"
                 placeholder="Any" 
                 (onChange)="filter($event.value)" 
                 class="w-full">
                 <ng-template let-category #item>
                   <div class="flex items-center gap-2">
-                    <span>{{ category }}</span>
+                    <span>{{ category.name }}</span>
                   </div>
                 </ng-template>
               </p-multiselect>
@@ -76,7 +80,8 @@
       <tr [pContextMenuRow]="expense"[pSelectableRow]="expense" [pSelectableRowIndex]="rowIndex">
         <td>{{ rowIndex+1 }}</td>
         <td>{{ expense.description }}</td>
-        <td class="text-right">{{ expense.amount  | number:'1.1-1' }}</td>
+        <!--<td class="text-right">{{ expense.amount  | number:'1.1-1' }}</td>-->
+        <td class="text-right">{{ expense.amount | currency: 'EUR':'symbol':'1.2-2':'it-IT' }}</td>
         <td class="text-right">{{ expense.expenseType.name }}</td>
         <td class="text-right">{{ expense.expenseType.category.name }}</td>
         <td class="text-right">{{ expense.date | date: 'dd/MM/yyyy'}}</td>

@@ -17,9 +17,3 @@
   width: 4rem;
   height: 4rem; 
 }
-
-::ng-deep .custom-datepicker .ui-datepicker-title .ui-datepicker-year,
-.ui-datepicker-prev,
-.ui-datepicker-next {
-  display: none !important;
-}

@@ -25,7 +25,6 @@ registerLocaleData(localeIt); // Registra il locale italiano
   styleUrl: './expenses-page.component.css'
 })
 export class ExpensesPageComponent implements OnInit {
-
   @ViewChild(ParamConfirmationDialogComponent) confirmDialog!: ParamConfirmationDialogComponent;
   @ViewChild(EditExpenseComponent) editExpenseDialog!: EditExpenseComponent;
   @ViewChild(ExpenseTableComponent) expenseTable!: ExpenseTableComponent;
@@ -33,15 +32,13 @@ export class ExpensesPageComponent implements OnInit {
   displayAddExpenseDialog: boolean = false;
   displayEditExpenseDialog: boolean = false;
   expenseTypes: ExpenseType[] = [];
-  expenseTypesString: ExpenseType[] = [];
   expenseCategories: ExpenseCategory[] = [];
-  expenseCategoriesString: string[] = [];
   originalExpenseList : Expense[] = [];
   filteredExpenseList : Expense[] = [];
 
   selectedYear : Date | Nullable = new Date();
   selectedMonth : Date | Nullable = new Date();
-  totalMoneySpent: number = 0;
+  totalMoneySpentString: string = '';
 
   constructor(private expenseService : ExpenseService,
     private globalUtils : GlobalUtilityService,
@@ -74,9 +71,6 @@ export class ExpensesPageComponent implements OnInit {
     this.expenseService.getExpenseTypes().subscribe({
       next: (data: any) => {
         this.expenseTypes = data;
-        this.expenseTypesString = data.map((expenseType: ExpenseType) => {
-          return expenseType.name;
-        });
       },
       error: (error: any) => {
         console.error(error);
@@ -88,9 +82,6 @@ export class ExpensesPageComponent implements OnInit {
     this.expenseService.getExpenseCategories().subscribe({
       next: (data: any) => {
         this.expenseCategories = data;
-        this.expenseCategoriesString = data.map((expenseCategory: ExpenseCategory) => {
-          return expenseCategory.name;
-        });
       },
       error: (error: any) => {
         console.error(error);
@@ -215,10 +206,11 @@ export class ExpensesPageComponent implements OnInit {
       this.filteredExpenseList = this.originalExpenseList;
       this.selectedMonth = null;
     }
-    this.totalMoneySpent = 0;
-      for (let i = 0; i < this.filteredExpenseList.length; i++) {
-        this.totalMoneySpent += this.filteredExpenseList[i].amount;
-      }
+    let totalMoneySpent = 0;
+    for (let i = 0; i < this.filteredExpenseList.length; i++) {
+      totalMoneySpent += this.filteredExpenseList[i].amount;
+    }
+    this.totalMoneySpentString = totalMoneySpent.toFixed(2)+' €';
   }
 
   filterYear() {
@@ -239,6 +231,10 @@ export class ExpensesPageComponent implements OnInit {
         return false;
       });
     }
+  }
+
+  cleanTableSelection() {
+    this.expenseTable.selectedExpenseList = [];
   }
   //#endregion
     
