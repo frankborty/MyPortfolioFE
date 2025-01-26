@@ -157,7 +157,7 @@ export class ExpenseTotalLinearChartComponent implements OnInit, OnChanges {
         legend: {
           title: {
             display: true, // Mostra il titolo
-            text: 'Spese Totali', // Testo del titolo
+            text: 'Spese Totali per anno', // Testo del titolo
             font: {
               size: 18, // Dimensione del carattere
               weight: 'bold', // Spessore del carattere
@@ -205,6 +205,10 @@ export class ExpenseTotalLinearChartComponent implements OnInit, OnChanges {
   }
 
   groupExpensesByMonth(expenseList: Expense[]): number[] {
+    if (!expenseList || expenseList.length === 0) {
+      return [];
+    }
+
     const grouped = expenseList.reduce((acc, expense) => {
       // Estrai il mese dalla data
       const date = new Date(expense.date);
@@ -219,8 +223,18 @@ export class ExpenseTotalLinearChartComponent implements OnInit, OnChanges {
       return acc;
     }, {} as { [key: string]: number });
 
+    // Inizializza un vettore di 12 elementi vuoto
+    const monthlyTotals = new Array(12).fill(0);
+
+    for (const month in grouped) {
+      // Converte il mese in un numero
+      const monthNumber = parseInt(month, 10);
+      // Assegna il totale mensile al vettore
+      monthlyTotals[monthNumber] = grouped[month];
+    }
+
     // Converte l'oggetto in un array di totali
-    return Object.values(grouped);
+    return monthlyTotals;
   }
 
   calcolaMediaCumulativa(data: number[]): number[] {

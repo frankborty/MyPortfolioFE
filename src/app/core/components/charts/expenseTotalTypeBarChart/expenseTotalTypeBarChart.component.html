@@ -1,0 +1,50 @@
+<div class="card p-4">
+  <div class="flex-grow flex flex-wrap justify-center">
+    <p-floatlabel variant="on" class="m-2">
+      <p-datepicker
+        [(ngModel)]="selectedYear"
+        styleClass="w-24"
+        (ngModelChange)="initChart()"
+        view="year"
+        dateFormat="yy"
+        showIcon
+        iconDisplay="input"
+      />
+      <label for="YearLabel">Year</label>
+    </p-floatlabel>
+    <div class="flex justify-center items-center m-2">
+      <p-radiobutton class="mr-2" name="filter" value="category" (onClick)="initChart()" [(ngModel)]="filterType" />
+      <p-multiselect
+        styleClass="w-56"
+        [options]="expenseCategoryList"
+        (onChange)="initChart()"
+        (onClear)="initChart()"
+        [(ngModel)]="selectedExpenseCategories"
+        optionLabel="name"
+        placeholder="Categorie"
+        showClear="true"
+      />
+    </div>
+    <div class="flex justify-center items-center m-2">
+      <p-radiobutton class="mr-2" name="filter" value="type" (onClick)="initChart()" [(ngModel)]="filterType" />
+      <p-multiselect
+        styleClass="w-56"
+        [options]="expenseTypeList"
+        (onChange)="initChart()"
+        (onClear)="initChart()"
+        [(ngModel)]="selectedExpenseTypes"
+        optionLabel="name"
+        placeholder="Tipi"
+        showClear="true"
+      />
+    </div>
+  </div>
+  <div class="flex justify-center">
+    <p-chart
+      type="bar"
+      [data]="inputData"
+      [options]="options"
+      style="width: 100%"
+    />
+  </div>
+</div>

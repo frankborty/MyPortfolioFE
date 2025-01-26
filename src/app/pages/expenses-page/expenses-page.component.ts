@@ -18,6 +18,8 @@ import { ExpenseTotalLinearChartComponent } from '../../core/components/charts/e
 import { ExpenseTypePieChartComponent } from '../../core/components/charts/expenseTypePieChart/expenseTypePieChart.component';
 import { ExpenseCategoryPieChartComponent } from '../../core/components/charts/expenseCategoryPieChart/expenseCategoryPieChart.component';
 import { ExpenseTypeLinearChartComponent } from '../../core/components/charts/expenseTypeLinearChart/expenseTypeLinearChart.component';
+import { ExpenseTotalTypeBarChartComponent } from '../../core/components/charts/expenseTotalTypeBarChart/expenseTotalTypeBarChart.component';
+import { ExpenseSummaryTableComponent } from '../../core/components/expense/expenseSummaryTable/expenseSummaryTable.component';
 
 registerLocaleData(localeIt); // Registra il locale italiano
 
@@ -26,7 +28,8 @@ registerLocaleData(localeIt); // Registra il locale italiano
   imports: [ExpenseTableComponent, ImportsModule,
     AddExpenseComponent, EditExpenseComponent,
     ParamConfirmationDialogComponent, ExpenseTotalLinearChartComponent,
-    ExpenseTypePieChartComponent, ExpenseCategoryPieChartComponent, ExpenseTypeLinearChartComponent],
+    ExpenseTypePieChartComponent, ExpenseCategoryPieChartComponent, ExpenseTypeLinearChartComponent,
+    ExpenseTotalTypeBarChartComponent, ExpenseSummaryTableComponent],
   providers: [ConfirmationService, MessageService, ExpenseTypeLinearChartComponent],
   templateUrl: './expenses-page.component.html',
   styleUrl: './expenses-page.component.css'

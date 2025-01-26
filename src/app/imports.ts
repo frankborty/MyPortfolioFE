@@ -19,6 +19,7 @@ import { ContextMenuModule } from 'primeng/contextmenu';
 import { ConfirmDialog } from 'primeng/confirmdialog';
 import { ToastModule } from 'primeng/toast';
 import { ChartModule } from 'primeng/chart';
+import { RadioButtonModule } from 'primeng/radiobutton';
 
 
 @NgModule({
@@ -45,7 +46,8 @@ import { ChartModule } from 'primeng/chart';
         ConfirmDialog, 
         ToastModule, 
         ButtonModule,
-        ChartModule
+        ChartModule,
+        RadioButtonModule
     ],
     exports: [
         CommonModule,
@@ -70,7 +72,8 @@ import { ChartModule } from 'primeng/chart';
         ConfirmDialog, 
         ToastModule, 
         ButtonModule,
-        ChartModule
+        ChartModule,
+        RadioButtonModule
     ],
     providers: [ ]
   })

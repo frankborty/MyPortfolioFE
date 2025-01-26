@@ -1,98 +1,177 @@
 <div class="grid grid-cols-12 gap-4">
   <div class="grow flex flex-wrap col-span-12 mt-3 mb-3 gap-3 rounded-lg">
     <p-floatlabel variant="on">
-      <p-datepicker [(ngModel)]="selectedYear" styleClass="w-40" (ngModelChange)="filterExpenses()" view="year" dateFormat="yy" [showButtonBar]="true" ngModel showIcon iconDisplay="input"/>
+      <p-datepicker
+        [(ngModel)]="selectedYear"
+        styleClass="w-40"
+        (ngModelChange)="filterExpenses()"
+        view="year"
+        dateFormat="yy"
+        [showButtonBar]="true"
+        ngModel
+        showIcon
+        iconDisplay="input"
+      />
       <label for="YearLabel">Year</label>
     </p-floatlabel>
-    
+
     <p-floatlabel variant="on">
-      <p-datepicker [(ngModel)]="selectedMonth" 
+      <p-datepicker
+        [(ngModel)]="selectedMonth"
         styleClass="w-40"
-        (ngModelChange)="filterExpenses()" 
-        view="month" 
-        dateFormat="mm/yy" 
-        [showButtonBar]="true" showIcon iconDisplay="input"/>
+        (ngModelChange)="filterExpenses()"
+        view="month"
+        dateFormat="mm/yy"
+        [showButtonBar]="true"
+        showIcon
+        iconDisplay="input"
+      />
       <label for="MonthLabel">Month</label>
     </p-floatlabel>
 
     <p-floatlabel variant="on">
-      <input pInputText class="w-20" id="expenseCount" readonly [(ngModel)]="filteredExpenseList.length" />
+      <input
+        pInputText
+        class="w-20"
+        id="expenseCount"
+        readonly
+        [(ngModel)]="filteredExpenseList.length"
+      />
       <label for="expenseCount">Count</label>
     </p-floatlabel>
 
     <p-floatlabel variant="on">
-      <input pInputText class="w-32" id="expenseCount" readonly [(ngModel)]="totalMoneySpentString" />
+      <input
+        pInputText
+        class="w-32"
+        id="expenseCount"
+        readonly
+        [(ngModel)]="totalMoneySpentString"
+      />
       <label for="expenseTotal">Total2</label>
     </p-floatlabel>
 
     <p-button
-      *ngIf="expenseTable !=undefined && expenseTable.selectedExpenseList && expenseTable.selectedExpenseList.length > 0"
-      label="Clean Selection" 
-      (onClick)="cleanTableSelection()" 
-      severity="secondary" 
-      icon="pi pi-times" />
-
+      *ngIf="
+        expenseTable != undefined &&
+        expenseTable.selectedExpenseList &&
+        expenseTable.selectedExpenseList.length > 0
+      "
+      label="Clean Selection"
+      (onClick)="cleanTableSelection()"
+      severity="secondary"
+      icon="pi pi-times"
+    />
   </div>
+  
   <div class="col-span-12">
-    <app-expenseTable 
+    <app-expenseSummaryTable
+      #expenseTableSummary
+      [expenseList]="originalExpenseList"
+      [expenseTypeList]="expenseTypes"
+    >
+    </app-expenseSummaryTable>
+  </div>
+  
+  <div class="col-span-12">
+    <app-expenseTable
       #expenseTable
       [expenseList]="filteredExpenseList"
       [expenseTypeList]="expenseTypes"
       [expenseCategoryList]="expenseCategories"
       (editExpenseEvent)="showEditExpenseDialog()"
-      (deleteExpenseEvent)="deleteExpense()">
+      (deleteExpenseEvent)="deleteExpense()"
+    >
     </app-expenseTable>
   </div>
-  
 
   <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
     <div class="mb-4 border-2 w-full">
-        <app-expenseTypeLinearChart [expenseList]="filteredExpenseList" [expenseTypeList]="expenseTypes"></app-expenseTypeLinearChart>
-      </div>
+      <app-expenseTotalTypeBarChart
+        [expenseList]="originalExpenseList"
+        [expenseTypeList]="expenseTypes"
+        [expenseCategoryList]="expenseCategories"
+      ></app-expenseTotalTypeBarChart>
+    </div>
+
+    <div class="mb-4 border-2 w-full">
+      <app-expenseTotalLinearChart
+        [expenseList]="originalExpenseList"
+      ></app-expenseTotalLinearChart>
+    </div>
+
+    <div class="mb-4 border-2 w-full">
+      <app-expenseTypeLinearChart
+        [expenseList]="filteredExpenseList"
+        [expenseTypeList]="expenseTypes"
+      ></app-expenseTypeLinearChart>
+    </div>
     <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
       <div class="mb-4 border-2">
-        <app-expenseTypePieChart [expenseList]="filteredExpenseList"></app-expenseTypePieChart>
+        <app-expenseTypePieChart
+          [expenseList]="filteredExpenseList"
+        ></app-expenseTypePieChart>
       </div>
       <div class="mb-4 border-2">
-        <app-expenseCategoryPieChart [expenseList]="filteredExpenseList"></app-expenseCategoryPieChart>
+        <app-expenseCategoryPieChart
+          [expenseList]="filteredExpenseList"
+        ></app-expenseCategoryPieChart>
       </div>
-    </div>
-    
-    <div class="mb-4 border-2 w-full">
-      <app-expenseTotalLinearChart [expenseList]="originalExpenseList"></app-expenseTotalLinearChart>
     </div>
   </div>
 
-
-  <p-dialog header="Add Expense" [styleClass]="'w-[60vh] h-[80vh]'" [(visible)]="displayAddExpenseDialog" [modal]="true" [closable]="true">
-    <app-add-expense (addNewExpenseCallBack)="addNewExpense($event)"></app-add-expense>
+  <p-dialog
+    header="Add Expense"
+    [styleClass]="'w-[60vh] h-[80vh]'"
+    [(visible)]="displayAddExpenseDialog"
+    [modal]="true"
+    [closable]="true"
+  >
+    <app-add-expense
+      (addNewExpenseCallBack)="addNewExpense($event)"
+    ></app-add-expense>
   </p-dialog>
 
-  
-  <p-dialog header="Edit Expense" [styleClass]="'w-[60vh] h-[80vh]'" [(visible)]="displayEditExpenseDialog" [modal]="true" [closable]="true">
-    <app-edit-expense (editNewExpenseCallBack)="editNewExpense($event)"></app-edit-expense>
+  <p-dialog
+    header="Edit Expense"
+    [styleClass]="'w-[60vh] h-[80vh]'"
+    [(visible)]="displayEditExpenseDialog"
+    [modal]="true"
+    [closable]="true"
+  >
+    <app-edit-expense
+      (editNewExpenseCallBack)="editNewExpense($event)"
+    ></app-edit-expense>
   </p-dialog>
 </div>
 
-  
 <p-toast />
 <app-param-confirmation-dialog></app-param-confirmation-dialog>
 
 <div class="add-container">
-  <p-button 
-    styleClass="action-button" 
-    severity="success" 
-    icon="pi pi-plus" 
-    [rounded]="true" 
-    (click)="showAddExpenseDialog()">
+  <p-button
+    styleClass="action-button"
+    severity="success"
+    icon="pi pi-plus"
+    [rounded]="true"
+    (click)="showAddExpenseDialog()"
+  >
   </p-button>
-</div> 
+</div>
 
-<div class="del-container" *ngIf="expenseTable !=undefined && expenseTable.selectedExpenseList && expenseTable.selectedExpenseList.length > 0">
-  <p-button  
-    styleClass="action-button del-button" 
-    severity="danger" 
+<div
+  class="del-container"
+  *ngIf="
+    expenseTable != undefined &&
+    expenseTable.selectedExpenseList &&
+    expenseTable.selectedExpenseList.length > 0
+  "
+>
+  <p-button
+    styleClass="action-button del-button"
+    severity="danger"
     icon="pi pi-trash"
-    (click)="deleteExpenseList()">
+    (click)="deleteExpenseList()"
+  >
   </p-button>
 </div>

@@ -35,6 +35,11 @@ export class ExpenseTypeLinearChartComponent implements OnInit, OnChanges {
     if (changes['expenseList']) {
       this.initChart();
     }
+
+    if (changes['expenseTypeList']) {
+      this.selectedExpenseTypes = this.expenseTypeList;
+      this.initChart();
+    }
   }
 
   initChart() {
@@ -64,10 +69,10 @@ export class ExpenseTypeLinearChartComponent implements OnInit, OnChanges {
           label: type.name,
           data: expensesByType.map(point => ({
             x: point.date,   // Data come valore X
-            y: point.amount  // Importo come valore Y
+            y: point.amount,  // Importo come valore Y
+            status: point.description
           })),
           pointRadius: 3,    // Imposta il raggio dei punti
-          fill: false
         };       
       });
 
@@ -75,7 +80,6 @@ export class ExpenseTypeLinearChartComponent implements OnInit, OnChanges {
         datasets: datasets
       };
     }
-
     this.options = {
       maintainAspectRatio: false,
       aspectRatio: 0.8,
@@ -83,7 +87,7 @@ export class ExpenseTypeLinearChartComponent implements OnInit, OnChanges {
         legend: {
           title: {
             display: true, // Mostra il titolo
-            text: 'Spese Totali', // Testo del titolo
+            text: 'Spese per tipo', // Testo del titolo
             font: {
               size: 18, // Dimensione del carattere
               weight: 'bold', // Spessore del carattere
@@ -99,6 +103,20 @@ export class ExpenseTypeLinearChartComponent implements OnInit, OnChanges {
             color: textColor,
             boxWidth: 10,
             boxHeight: 10,
+          },
+        },
+
+        tooltip: {
+          callbacks: {
+            label: function (tooltipItem: { dataset: any; dataIndex: string | number; }) {
+              // Recupera i dati dal punto selezionato
+              const dataset = tooltipItem.dataset;
+              const dataPoint = dataset.data[tooltipItem.dataIndex];
+              const label = dataset.label || 'Nessun tipo';
+    
+              // Costruisci il messaggio del tooltip
+              return `${dataPoint.status}: ${dataPoint.y}€ (${label})`;
+            },
           },
         },
       },
@@ -129,51 +147,5 @@ export class ExpenseTypeLinearChartComponent implements OnInit, OnChanges {
       },
     };
     this.cd.markForCheck();
-  }
-
-  groupExpensesByMonth(expenseList: Expense[]): number[] {
-    const grouped = expenseList.reduce((acc, expense) => {
-      // Estrai il mese dalla data
-      const date = new Date(expense.date);
-      const month = date.getMonth(); // Esempio: "January 2025"
-
-      // Raggruppa per mese e somma gli importi
-      if (!acc[month]) {
-        acc[month] = 0;
-      }
-      acc[month] += expense.amount;
-
-      return acc;
-    }, {} as { [key: string]: number });  
-
-    const monthlyTotals = Array(12).fill(0);
-
-    for (const month in grouped) {
-      if (grouped.hasOwnProperty(month)) { // Verifica che la proprietà appartenga all'oggetto
-        monthlyTotals[parseInt(month)] = grouped[month];
-      }
-    }    
-    return Object.values(monthlyTotals);
-  }
-
-  calcolaMediaCumulativa(data: number[]): number[] {
-    const cumulativeAverages: number[] = [];
-    let cumulativeSum = 0;
-    data.forEach((monthlyTotal, index) => {
-      cumulativeSum += monthlyTotal; // Aggiungi il totale del mese corrente
-      const average = cumulativeSum / (index + 1); // Dividi per il numero di mesi
-      cumulativeAverages.push(average);
-    });
-    return cumulativeAverages;
-  }
-
-  calcolaSommaCumulativa(data: number[]): number[] {
-    const cumulativeSumArray: number[] = [];
-    let cumulativeSum = 0;
-    data.forEach((monthlyTotal) => {
-      cumulativeSum += monthlyTotal; // Aggiungi il totale del mese corrente
-      cumulativeSumArray.push(cumulativeSum);
-    });
-    return cumulativeSumArray;
   }
 }
