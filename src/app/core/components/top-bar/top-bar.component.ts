@@ -27,13 +27,28 @@ export class TopBarComponent implements OnInit {
             {
                 label: 'Expenses',
                 icon: 'pi pi-money-bill',
-                route: '/expenses'
+                items: [
+                    {
+                        label: 'Partial',
+                        icon: 'pi pi-bolt',
+                        route: '/expenses/partial',
+                    },
+                    {
+                        label: 'Total',
+                        icon: 'pi pi-bolt',
+                        route: '/expenses/total',
+                    },
+                ]
             },
             {
                 label: 'Assets',
                 icon: 'pi pi-briefcase',
                 route: '/assets'
             },
+
+            
+
+
         ];
     }
 }
