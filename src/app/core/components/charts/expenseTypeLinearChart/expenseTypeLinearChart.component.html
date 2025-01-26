@@ -1,0 +1,8 @@
+<div class="card p-4">
+  <div class="flex justify-center">
+    <p-multiselect  [options]="expenseTypeList" (onChange)="initChart()" (onClear)="initChart()" [(ngModel)]="selectedExpenseTypes" optionLabel="name" placeholder="Tipi Selezionati" showClear="true" />
+  </div>
+  <div class="flex justify-center">
+    <p-chart type="scatter" [data]="inputData" [options]="options" style="width: 100%;" />
+  </div>
+</div>

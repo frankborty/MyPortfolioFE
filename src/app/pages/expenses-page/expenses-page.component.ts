@@ -17,16 +17,17 @@ import localeIt from '@angular/common/locales/it';
 import { ExpenseTotalLinearChartComponent } from '../../core/components/charts/expenseTotalLinearChart/expenseTotalLinearChart.component';
 import { ExpenseTypePieChartComponent } from '../../core/components/charts/expenseTypePieChart/expenseTypePieChart.component';
 import { ExpenseCategoryPieChartComponent } from '../../core/components/charts/expenseCategoryPieChart/expenseCategoryPieChart.component';
+import { ExpenseTypeLinearChartComponent } from '../../core/components/charts/expenseTypeLinearChart/expenseTypeLinearChart.component';
 
 registerLocaleData(localeIt); // Registra il locale italiano
 
 @Component({
   selector: 'app-expenses-page',
-  imports: [ExpenseTableComponent, ImportsModule, 
-    AddExpenseComponent, EditExpenseComponent, 
-    ParamConfirmationDialogComponent, ExpenseTotalLinearChartComponent, 
-    ExpenseTypePieChartComponent, ExpenseCategoryPieChartComponent],
-  providers: [ConfirmationService, MessageService],
+  imports: [ExpenseTableComponent, ImportsModule,
+    AddExpenseComponent, EditExpenseComponent,
+    ParamConfirmationDialogComponent, ExpenseTotalLinearChartComponent,
+    ExpenseTypePieChartComponent, ExpenseCategoryPieChartComponent, ExpenseTypeLinearChartComponent],
+  providers: [ConfirmationService, MessageService, ExpenseTypeLinearChartComponent],
   templateUrl: './expenses-page.component.html',
   styleUrl: './expenses-page.component.css'
 })

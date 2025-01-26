@@ -46,6 +46,9 @@
   
 
   <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
+    <div class="mb-4 border-2 w-full">
+        <app-expenseTypeLinearChart [expenseList]="filteredExpenseList" [expenseTypeList]="expenseTypes"></app-expenseTypeLinearChart>
+      </div>
     <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
       <div class="mb-4 border-2">
         <app-expenseTypePieChart [expenseList]="filteredExpenseList"></app-expenseTypePieChart>
@@ -55,7 +58,7 @@
       </div>
     </div>
     
-    <div class="mb-4 w-full border-2">
+    <div class="mb-4 border-2 w-full">
       <app-expenseTotalLinearChart [expenseList]="originalExpenseList"></app-expenseTotalLinearChart>
     </div>
   </div>
