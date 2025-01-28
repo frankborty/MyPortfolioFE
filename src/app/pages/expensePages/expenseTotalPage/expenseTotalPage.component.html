@@ -1,3 +1,26 @@
-<p>
-  expenseTotalPage works!
-</p>
+<div class="grid grid-cols-12 gap-4 mt-3 mb-3">
+  <div class="col-span-12">
+    <app-expenseSummaryTable
+      [expenseList]="originalExpenseList"
+      [expenseTypeList]="expenseTypes"
+    >
+    </app-expenseSummaryTable>
+  </div>
+
+  <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
+    <div class="mb-4 border-2 w-full">
+      <app-expenseTotalTypeBarChart
+        [expenseList]="originalExpenseList"
+        [expenseTypeList]="expenseTypes"
+        [expenseCategoryList]="expenseCategories"
+      ></app-expenseTotalTypeBarChart>
+    </div>
+
+    <div class="mb-4 border-2 w-full">
+      <app-expenseTotalLinearChart
+        [expenseList]="originalExpenseList"
+      ></app-expenseTotalLinearChart>
+    </div>
+  </div>
+
+</div>

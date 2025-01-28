@@ -1,28 +1,44 @@
 <div class="card">
-  <p-table showGridlines [size]="'small'" [value]="expenseTypeSummaryList" [scrollable]="true" scrollHeight="800px"
+  <p-floatlabel variant="on" class="mb-3">
+    <p-datepicker
+      [(ngModel)]="selectedYear"
+      styleClass="w-40"
+      (ngModelChange)="processInputData()"
+      view="year"
+      dateFormat="yy"
+      [showButtonBar]="true"
+      ngModel
+      showIcon
+      iconDisplay="input"
+    />
+    <label for="YearLabel">Year</label>
+  </p-floatlabel>
+
+  <p-table showGridlines [size]="'small'" [value]="expenseTypeSummaryList" [scrollable]="true" scrollHeight="600px"
     rowGroupMode="subheader" groupRowsBy="categoryName" [tableStyle]="{'min-width': '60rem'}">
     <ng-template #header>
-      <tr>
-        <th>Name</th>
-        <th>#</th>
-        <th>Totale</th>
-        <th>Media</th>
-        <th>Gen</th>
-        <th>Feb</th>
-        <th>Mar</th>
-        <th>Apr</th>
-        <th>Mag</th>
-        <th>Giu</th>
-        <th>Lug</th>
-        <th>Ago</th>
-        <th>Set</th>
-        <th>Ott</th>
-        <th>Nov</th>
-        <th>Dic</th>
+      <tr class="bg-blue-400">
+        <th class="bg-transparent">Name</th>
+        <th class="bg-transparent w-4">#</th>
+        <th class="bg-transparent w-24">Totale</th>
+        <th class="bg-transparent w-24">Media</th>
+        <th class="bg-transparent w-24">Gen</th>
+        <th class="bg-transparent w-24">Feb</th>
+        <th class="bg-transparent w-24">Mar</th>
+        <th class="bg-transparent w-24">Apr</th>
+        <th class="bg-transparent w-24">Mag</th>
+        <th class="bg-transparent w-24">Giu</th>
+        <th class="bg-transparent w-24">Lug</th>
+        <th class="bg-transparent w-24">Ago</th>
+        <th class="bg-transparent w-24">Set</th>
+        <th class="bg-transparent w-24">Ott</th>
+        <th class="bg-transparent w-24">Nov</th>
+        <th class="bg-transparent w-24">Dic</th>
       </tr>
     </ng-template>
+
     <ng-template #groupheader let-expenseType>
-      <tr pRowGroupHeader class="bg-gray-200">
+      <tr pRowGroupHeader class="bg-slate-400">
         <td colspan="16">
           <div class="flex items-center gap-2">
             <span class="font-bold">{{ expenseType.categoryName }}</span>
@@ -30,13 +46,26 @@
         </td>
       </tr>
     </ng-template>
-    
+
     <ng-template #groupfooter let-expenseType>
-        <tr>
-            <td colspan="16" class="text-left font-medium">
-                {{CalculateCategoryFooter(expenseType.categoryName)}}
-            </td>
-        </tr>
+      <tr class="bg-gray-200">
+        <td class="font-bold bg-transparent">Totale</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterCount(expenseType)}}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterSum(expenseType) | number: '1.2-2':'it-IT'}}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterAverage(expenseType) | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterMonth(expenseType, 0) | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterMonth(expenseType, 1) | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterMonth(expenseType, 2) | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterMonth(expenseType, 3) | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterMonth(expenseType, 4) | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterMonth(expenseType, 5) | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterMonth(expenseType, 6) | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterMonth(expenseType, 7) | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterMonth(expenseType, 8) | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterMonth(expenseType, 9) | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterMonth(expenseType, 10) | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent">{{ CalculateCategoryGroupFooterMonth(expenseType, 11) | number: '1.2-2':'it-IT' }}</td>
+      </tr>
     </ng-template>
 
     <ng-template #body let-expenseType let-rowIndex="rowIndex">
