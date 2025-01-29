@@ -9,7 +9,7 @@ import { OperationResult } from '../../enum/operationResult';
 export class GlobalUtilityService {
 
   convertStringToDate(stringDate: string): Date {
-    const format = "yyyyMMdd_hhmmss";
+    const format = "yyyyMMdd_HHmmss";
     const date = parse(stringDate, format, new Date());
     return date;
   }
