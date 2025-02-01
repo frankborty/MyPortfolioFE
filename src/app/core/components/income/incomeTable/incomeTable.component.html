@@ -1,0 +1,103 @@
+<div class="card">
+  <p-table
+    [value]="incomeList"
+    [scrollable]="true"
+    [resizableColumns]="true"
+    [size]="'small'"
+    showGridlines
+    stripedRows
+    [paginator]="true"
+    [rows]="10"
+    [rowsPerPageOptions]="[10, 30, 50, 100]"
+  >
+    <ng-template pTemplate="header">
+      <tr>
+        <th class="w-5">#</th>
+        <th
+          pResizableColumn
+          pSortableColumn="incomeType.name"
+          class="text-left w-80"
+        >
+          Type
+
+          <p-columnFilter
+          field="incomeType.name"
+          matchMode="in"
+          display="menu"
+          [showMatchModes]="false"
+          [showOperator]="false"
+          [showAddButton]="false"
+          class="ml-auto"
+        >
+          <ng-template #filter let-value let-filter="filterCallback">
+            <p-multiselect
+              [filter]="true"
+              [ngModel]="value"
+              [options]="incomeTypeList"
+              optionLabel="name"
+              optionValue="name"
+              placeholder="Any"
+              (onChange)="filter($event.value)"
+              class="w-full"
+            >
+              <ng-template let-type #item>
+                <div class="flex items-center gap-2">
+                  <span>{{ type.name }}</span>
+                </div>
+              </ng-template>
+            </p-multiselect>
+          </ng-template>
+        </p-columnFilter>
+
+
+
+
+        </th>
+        <th pResizableColumn pSortableColumn="amount" class="text-right w-20">
+          Amount
+          <p-columnFilter
+            type="numeric"
+            field="amount"
+            display="menu"
+            currency="EUR"
+          />
+        </th>
+
+        <th pResizableColumn pSortableColumn="date" class="text-right w-32">
+          Date
+          <p-columnFilter type="date" field="date" display="menu">
+            <ng-template
+              pTemplate="filter"
+              let-value
+              let-filter="filterCallback"
+            >
+              <p-calendar
+                [ngModel]="value"
+                (onSelect)="filter($event)"
+                dateFormat="dd/mm/yy"
+              ></p-calendar>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th pResizableColumn pSortableColumn="note">Note</th>
+      </tr>
+    </ng-template>
+
+    <ng-template pTemplate="body" let-income let-rowIndex="rowIndex">
+      <tr>
+        <td>{{ rowIndex + 1 }}</td>
+        <td>{{ income.incomeType.name }}</td>
+        <td class="text-right">
+          {{ income.amount | currency : "EUR" : "symbol" : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="text-right">{{ income.date | date : "dd/MM/yyyy" }}</td>
+        <td>{{ income.note }}</td>
+      </tr>
+    </ng-template>
+    <ng-template pTemplate="emptymessage">
+      <tr>
+        <td colspan="7">No income found.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>

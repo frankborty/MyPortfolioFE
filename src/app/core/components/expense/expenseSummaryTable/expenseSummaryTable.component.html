@@ -17,7 +17,7 @@
   <p-table showGridlines [size]="'small'" [value]="expenseTypeSummaryList" [scrollable]="true" scrollHeight="600px"
     rowGroupMode="subheader" groupRowsBy="categoryName" [tableStyle]="{'min-width': '60rem'}">
     <ng-template #header>
-      <tr class="bg-blue-400">
+      <tr class="bg-red-200">
         <th class="bg-transparent">Name</th>
         <th class="bg-transparent w-4">#</th>
         <th class="bg-transparent w-24">Totale</th>
@@ -90,7 +90,7 @@
     </ng-template>
 
     <ng-template #footer>
-      <tr class="!bg-red-500">
+      <tr class="!bg-red-400">
       <td class="font-bold bg-transparent">Totale</td>
       <td class="bg-transparent">{{ totalCount}}</td>
       <td class="bg-transparent">{{ totalSum | number: '1.2-2':'it-IT' }}</td>

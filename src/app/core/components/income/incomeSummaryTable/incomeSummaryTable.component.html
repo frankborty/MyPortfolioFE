@@ -1,0 +1,107 @@
+<div class="card">
+  <p-floatlabel variant="on" class="mb-3">
+    <p-datepicker
+      [(ngModel)]="selectedYear"
+      styleClass="w-40"
+      (ngModelChange)="processInputData()"
+      view="year"
+      dateFormat="yy"
+      [showButtonBar]="true"
+      ngModel
+      showIcon
+      iconDisplay="input"
+    />
+    <label for="YearLabel">Year</label>
+  </p-floatlabel>
+
+  <p-table
+    showGridlines
+    [size]="'small'"
+    [value]="incomeTypeSummaryList"
+    [scrollable]="true"
+    scrollHeight="600px"
+    [tableStyle]="{ 'min-width': '60rem' }"
+  >
+    <ng-template #header>
+      <tr class="bg-green-200">
+        <th class="bg-transparent">Name</th>
+        <th class="bg-transparent w-4">#</th>
+        <th class="bg-transparent w-24">Totale</th>
+        <th class="bg-transparent w-24">Media</th>
+        <th class="bg-transparent w-24">Gen</th>
+        <th class="bg-transparent w-24">Feb</th>
+        <th class="bg-transparent w-24">Mar</th>
+        <th class="bg-transparent w-24">Apr</th>
+        <th class="bg-transparent w-24">Mag</th>
+        <th class="bg-transparent w-24">Giu</th>
+        <th class="bg-transparent w-24">Lug</th>
+        <th class="bg-transparent w-24">Ago</th>
+        <th class="bg-transparent w-24">Set</th>
+        <th class="bg-transparent w-24">Ott</th>
+        <th class="bg-transparent w-24">Nov</th>
+        <th class="bg-transparent w-24">Dic</th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-incomeType let-rowIndex="rowIndex">
+      <tr>
+        <td>{{ incomeType.name }}</td>
+        <td>{{ incomeType.count }}</td>
+        <td>{{ incomeType.total | number : "1.2-2" : "it-IT" }}</td>
+        <td>{{ incomeType.average | number : "1.2-2" : "it-IT" }}</td>
+        <td *ngFor="let income of incomeType.monthIncome">
+          {{ income | number : "1.2-2" : "it-IT" }}
+        </td>
+      </tr>
+    </ng-template>
+
+    <ng-template #footer>
+      <tr class="!bg-green-400">
+        <td class="font-bold bg-transparent">Totale</td>
+        <td class="bg-transparent">{{ totalCount }}</td>
+        <td class="bg-transparent">
+          {{ totalSum | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalAvg | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalPerMese[0] | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalPerMese[1] | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalPerMese[2] | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalPerMese[3] | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalPerMese[4] | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalPerMese[5] | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalPerMese[6] | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalPerMese[7] | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalPerMese[8] | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalPerMese[9] | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalPerMese[10] | number : "1.2-2" : "it-IT" }}
+        </td>
+        <td class="bg-transparent">
+          {{ totalPerMese[11] | number : "1.2-2" : "it-IT" }}
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+</div>
