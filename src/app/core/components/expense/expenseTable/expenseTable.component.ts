@@ -21,6 +21,8 @@ export class ExpenseTableComponent implements OnInit {
   contextMenuItems!: MenuItem[];
   selectedExpenseList: Expense[] = [];
   selectedExpense: Expense | null = null;
+selectedYear: any;
+selectedMonth: any;
 
   constructor(){ }
 

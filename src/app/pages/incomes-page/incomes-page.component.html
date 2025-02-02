@@ -3,6 +3,7 @@
     <app-incomeTable
       [incomeList]="incomList"
       [incomeTypeList]="incomTypeList"
+      (reloadIncomeList)="loadIncomes()"
     ></app-incomeTable>
   </div>
 
@@ -10,9 +11,9 @@
     <div class="w-full">
       <app-incomeSummaryTable
         [incomeList]="incomList"
-        [incomeTypeList]="incomTypeList">
+        [incomeTypeList]="incomTypeList"
+      >
       </app-incomeSummaryTable>
     </div>
-
   </div>
 </div>

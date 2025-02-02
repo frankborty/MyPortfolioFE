@@ -26,4 +26,14 @@ export class IncomeService {
     return this.http.get(`${this.apiUrl}/IncomeType`, this.options)
     .pipe(catchError(this.errorHandler.handleError)); 
   }
+  //endregion
+
+  //#region DELETE DATA
+  deleteIncome(incomeIdList: number[]) {
+    return this.http.request('delete', `${this.apiUrl}/Income/deleteList`, {
+      body: incomeIdList,
+      ...this.options
+    }).pipe(catchError(this.errorHandler.handleError));
+  }
+  //#endregion
 }

@@ -6,6 +6,7 @@ import { ExpenseFilterPageComponent } from './pages/expensePages/expenseFilterPa
 
 
 export const routes: Routes = [
+    { path: '', redirectTo: '/income', pathMatch: 'full' }, // Route di default
     { path: 'assets', component: AssetsPageComponent },
     { path: 'income', component: IncomesPageComponent },
     { path: 'expenses/total', component: ExpenseTotalPageComponent },

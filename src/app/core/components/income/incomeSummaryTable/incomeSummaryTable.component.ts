@@ -42,6 +42,9 @@ export class IncomeSummaryTableComponent implements OnInit, OnChanges {
 
   processInputData() {
     this.incomeTypeSummaryList = [];
+    
+    this.initAllValue();
+    
     let filteredByYear = this.incomeList.filter(
       (income) => new Date(income.date).getFullYear() === this.selectedYear.getFullYear()
     );

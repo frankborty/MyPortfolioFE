@@ -1,19 +1,4 @@
 <div class="card">
-  <p-floatlabel variant="on" class="mb-3">
-    <p-datepicker
-      [(ngModel)]="selectedYear"
-      styleClass="w-40"
-      (ngModelChange)="processInputData()"
-      view="year"
-      dateFormat="yy"
-      [showButtonBar]="true"
-      ngModel
-      showIcon
-      iconDisplay="input"
-    />
-    <label for="YearLabel">Year</label>
-  </p-floatlabel>
-
   <p-table
     showGridlines
     [size]="'small'"
@@ -22,6 +7,27 @@
     scrollHeight="600px"
     [tableStyle]="{ 'min-width': '60rem' }"
   >
+  <ng-template #caption>
+    <div class="flex flex-wrap items-center justify-between">
+      <span class="text-xl font-bold">Income Summary</span>
+      <div class="flex gap-3 mt-2">
+        <p-floatlabel variant="on" class="align-middle">
+          <p-datepicker
+            [(ngModel)]="selectedYear"
+            (ngModelChange)="processInputData()"
+            styleClass="w-40"
+            view="year"
+            dateFormat="yy"
+            [showButtonBar]="true"
+            ngModel
+            showIcon
+            iconDisplay="input"
+          />
+          <label for="YearLabel">Year</label>
+        </p-floatlabel>
+      </div>
+    </div>
+  </ng-template>
     <ng-template #header>
       <tr class="bg-green-200">
         <th class="bg-transparent">Name</th>

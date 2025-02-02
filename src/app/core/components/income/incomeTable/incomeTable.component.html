@@ -10,6 +10,41 @@
     [rows]="10"
     [rowsPerPageOptions]="[10, 30, 50, 100]"
   >
+    <ng-template #caption>
+      <div class="flex flex-wrap items-center justify-between">
+        <span class="text-xl font-bold">Income List</span>
+        <div class="flex gap-3 mt-2">
+          <p-floatlabel variant="on" class="align-middle">
+            <p-datepicker
+              [(ngModel)]="selectedYear"
+              styleClass="w-32"
+              view="year"
+              dateFormat="yy"
+              [showButtonBar]="true"
+              ngModel
+              showIcon
+              iconDisplay="input"
+            />
+            <label for="YearLabel">Year</label>
+          </p-floatlabel>
+
+          <p-floatlabel variant="on" class="align-middle">
+            <p-datepicker
+              [(ngModel)]="selectedMonth"
+              styleClass="w-32"
+              view="month"
+              dateFormat="MM"
+              [showButtonBar]="true"
+              ngModel
+              showIcon
+              iconDisplay="input"
+            />
+            <label for="MonthLabel">Month</label>
+          </p-floatlabel>
+        </div>
+      </div>
+    </ng-template>
+
     <ng-template pTemplate="header">
       <tr>
         <th class="w-5">#</th>
@@ -21,39 +56,35 @@
           Type
 
           <p-columnFilter
-          field="incomeType.name"
-          matchMode="in"
-          display="menu"
-          [showMatchModes]="false"
-          [showOperator]="false"
-          [showAddButton]="false"
-          class="ml-auto"
-        >
-          <ng-template #filter let-value let-filter="filterCallback">
-            <p-multiselect
-              [filter]="true"
-              [ngModel]="value"
-              [options]="incomeTypeList"
-              optionLabel="name"
-              optionValue="name"
-              placeholder="Any"
-              (onChange)="filter($event.value)"
-              class="w-full"
-            >
-              <ng-template let-type #item>
-                <div class="flex items-center gap-2">
-                  <span>{{ type.name }}</span>
-                </div>
-              </ng-template>
-            </p-multiselect>
-          </ng-template>
-        </p-columnFilter>
-
-
-
-
+            field="incomeType.name"
+            matchMode="in"
+            display="menu"
+            [showMatchModes]="false"
+            [showOperator]="false"
+            [showAddButton]="false"
+            class="ml-auto"
+          >
+            <ng-template #filter let-value let-filter="filterCallback">
+              <p-multiselect
+                [filter]="true"
+                [ngModel]="value"
+                [options]="incomeTypeList"
+                optionLabel="name"
+                optionValue="name"
+                placeholder="Any"
+                (onChange)="filter($event.value)"
+                class="w-full"
+              >
+                <ng-template let-type #item>
+                  <div class="flex items-center gap-2">
+                    <span>{{ type.name }}</span>
+                  </div>
+                </ng-template>
+              </p-multiselect>
+            </ng-template>
+          </p-columnFilter>
         </th>
-        <th pResizableColumn pSortableColumn="amount" class="text-right w-20">
+        <th pResizableColumn pSortableColumn="amount" class="w-20">
           Amount
           <p-columnFilter
             type="numeric"
@@ -79,6 +110,7 @@
             </ng-template>
           </p-columnFilter>
         </th>
+        <th class="w-12 text-center">Action</th>
         <th pResizableColumn pSortableColumn="note">Note</th>
       </tr>
     </ng-template>
@@ -91,6 +123,33 @@
           {{ income.amount | currency : "EUR" : "symbol" : "1.2-2" : "it-IT" }}
         </td>
         <td class="text-right">{{ income.date | date : "dd/MM/yyyy" }}</td>
+        <td class="p-0">
+          <div>
+            <button
+              class="border-spacing-0 p-0 m-0"
+              pButton
+              pRipple
+              type="button"
+              icon="pi pi-pencil"
+              (click)="editIncome(income)"
+              text
+              rounded
+              severity="secondary"
+            ></button>
+
+            <button
+              pButton
+              pRipple
+              type="button"
+              icon="pi pi-trash"
+              (click)="deleteIncome(income)"
+              text
+              rounded
+              severity="secondary"
+            ></button>
+          </div>
+        </td>
+
         <td>{{ income.note }}</td>
       </tr>
     </ng-template>
@@ -101,3 +160,6 @@
     </ng-template>
   </p-table>
 </div>
+
+<p-toast />
+<app-param-confirmation-dialog></app-param-confirmation-dialog>

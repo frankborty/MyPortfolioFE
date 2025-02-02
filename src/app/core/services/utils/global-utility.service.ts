@@ -18,6 +18,10 @@ export class GlobalUtilityService {
     return format(date, 'yyyyMMdd_HHmmss');
   }
 
+  convertDateToItaString(date : any): string{
+    return format(date, 'dd/MM/yyyy');
+  }
+
   showOperationResult(messageService: MessageService, resultValue: OperationResult, resultDetail: string){
     if(resultValue==OperationResult.OK){
       messageService.add({ severity: 'success', summary: 'Success', detail: resultDetail, life: 3000 });
