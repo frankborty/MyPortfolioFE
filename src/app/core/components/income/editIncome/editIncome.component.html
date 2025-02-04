@@ -1,0 +1,40 @@
+<form [formGroup]="editIncomeForm" (ngSubmit)="onUserSave()">
+  <p-floatlabel class="m-3" variant="on">
+    <p-select 
+        formControlName="incType" 
+        [options]="incomeTypeList"
+        [fluid]="true"
+        optionLabel="name" 
+        placeholder="Type"
+        [filter]="true" 
+        filterBy="name"/>
+    <label for="incType">Type</label>
+</p-floatlabel>
+
+  <p-floatlabel class="m-3" variant="on">
+      <p-datepicker
+          [fluid]="true"
+          formControlName="incDate" 
+          inputId="incDate" 
+          iconDisplay="input" 
+          dateFormat="dd/mm/yy" 
+          showIcon />
+      <label for="incDate">Date</label>
+  </p-floatlabel>
+  
+  <p-floatlabel class="m-3" variant="on">
+      <p-inputnumber [fluid]="true" formControlName="incAmount" inputId="incAmount" mode="currency" currency="EUR" locale="it-IT" />
+      <label for="incAmount">Amount</label>
+  </p-floatlabel>  
+  
+  <p-floatlabel class="m-3" variant="on">
+      <input [fluid]="true" pInputText id="incNote" formControlName="incNote" autocomplete="off"/>
+      <label for="incNote">Note</label>
+  </p-floatlabel>
+
+  <hr class="m-3">    
+  
+  <div class="flex justify-center">
+      <p-button label="Save income" severity="warn" type="submit" icon="pi pi-pencil" />
+  </div>
+</form>

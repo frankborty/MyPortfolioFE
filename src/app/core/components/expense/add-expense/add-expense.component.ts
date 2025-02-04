@@ -21,7 +21,7 @@ export class AddExpenseComponent implements OnInit {
 
   constructor(private expenseService: ExpenseService) { 
     this.addForm = new FormGroup({
-      expName: new FormControl('PPP', [Validators.required, Validators.minLength(3)]),
+      expName: new FormControl('', [Validators.required, Validators.minLength(3)]),
       expAmount: new FormControl('', [Validators.required, Validators.min(0.01)]),
       expDate: new FormControl(new Date(), Validators.required),
       expType: new FormControl(this.selectedType, Validators.required),

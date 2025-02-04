@@ -3,7 +3,8 @@
     <app-incomeTable
       [incomeList]="incomList"
       [incomeTypeList]="incomTypeList"
-      (reloadIncomeList)="loadIncomes()"
+      (editIncomeCallBack)="showEditIncomeDialog($event)"
+      (deleteIncomeCallBack)="deleteIncome($event)"
     ></app-incomeTable>
   </div>
 
@@ -16,4 +17,31 @@
       </app-incomeSummaryTable>
     </div>
   </div>
+</div>
+
+<p-dialog
+    header="Edit Income"
+    [styleClass]="'w-[60vh] h-[80vh]'"
+    [(visible)]="displayIncomeEditPanel"
+    [modal]="true"
+    [closable]="true"
+  >
+    <app-editIncome
+      (editIncomeCallBack)="editIncome($event)"
+      (addIncomeCallBack)="addIncome($event)"
+    ></app-editIncome>
+  </p-dialog>
+
+<p-toast />
+<app-param-confirmation-dialog></app-param-confirmation-dialog>
+
+<div class="add-container">
+  <p-button
+    styleClass="action-button"
+    severity="success"
+    icon="pi pi-plus"
+    [rounded]="true"
+    (click)="showAddIncomeDialog()"
+  >
+  </p-button>
 </div>

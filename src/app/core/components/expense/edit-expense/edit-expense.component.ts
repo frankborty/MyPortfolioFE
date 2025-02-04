@@ -21,7 +21,7 @@ export class EditExpenseComponent implements OnInit {
 
   constructor(private expenseService: ExpenseService) { 
     this.editExpenseForm = new FormGroup({
-      expName: new FormControl('', [Validators.required, Validators.minLength(3)]),
+      expName: new FormControl('', [Validators.required]),
       expAmount: new FormControl('', [Validators.required, Validators.min(0.01)]),
       expDate: new FormControl('', Validators.required),
       expType: new FormControl('', Validators.required),
@@ -51,7 +51,7 @@ export class EditExpenseComponent implements OnInit {
   setExpenseToEdit(expense: Expense){
     this.editExpenseForm.patchValue({
       expName: expense.description,
-      expAmount: expense.amount,
+      expAmount: expense.amount.toLocaleString("it-IT"), //non dovrebbe essere necessario ma sennò non gestisce i decimali
       expDate: expense.date,
       expType: expense.expenseType,
       expCategory: expense.expenseType?.category?.name,
