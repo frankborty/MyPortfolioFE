@@ -28,7 +28,7 @@ export class IncomesPageComponent implements OnInit{
   @ViewChild(EditIncomeComponent) editIncomeDialog!: EditIncomeComponent;
 
   incomList : Income[] = [];
-  incomTypeList : IncomeType[] = [];
+  incomeTypeList : IncomeType[] = [];
   displayIncomeEditPanel : boolean = false;
 
   constructor(private incomeService : IncomeService,
@@ -59,7 +59,7 @@ export class IncomesPageComponent implements OnInit{
   loadIncomeTypes(){
     this.incomeService.getIncomeTypes().subscribe({
       next: (data: any) => {
-        this.incomTypeList = data;
+        this.incomeTypeList = data;
       },
       error: (error: any) => {
         console.error(error);
@@ -73,7 +73,7 @@ export class IncomesPageComponent implements OnInit{
       amount: 0,
       date: new Date(),
       note: "",
-      incomeType : this.incomTypeList[0]
+      incomeType : this.incomeTypeList[0]
     }
     this.editIncomeDialog.setIncomeToEdit(defaultIncome);
     this.editIncomeDialog.setCurrentOperation(OperationType.ADD);
@@ -157,7 +157,7 @@ export class IncomesPageComponent implements OnInit{
                 this.messageService.add({
                   severity: 'success',
                   summary: 'Success',
-                  detail: 'Spesa cancellata con successo',
+                  detail: 'Income cancellata con successo',
                 });
               },
               error: (error: any) => {
@@ -165,7 +165,7 @@ export class IncomesPageComponent implements OnInit{
                 this.messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Errore durante la cancellazione della spesa',
+                  detail: 'Errore durante la cancellazione dell\'income',
                 });
               },
             });

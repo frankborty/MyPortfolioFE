@@ -1,6 +1,5 @@
 import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ImportsModule } from '../../../../imports';
-import { MenuItem } from 'primeng/api';
 import { Expense } from '../../../interfaces/expense';
 import { ExpenseType } from '../../../interfaces/expenseType';
 import { ExpenseCategory } from '../../../interfaces/expenseCategory';
@@ -11,37 +10,25 @@ import { ExpenseCategory } from '../../../interfaces/expenseCategory';
   templateUrl: './expenseTable.component.html',
   styleUrls: ['./expenseTable.component.css']
 })
-export class ExpenseTableComponent implements OnInit {
-  @Input() expenseList : Expense[] = [];
-  @Input() expenseTypeList : ExpenseType[] = [];
-  @Input() expenseCategoryList : ExpenseCategory[] = [];
-  @Output() editExpenseEvent = new EventEmitter<Expense>();
-  @Output() deleteExpenseEvent = new EventEmitter<Expense>();
 
-  contextMenuItems!: MenuItem[];
-  selectedExpenseList: Expense[] = [];
-  selectedExpense: Expense | null = null;
-selectedYear: any;
-selectedMonth: any;
+export class ExpenseTableComponent {
+  @Input() expenseList: Expense[] = [];
+  @Input() expenseTypeList: ExpenseType[] = [];
+  @Input() expenseCategoryList: ExpenseCategory[] = [];
+  
+  @Output() editExpenseCallBack = new EventEmitter<Expense>();
+  @Output() deleteExpenseCallBack = new EventEmitter<Expense>();
 
-  constructor(){ }
+  selectedYear: any;
+  selectedMonth: any;
 
-  ngOnInit() {
-    this.contextMenuItems = [
-      { label: 'Edit', icon: 'pi pi-fw pi-pencil', command: () => this.showEditExpenseDialog() },
-      { label: 'Delete', icon: 'pi pi-fw pi-times', command: () => this.deleteExpense() }
-    ];
+  constructor() {}
+
+  deleteExpense(expense: Expense) {
+    this.deleteExpenseCallBack.emit(expense);
   }
 
-  showEditExpenseDialog() {
-    if (this.selectedExpense) {
-      this.editExpenseEvent.emit();
-    }
-  }
-
-  deleteExpense(): void {
-    if (this.selectedExpense) {
-      this.deleteExpenseEvent.emit();
-    }
+  editExpense(expense: Expense) {
+    this.editExpenseCallBack.emit(expense);
   }
 }

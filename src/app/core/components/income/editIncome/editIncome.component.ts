@@ -42,14 +42,13 @@ export class EditIncomeComponent implements OnInit {
         this.incomeTypeList = data;
         if (this.incomeTypeList.length > 0) {
           this.selectedIncomeType = this.incomeTypeList[0];
-          this.editIncomeForm.get('expType')?.setValue(this.selectedIncomeType);
+          this.editIncomeForm.get('expType')?.setValue(this.selectedIncomeType); //CHECK: non ho quel campo!
         }
       },
       error: (error: any) => {
         console.error(error);
       }
     });
-    console.log('EditIncomeComponent ngOnInit');
   }
 
   setCurrentOperation(opType : OperationType){

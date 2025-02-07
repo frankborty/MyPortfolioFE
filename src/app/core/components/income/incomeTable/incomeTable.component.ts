@@ -3,17 +3,10 @@ import {
   EventEmitter,
   Input,
   Output,
-  ViewChild,
 } from '@angular/core';
 import { ImportsModule } from '../../../../imports';
 import { Income } from '../../../interfaces/income';
 import { IncomeType } from '../../../interfaces/incomeType';
-import { IncomeService } from '../../../services/incomeService/income.service';
-import { OperationResult } from '../../../enum/operationResult';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { GlobalUtilityService } from '../../../services/utils/global-utility.service';
-import { ParamConfirmationDialogComponent } from '../../param-confirmation-dialog/param-confirmation-dialog.component';
-import { EditIncomeComponent } from '../editIncome/editIncome.component';
 
 @Component({
   selector: 'app-incomeTable',

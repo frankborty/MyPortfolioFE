@@ -1,18 +1,13 @@
-<p-contextmenu #cm [model]="contextMenuItems" />
-<p-table
+<div class="card">
+  <p-table
   [value]="expenseList"
-  [(contextMenuSelection)]="selectedExpense"
-  [contextMenu]="cm"
-  [(selection)]="selectedExpenseList"
-  selectionMode="multiple"
-  dataKey="id"
   [scrollable]="true"
   [resizableColumns]="true"
   [size]="'small'"
   showGridlines
   stripedRows
   [paginator]="true"
-  [rows]="30"
+  [rows]="10"
   [rowsPerPageOptions]="[10, 30, 50, 100]"
 >
 <ng-template #caption>
@@ -115,6 +110,7 @@
           [showAddButton]="false"
           class="ml-auto"
         >
+
           <ng-template #filter let-value let-filter="filterCallback">
             <p-multiselect
               [filter]="true"
@@ -133,6 +129,7 @@
               </ng-template>
             </p-multiselect>
           </ng-template>
+        
         </p-columnFilter>
       </th>
       <th pResizableColumn pSortableColumn="date" class="text-right w-32">
@@ -147,6 +144,7 @@
           </ng-template>
         </p-columnFilter>
       </th>
+      <th class="w-12 text-center">Action</th>
       <th pResizableColumn pSortableColumn="note">Note</th>
     </tr>
   </ng-template>
@@ -165,6 +163,32 @@
       <td class="text-right">{{ expense.expenseType.name }}</td>
       <td class="text-right">{{ expense.expenseType.category.name }}</td>
       <td class="text-right">{{ expense.date | date : "dd/MM/yyyy" }}</td>
+      <td class="p-0">
+        <div>
+          <button
+            class="border-spacing-0 p-0 m-0"
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-pencil"
+            (click)="editExpense(expense)"
+            text
+            rounded
+            severity="secondary"
+          ></button>
+
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-trash"
+            (click)="deleteExpense(expense)"
+            text
+            rounded
+            severity="secondary"
+          ></button>
+        </div>
+      </td>
       <td>{{ expense.note }}</td>
     </tr>
   </ng-template>
@@ -173,4 +197,5 @@
       <td colspan="7">No expenses found.</td>
     </tr>
   </ng-template>
-</p-table>
+  </p-table>
+</div>

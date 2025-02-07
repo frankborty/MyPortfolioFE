@@ -9,7 +9,8 @@ export interface Expense {
     expenseType: ExpenseType;
 }
 
-export interface ExpenseToAdd { 
+export interface ExpenseToEdit { 
+    id: number,
     description : string;
     amount : number;
     date : string;

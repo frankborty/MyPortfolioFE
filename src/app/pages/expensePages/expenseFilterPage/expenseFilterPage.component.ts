@@ -4,241 +4,286 @@ import { Nullable } from 'primeng/ts-helpers';
 import { ExpenseCategoryPieChartComponent } from '../../../core/components/charts/expenseCategoryPieChart/expenseCategoryPieChart.component';
 import { ExpenseTypeLinearChartComponent } from '../../../core/components/charts/expenseTypeLinearChart/expenseTypeLinearChart.component';
 import { ExpenseTypePieChartComponent } from '../../../core/components/charts/expenseTypePieChart/expenseTypePieChart.component';
-import { AddExpenseComponent } from '../../../core/components/expense/add-expense/add-expense.component';
-import { EditExpenseComponent } from '../../../core/components/expense/edit-expense/edit-expense.component';
 import { ExpenseTableComponent } from '../../../core/components/expense/expenseTable/expenseTable.component';
 import { ParamConfirmationDialogComponent } from '../../../core/components/param-confirmation-dialog/param-confirmation-dialog.component';
 import { OperationResult } from '../../../core/enum/operationResult';
-import { Expense, ExpenseToAdd } from '../../../core/interfaces/expense';
+import { Expense, ExpenseToEdit } from '../../../core/interfaces/expense';
 import { ExpenseCategory } from '../../../core/interfaces/expenseCategory';
 import { ExpenseType } from '../../../core/interfaces/expenseType';
 import { ExpenseService } from '../../../core/services/expenseService/expense.service';
 import { GlobalUtilityService } from '../../../core/services/utils/global-utility.service';
 import { ImportsModule } from '../../../imports';
+import { EditExpenseComponent } from '../../../core/components/expense/editExpense/editExpense.component';
+import { OperationType } from '../../../core/enum/oprationType';
 
 @Component({
   selector: 'app-expenseFilterPage',
-  imports: [ExpenseTableComponent, ImportsModule,
-    AddExpenseComponent, EditExpenseComponent, ParamConfirmationDialogComponent,
-    ExpenseTypePieChartComponent, ExpenseCategoryPieChartComponent, ExpenseTypeLinearChartComponent],
-    providers: [ConfirmationService, MessageService, ExpenseTypeLinearChartComponent],
+  imports: [
+    ExpenseTableComponent,
+    ImportsModule,
+    EditExpenseComponent,
+    ParamConfirmationDialogComponent,
+    ExpenseTypePieChartComponent,
+    ExpenseCategoryPieChartComponent,
+    ExpenseTypeLinearChartComponent,
+  ],
+  providers: [
+    ConfirmationService,
+    MessageService,
+    ExpenseTypeLinearChartComponent,
+  ],
   templateUrl: './expenseFilterPage.component.html',
-  styleUrls: ['./expenseFilterPage.component.css']
+  styleUrls: ['./expenseFilterPage.component.css'],
 })
 export class ExpenseFilterPageComponent implements OnInit {
-  @ViewChild(ParamConfirmationDialogComponent) confirmDialog!: ParamConfirmationDialogComponent;
+  @ViewChild(ParamConfirmationDialogComponent)  confirmDialog!: ParamConfirmationDialogComponent;
   @ViewChild(EditExpenseComponent) editExpenseDialog!: EditExpenseComponent;
   @ViewChild(ExpenseTableComponent) expenseTable!: ExpenseTableComponent;
-  
+
   displayAddExpenseDialog: boolean = false;
   displayEditExpenseDialog: boolean = false;
-  originalExpenseList : Expense[] = [];
+  expenseList: Expense[] = [];
 
-
-  filteredExpenseList : Expense[] = [];
-  selectedYear : Date | Nullable = new Date();
-  selectedMonth : Date | Nullable = new Date();
+  filteredExpenseList: Expense[] = [];
+  selectedYear: Date | Nullable = new Date();
+  selectedMonth: Date | Nullable = new Date();
   expenseTypes: ExpenseType[] = [];
   expenseCategories: ExpenseCategory[] = [];
-  
+
+  displayExpenseEditPanel: boolean = false;
+
   totalMoneySpentString: string = '';
 
-  constructor(private expenseService : ExpenseService,
-    private globalUtils : GlobalUtilityService,
-    private messageService : MessageService
-  ) { }
+  constructor(
+    private expenseService: ExpenseService,
+    private globalUtils: GlobalUtilityService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit() {
     this.loadExpenses();
     this.loadExpenseTypes();
     this.loadExpenseCategories();
   }
-  
 
-  loadExpenses(){
+  loadExpenses() {
     this.expenseService.getExpenses().subscribe({
       next: (data: any) => {
-        this.originalExpenseList = data;
-        this.originalExpenseList.map((expense: Expense) => {
-          expense.date = this.globalUtils.convertStringToDate(expense.date.toString());
+        this.expenseList = data;
+        this.expenseList.map((expense: Expense) => {
+          expense.date = this.globalUtils.convertStringToDate(
+            expense.date.toString()
+          );
         });
         this.filterExpenses();
       },
       error: (error: any) => {
         console.error(error);
-      }
+      },
     });
   }
 
-  loadExpenseTypes(){
+  loadExpenseTypes() {
     this.expenseService.getExpenseTypes().subscribe({
       next: (data: any) => {
         this.expenseTypes = data;
       },
       error: (error: any) => {
         console.error(error);
-      }
+      },
     });
   }
 
-  loadExpenseCategories(){
+  loadExpenseCategories() {
     this.expenseService.getExpenseCategories().subscribe({
       next: (data: any) => {
         this.expenseCategories = data;
       },
       error: (error: any) => {
         console.error(error);
-      }
+      },
     });
   }
 
-  //#region Add Expense
-  addNewExpense(expenseToAdd: ExpenseToAdd){
-    expenseToAdd.date=this.globalUtils.convertDateToString(expenseToAdd.date);
-    this.expenseService.postExpense(expenseToAdd).subscribe({
-      next: () => {
-        this.loadExpenses();
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
-    this.hideAddExpenseDialog();
-  }
+  //#region NEW
 
   showAddExpenseDialog(){
-    this.displayAddExpenseDialog = true ;
-  }
-
-  hideAddExpenseDialog(){
-    this.displayAddExpenseDialog = false;
-  }
-  //#endregion
-
-  //#region Delete Expense
-  deleteExpenseList(): void {
-   this.confirmDialog.confirmDelete("Sei sicuro di cancellare le spese selezionate?").then((confirmed) => {
-      if (confirmed) {
-        const expenseIds = this.expenseTable.selectedExpenseList.map(expense => expense.id);
-        this.expenseService.deleteExpense(expenseIds).subscribe({
-          next: () => {
-            this.globalUtils.showOperationResult(this.messageService, OperationResult.OK, "Spese cancellate con successo");
-            this.loadExpenses();
-          },
-          error: (error: any) => {
-            this.globalUtils.showOperationResult(this.messageService, OperationResult.OK, 'Errore durante la cancellazione delle spese: '+error);
-          }
-        });
-      } else {
-        this.globalUtils.showOperationResult(this.messageService, OperationResult.INFO, 'Cancellazione annullata');
+      let defaultExpense : Expense = {
+        id: -1,
+        description: "",
+        amount: 0,
+        date: new Date(),
+        note: "",
+        expenseType : this.expenseTypes[0]
       }
-    });
-  }
-
-  deleteExpense(): void {
-    if (this.expenseTable?.selectedExpense) {
-      const expenseId = this.expenseTable.selectedExpense.id;
-      this.confirmDialog.confirmDelete("Sei sicuro di cancellare la spesa selezionata?").then((confirmed) => {
-        if (confirmed) {
-          this.expenseService.deleteExpense([expenseId]).subscribe({
-            next: () => {
-              this.loadExpenses();
-              this.messageService.add({ severity: 'success', summary: 'Success', detail: 'Spesa cancellata con successo' });
-            },
-            error: (error: any) => {
-              console.error(error)
-              this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Errore durante la cancellazione della spesa' });
-            }
-          });
-        } else {
-          this.messageService.add({ severity: 'info', summary: 'Cancelled', detail: 'Cancellazione annullata' });
-        }
-      });
+      this.editExpenseDialog.setExpenseToEdit(defaultExpense);
+      this.editExpenseDialog.setCurrentOperation(OperationType.ADD);
+      this.displayExpenseEditPanel=true;
     }
+
+
+  showEditExpenseDialog(expense: Expense) {
+    this.editExpenseDialog.setExpenseToEdit(expense);
+    this.editExpenseDialog.setCurrentOperation(OperationType.EDIT);
+    this.displayExpenseEditPanel = true;
   }
 
-  //#endregion
-  
-  //#region Edit Expense
-  showEditExpenseDialog(){
-    if(this.expenseTable?.selectedExpense){
-      const expenseId = this.expenseTable.selectedExpense.id;
-      const expense = this.originalExpenseList.find(expense => expense.id === expenseId);
-      if(expense){
-        this.editExpenseDialog.setExpenseToEdit(expense);
-        this.displayEditExpenseDialog = true;
+  addExpense(expense: Expense) {
+    this.displayExpenseEditPanel = false;
+    if (expense) {
+      let expenseToAdd : ExpenseToEdit = {
+        id: -1,
+        amount: expense.amount,
+        date: this.globalUtils.convertDateToString(expense.date),
+        description: expense.description,
+        expenseType: expense.expenseType.name,
+        note: expense.note
       }
-    }
-  }
-
-  hideEditExpenseDialog(){
-    this.displayEditExpenseDialog = false;
-  }
-
-  editNewExpense(expenseToAdd: ExpenseToAdd){
-    if(expenseToAdd){
-      const expenseId = this.expenseTable.selectedExpense!.id;
-      expenseToAdd.date=this.globalUtils.convertDateToString(expenseToAdd.date);
-      this.expenseService.editExpense(expenseId, expenseToAdd).subscribe({
+      this.expenseService.addExpense(expenseToAdd).subscribe({
         next: () => {
           this.loadExpenses();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Income aggiunta con successo',
+          });
         },
         error: (error: any) => {
           console.error(error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: "Errore durante l' aggiunta dell'income",
+          });
         },
       });
     }
-    else
-    {
-      console.error('No expense selected to edit');
-    }
-    this.hideEditExpenseDialog();
   }
-//#endregion
-  
-  //#region Filters
-  filterExpenses() {
-    if(this.selectedYear){
-      this.filterYear();  
-        this.filterMonth();
-        if (this.selectedMonth) {
-          this.selectedMonth = new Date(this.selectedMonth.setFullYear(this.selectedYear.getFullYear()));
-        }
+
+  editExpense(expense: Expense) {
+    this.displayExpenseEditPanel = false;
+    if (expense) {
+      let expenseToEdit : ExpenseToEdit = {
+        id: expense.id,
+        amount: expense.amount,
+        date: this.globalUtils.convertDateToString(expense.date),
+        description: expense.description,
+        expenseType: expense.expenseType.name,
+        note: expense.note
+      }
+
+      this.expenseService.editExpense(expenseToEdit.id, expenseToEdit).subscribe({
+        next: () => {
+          this.loadExpenses();
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'Income modificata con successo',
+          });
+        },
+        error: (error: any) => {
+          console.error(error);
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: "Errore durante la modifica dell'income",
+          });
+        },
+      });
     }
-    else{
-      this.filteredExpenseList = this.originalExpenseList;
+  }
+
+  deleteExpense(expense: Expense) {
+    if (expense) {
+      this.confirmDialog
+        .confirmDelete(
+          'Sei sicuro di cancellare la spesa ' +
+            expense.description +
+            ' (' +
+            expense.amount +
+            '€ | ' +
+            this.globalUtils.convertDateToItaString(expense.date) +
+            ')?'
+        )
+        .then((confirmed) => {
+          if (confirmed) {
+            this.expenseService.deleteExpense([expense.id]).subscribe({
+              next: () => {
+                this.loadExpenses();
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Success',
+                  detail: 'Spesa cancellata con successo',
+                });
+              },
+              error: (error: any) => {
+                console.error(error);
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail: 'Errore durante la cancellazione della spesa',
+                });
+              },
+            });
+          } else {
+            this.messageService.add({
+              severity: 'info',
+              summary: 'Cancelled',
+              detail: 'Cancellazione annullata',
+            });
+          }
+        });
+    }
+  }
+
+  //#endregion
+
+  //#region Filters da gestire
+  filterExpenses() {
+    if (this.selectedYear) {
+      this.filterYear();
+      this.filterMonth();
+      if (this.selectedMonth) {
+        this.selectedMonth = new Date(
+          this.selectedMonth.setFullYear(this.selectedYear.getFullYear())
+        );
+      }
+    } else {
+      this.filteredExpenseList = this.expenseList;
       this.selectedMonth = null;
     }
     let totalMoneySpent = 0;
     for (let i = 0; i < this.filteredExpenseList.length; i++) {
       totalMoneySpent += this.filteredExpenseList[i].amount;
     }
-    this.totalMoneySpentString = totalMoneySpent.toFixed(2)+' €';
+    this.totalMoneySpentString = totalMoneySpent.toFixed(2) + ' €';
   }
 
   filterYear() {
-    this.filteredExpenseList = this.originalExpenseList.filter((expense: Expense) => {
-      if(expense.date instanceof Date){
-        return expense.date.getFullYear() === this.selectedYear?.getFullYear();
-      }
-      return false;
-    });
-  }
-
-  filterMonth() { 
-    if(this.selectedMonth){
-      this.filteredExpenseList = this.filteredExpenseList.filter((expense: Expense) => {
-        if(expense.date instanceof Date){
-          return expense.date.getMonth() === this.selectedMonth?.getMonth();
+    this.filteredExpenseList = this.expenseList.filter(
+      (expense: Expense) => {
+        if (expense.date instanceof Date) {
+          return (
+            expense.date.getFullYear() === this.selectedYear?.getFullYear()
+          );
         }
         return false;
-      });
+      }
+    );
+  }
+
+  filterMonth() {
+    if (this.selectedMonth) {
+      this.filteredExpenseList = this.filteredExpenseList.filter(
+        (expense: Expense) => {
+          if (expense.date instanceof Date) {
+            return expense.date.getMonth() === this.selectedMonth?.getMonth();
+          }
+          return false;
+        }
+      );
     }
   }
 
-  cleanTableSelection() {
-    this.expenseTable.selectedExpenseList = [];
-  }
   //#endregion
-    
 }

@@ -3,7 +3,7 @@ import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { ErrorHandlerService } from '../errorHandler/error-handler.service';
 import { catchError, tap } from 'rxjs';
-import { ExpenseToAdd } from '../../interfaces/expense';
+import { ExpenseToEdit } from '../../interfaces/expense';
 
 @Injectable({
   providedIn: 'root'
@@ -39,7 +39,7 @@ export class ExpenseService {
   //#endregion
 
   //#region ADD DATA
-  postExpense(expenseToAdd : ExpenseToAdd) {
+  addExpense(expenseToAdd : ExpenseToEdit) {
     return this.http.post(`${this.apiUrl}/Expense`, expenseToAdd, this.options)
     .pipe(catchError(this.errorHandler.handleError));  
   }
@@ -55,7 +55,7 @@ export class ExpenseService {
   //#endregion
 
   //region EDIT DATA
-  editExpense(expenseId: number, expenseToAdd: ExpenseToAdd) {
+  editExpense(expenseId: number, expenseToAdd: ExpenseToEdit) {
     return this.http.put(`${this.apiUrl}/Expense/${expenseId}`, expenseToAdd, this.options)
     .pipe(catchError(this.errorHandler.handleError)); 
   }
