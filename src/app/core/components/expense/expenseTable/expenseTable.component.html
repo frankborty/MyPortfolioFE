@@ -13,35 +13,6 @@
 <ng-template #caption>
   <div class="flex flex-wrap items-center justify-between">
     <span class="text-xl font-bold">Expense List</span>
-    <div class="flex gap-3 mt-2">
-      <p-floatlabel variant="on" class="align-middle">
-        <p-datepicker
-          [(ngModel)]="selectedYear"
-          styleClass="w-40"
-          view="year"
-          dateFormat="yy"
-          [showButtonBar]="true"
-          ngModel
-          showIcon
-          iconDisplay="input"
-        />
-        <label for="YearLabel">Year</label>
-      </p-floatlabel>
-
-      <p-floatlabel variant="on" class="align-middle">
-        <p-datepicker
-          [(ngModel)]="selectedMonth"
-          styleClass="w-40"
-          view="month"
-          dateFormat="MM"
-          [showButtonBar]="true"
-          ngModel
-          showIcon
-          iconDisplay="input"
-        />
-        <label for="MonthLabel">Month</label>
-      </p-floatlabel>
-    </div>
   </div>
 </ng-template>
   <ng-template pTemplate="header">
@@ -136,11 +107,11 @@
         Date
         <p-columnFilter type="date" field="date" display="menu">
           <ng-template pTemplate="filter" let-value let-filter="filterCallback">
-            <p-calendar
+            <p-datepicker
               [ngModel]="value"
               (onSelect)="filter($event)"
               dateFormat="dd/mm/yy"
-            ></p-calendar>
+            />
           </ng-template>
         </p-columnFilter>
       </th>

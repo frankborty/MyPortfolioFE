@@ -19,9 +19,6 @@ export class ExpenseTableComponent {
   @Output() editExpenseCallBack = new EventEmitter<Expense>();
   @Output() deleteExpenseCallBack = new EventEmitter<Expense>();
 
-  selectedYear: any;
-  selectedMonth: any;
-
   constructor() {}
 
   deleteExpense(expense: Expense) {

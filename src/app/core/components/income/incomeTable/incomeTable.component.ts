@@ -21,9 +21,6 @@ export class IncomeTableComponent {
   @Output() editIncomeCallBack = new EventEmitter<Income>();
   @Output() deleteIncomeCallBack = new EventEmitter<Income>();
 
-  selectedYear: any;
-  selectedMonth: any;
-
   constructor() {}
 
   deleteIncome(income: Income) {

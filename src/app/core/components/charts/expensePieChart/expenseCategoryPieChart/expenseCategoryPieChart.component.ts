@@ -6,16 +6,16 @@ import {
   OnInit,
   SimpleChanges,
 } from '@angular/core';
-import { ImportsModule } from '../../../../imports';
-import { Expense } from '../../../interfaces/expense';
+import { ImportsModule } from '../../../../../imports';
+import { Expense } from '../../../../interfaces/expense';
 
 @Component({
-  selector: 'app-expenseTypePieChart',
+  selector: 'app-expenseCategoryPieChart',
   imports: [ImportsModule],
-  templateUrl: './expenseTypePieChart.component.html',
-  styleUrls: ['./expenseTypePieChart.component.css'],
+  templateUrl: './expenseCategoryPieChart.component.html',
+  styleUrls: ['./expenseCategoryPieChart.component.css']
 })
-export class ExpenseTypePieChartComponent implements OnInit, OnChanges {
+export class ExpenseCategoryPieChartComponent implements OnInit, OnChanges {
   @Input() expenseList: Expense[] = [];
   inputData: any;
   options: any;
@@ -36,12 +36,17 @@ export class ExpenseTypePieChartComponent implements OnInit, OnChanges {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--p-text-color');
 
-    let spesaTotalePerType = this.calcolaSommaPerType(this.expenseList);
+    let spesaTotalePerCategory = this.calcolaSommaPerCategory(this.expenseList);
+    let totalSum = 0;
+    spesaTotalePerCategory.forEach(s => totalSum+=s.sum);
+    const totalSumString = totalSum.toLocaleString("it-IT", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+    spesaTotalePerCategory.sort((a, b) => b.sum - a.sum);
 
-    spesaTotalePerType.sort((a, b) => b.sum - a.sum);
-
-    let labelList = spesaTotalePerType.map((item) => item.name);
-    let valueList = spesaTotalePerType.map((item) => item.sum);
+    let labelList = spesaTotalePerCategory.map((item) => item.name);
+    let valueList = spesaTotalePerCategory.map((item) => item.sum);
 
     this.inputData = {
       labels: labelList,
@@ -56,7 +61,7 @@ export class ExpenseTypePieChartComponent implements OnInit, OnChanges {
       plugins: {
         title: {
           display: true, // Mostra il titolo
-          text: 'Spese Filtrate per tipo', // Testo del titolo
+          text: 'Spese per categoria: '+totalSumString +" €", // Testo del titolo
           font: {
             size: 18, // Dimensione del carattere
             weight: 'bold', // Spessore del carattere
@@ -80,13 +85,13 @@ export class ExpenseTypePieChartComponent implements OnInit, OnChanges {
     this.cd.markForCheck();
   }
 
-  calcolaSommaPerType(expenseList: Expense[]): { name: string; sum: number }[] {
+  calcolaSommaPerCategory(expenseList: Expense[]): { name: string; sum: number }[] {
     const grouped = expenseList.reduce((acc, expense) => {
       // Raggruppa per tipo e somma gli importi
-      if (!acc[expense.expenseType.name]) {
-        acc[expense.expenseType.name] = 0;
+      if (!acc[expense.expenseType.category.name]) {
+        acc[expense.expenseType.category.name] = 0;
       }
-      acc[expense.expenseType.name] += expense.amount;
+      acc[expense.expenseType.category.name] += expense.amount;
 
       return acc;
     }, {} as { [key: string]: number });

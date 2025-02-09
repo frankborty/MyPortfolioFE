@@ -1,0 +1,60 @@
+<div class="flex flex-wrap gap-3">
+  <p-floatlabel variant="on" class="align-middle">
+    <p-datepicker
+      [(ngModel)]="selectedYear"
+      (ngModelChange)="filterData()"
+      styleClass="w-40"
+      view="year"
+      dateFormat="yy"
+      [showButtonBar]="true"
+      ngModel
+      showIcon
+      iconDisplay="input"
+    />
+    <label for="YearLabel">Year</label>
+  </p-floatlabel>
+
+  <p-floatlabel variant="on" class="align-middle">
+    <p-datepicker
+      [(ngModel)]="selectedMonth"
+      (ngModelChange)="filterData()"
+      styleClass="w-40"
+      view="month"
+      dateFormat="MM"
+      [showButtonBar]="true"
+      ngModel
+      showIcon
+      iconDisplay="input"
+    />
+    <label for="MonthLabel">Month</label>
+  </p-floatlabel>
+  
+  <p-multiselect
+    styleClass="w-56"
+    [options]="expenseCategoryList"
+    [(ngModel)]="selectedCategoryList"
+    (ngModelChange)="filterData()"
+    optionLabel="name"
+    placeholder="Categorie"
+    showClear="true"
+  />
+</div>
+
+<div>
+  <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
+    <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
+      
+      <div class="mb-4 mt-4 border-2">
+        <app-expenseCategoryPieChart
+          [expenseList]="filteredExpenseList"
+        ></app-expenseCategoryPieChart>
+      </div>
+      
+      <div class="mb-4 mt-4 border-2">
+        <app-expenseTypePieChart
+          [expenseList]="filteredExpenseList"
+        ></app-expenseTypePieChart>
+      </div>
+    </div>
+  </div>
+</div>

@@ -35,7 +35,7 @@ export class TopBarComponent implements OnInit {
                     },
                     {
                         label: 'Total',
-                        icon: 'pi pi-bolt',
+                        icon: 'pi pi-th-large',
                         route: '/expenses/total',
                     },
                 ]

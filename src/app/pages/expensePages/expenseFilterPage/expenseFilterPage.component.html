@@ -11,40 +11,51 @@
   </div>
 
   <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
+    <div class="flex flex-grow mb-4 w-full">
+      <app-expensePieChartPanel
+        [expenseCategoryList]="expenseCategories"
+        [expenseList]="expenseList"
+      >
+      </app-expensePieChartPanel>
+    </div>
+  </div>
+
+  <!--
+  <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
     <div class="mb-4 border-2 w-full">
       <app-expenseTypeLinearChart
-        [expenseList]="filteredExpenseList"
+        [expenseList]="expenseList"
         [expenseTypeList]="expenseTypes"
       ></app-expenseTypeLinearChart>
     </div>
     <div class="grow col-span-12 flex flex-wrap gap-4 justify-center">
       <div class="mb-4 border-2">
         <app-expenseTypePieChart
-          [expenseList]="filteredExpenseList"
+          [expenseList]="expenseList"
         ></app-expenseTypePieChart>
       </div>
       <div class="mb-4 border-2">
         <app-expenseCategoryPieChart
-          [expenseList]="filteredExpenseList"
+          [expenseList]="expenseList"
         ></app-expenseCategoryPieChart>
       </div>
     </div>
   </div>
+  -->
 </div>
 
-
 <p-dialog
-    header="Edit Expense"
-    [styleClass]="'w-[60vh] h-[80vh]'"
-    [(visible)]="displayExpenseEditPanel"
-    [modal]="true"
-    [closable]="true"
-  >
-    <app-editExpense
-      (editExpenseCallBack)="editExpense($event)"
-      (addExpenseCallBack)="addExpense($event)"
-    ></app-editExpense>
-  </p-dialog>
+  header="Edit Expense"
+  [styleClass]="'w-[60vh] h-[80vh]'"
+  [(visible)]="displayExpenseEditPanel"
+  [modal]="true"
+  [closable]="true"
+>
+  <app-editExpense
+    (editExpenseCallBack)="editExpense($event)"
+    (addExpenseCallBack)="addExpense($event)"
+  ></app-editExpense>
+</p-dialog>
 
 <p-toast />
 <app-param-confirmation-dialog></app-param-confirmation-dialog>
@@ -59,5 +70,3 @@
   >
   </p-button>
 </div>
-
-

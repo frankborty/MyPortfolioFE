@@ -33,4 +33,5 @@ export class GlobalUtilityService {
       messageService.add({ severity: 'info', summary: 'Cancelled', detail: resultDetail, life: 3000 });
     }
   }
+  
 }

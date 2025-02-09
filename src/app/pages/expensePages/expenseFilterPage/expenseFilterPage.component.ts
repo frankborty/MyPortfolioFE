@@ -1,12 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Nullable } from 'primeng/ts-helpers';
-import { ExpenseCategoryPieChartComponent } from '../../../core/components/charts/expenseCategoryPieChart/expenseCategoryPieChart.component';
 import { ExpenseTypeLinearChartComponent } from '../../../core/components/charts/expenseTypeLinearChart/expenseTypeLinearChart.component';
-import { ExpenseTypePieChartComponent } from '../../../core/components/charts/expenseTypePieChart/expenseTypePieChart.component';
 import { ExpenseTableComponent } from '../../../core/components/expense/expenseTable/expenseTable.component';
 import { ParamConfirmationDialogComponent } from '../../../core/components/param-confirmation-dialog/param-confirmation-dialog.component';
-import { OperationResult } from '../../../core/enum/operationResult';
 import { Expense, ExpenseToEdit } from '../../../core/interfaces/expense';
 import { ExpenseCategory } from '../../../core/interfaces/expenseCategory';
 import { ExpenseType } from '../../../core/interfaces/expenseType';
@@ -15,6 +12,7 @@ import { GlobalUtilityService } from '../../../core/services/utils/global-utilit
 import { ImportsModule } from '../../../imports';
 import { EditExpenseComponent } from '../../../core/components/expense/editExpense/editExpense.component';
 import { OperationType } from '../../../core/enum/oprationType';
+import { ExpensePieChartPanelComponent } from '../../../core/components/charts/expensePieChart/expensePieChartPanel/expensePieChartPanel.component';
 
 @Component({
   selector: 'app-expenseFilterPage',
@@ -23,9 +21,7 @@ import { OperationType } from '../../../core/enum/oprationType';
     ImportsModule,
     EditExpenseComponent,
     ParamConfirmationDialogComponent,
-    ExpenseTypePieChartComponent,
-    ExpenseCategoryPieChartComponent,
-    ExpenseTypeLinearChartComponent,
+    ExpensePieChartPanelComponent,
   ],
   providers: [
     ConfirmationService,
@@ -69,12 +65,12 @@ export class ExpenseFilterPageComponent implements OnInit {
   loadExpenses() {
     this.expenseService.getExpenses().subscribe({
       next: (data: any) => {
-        this.expenseList = data;
-        this.expenseList.map((expense: Expense) => {
-          expense.date = this.globalUtils.convertStringToDate(
-            expense.date.toString()
-          );
+        data.map((expense: Expense) => {
+          expense.date = this.globalUtils.convertStringToDate(expense.date.toString());
         });
+        (data as Expense[]).sort((a, b) => (b.date as Date).getTime() - (a.date as Date).getTime());
+
+        this.expenseList = data;
         this.filterExpenses();
       },
       error: (error: any) => {

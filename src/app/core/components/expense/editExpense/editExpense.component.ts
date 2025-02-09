@@ -14,7 +14,6 @@ import { SelectChangeEvent } from 'primeng/select';
   styleUrls: ['./editExpense.component.css']
 })
 export class EditExpenseComponent implements OnInit {
-
   @Output() editExpenseCallBack = new EventEmitter<Expense>();
   @Output() addExpenseCallBack = new EventEmitter<Expense>();
 
