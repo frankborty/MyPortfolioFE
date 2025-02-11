@@ -10,11 +10,12 @@ import { ParamConfirmationDialogComponent } from '../../core/components/param-co
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { EditIncomeComponent } from '../../core/components/income/editIncome/editIncome.component';
 import { OperationType } from '../../core/enum/oprationType';
+import { IncomeStackedBarChartComponent } from '../../core/components/charts/incomeStackedBarChart/incomeStackedBarChart.component';
 
 @Component({
   selector: 'app-incomes-page',
   imports: [ImportsModule, IncomeTableComponent, IncomeSummaryTableComponent, 
-    EditIncomeComponent, ParamConfirmationDialogComponent],
+    EditIncomeComponent, ParamConfirmationDialogComponent, IncomeStackedBarChartComponent],
   providers: [
     ConfirmationService,
     MessageService,

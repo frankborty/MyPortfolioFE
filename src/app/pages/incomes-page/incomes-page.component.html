@@ -17,20 +17,28 @@
       </app-incomeSummaryTable>
     </div>
   </div>
+
+  <div class="col-span-12">
+    <app-incomeStackedBarChart
+      [incomeList]="incomList"
+      [incomeTypeList]="incomeTypeList"
+    ></app-incomeStackedBarChart>
+  </div>
+
 </div>
 
 <p-dialog
-    header="Edit Income"
-    [styleClass]="'w-[60vh] h-[80vh]'"
-    [(visible)]="displayIncomeEditPanel"
-    [modal]="true"
-    [closable]="true"
-  >
-    <app-editIncome
-      (editIncomeCallBack)="editIncome($event)"
-      (addIncomeCallBack)="addIncome($event)"
-    ></app-editIncome>
-  </p-dialog>
+  header="Edit Income"
+  [styleClass]="'w-[60vh] h-[80vh]'"
+  [(visible)]="displayIncomeEditPanel"
+  [modal]="true"
+  [closable]="true"
+>
+  <app-editIncome
+    (editIncomeCallBack)="editIncome($event)"
+    (addIncomeCallBack)="addIncome($event)"
+  ></app-editIncome>
+</p-dialog>
 
 <p-toast />
 <app-param-confirmation-dialog></app-param-confirmation-dialog>
