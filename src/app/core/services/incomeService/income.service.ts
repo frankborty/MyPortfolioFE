@@ -4,6 +4,7 @@ import { ErrorHandlerService } from '../errorHandler/error-handler.service';
 import { HttpClient } from '@angular/common/http';
 import { catchError } from 'rxjs';
 import { Income } from '../../interfaces/income';
+import { IncomeType } from '../../interfaces/incomeType';
 
 @Injectable({
   providedIn: 'root',
@@ -36,6 +37,12 @@ export class IncomeService {
       .post(`${this.apiUrl}/Income`, incomeToAdd, this.options)
       .pipe(catchError(this.errorHandler.handleError));
   }
+
+  addIncomeType(incomeType: string[]) {
+    return this.http
+      .post(`${this.apiUrl}/IncomeType/addList`, incomeType, this.options)
+      .pipe(catchError(this.errorHandler.handleError));
+  }
   //#endregion
 
   //#region DELETE DATA
@@ -47,12 +54,27 @@ export class IncomeService {
       })
       .pipe(catchError(this.errorHandler.handleError));
   }
+
+  deleteIncomeType(incomeTypeIdList: number[]) {
+    return this.http
+      .request('delete', `${this.apiUrl}/IncomeType/deleteList`, {
+        body: incomeTypeIdList,
+        ...this.options,
+      })
+      .pipe(catchError(this.errorHandler.handleError));
+  }
   //#endregion
 
   //#region EDIT DATA
   editIncome(incomeId: number, incomeToUpdate: Income) {
     return this.http
       .put(`${this.apiUrl}/Income/${incomeId}`, incomeToUpdate, this.options)
+      .pipe(catchError(this.errorHandler.handleError));
+  }
+
+  editIncomeType(incomeTypeId: number, incomeTypeToUpdate: IncomeType) {
+    return this.http
+      .put(`${this.apiUrl}/IncomeType/${incomeTypeId}`, incomeTypeToUpdate, this.options)
       .pipe(catchError(this.errorHandler.handleError));
   }
   //#endregion

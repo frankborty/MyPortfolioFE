@@ -1,0 +1,105 @@
+<div class="card" [style]="{ 'max-width': '40rem' }">
+  <p-table
+  [value]="incomeTypeList"
+  dataKey="id"
+  editMode="row"
+  [size]="'small'"
+  showGridlines
+  [tableStyle]="{ 'max-width': '40rem' }"
+>
+  <ng-template #caption>
+    <div class="flex flex-wrap items-center justify-between">
+      <span class="text-xl font-bold">Income Type</span>
+      
+    <div class="flex gap-2">
+      <p-button styleClass="action-button-small" icon="pi pi-plus" [rounded]="true" (onClick)="addNewIncomeType()" />
+      <p-button styleClass="action-button-small" severity="secondary" icon="pi pi-refresh" [rounded]="true" (onClick)="loadIncomeTypes()" />  
+    </div>
+  </div>
+
+  </ng-template>
+
+  <ng-template #header>
+    <tr>
+      <th class="w-14">Id</th>
+      <th>Name</th>
+      <th class="w-14"></th>
+      <th class="w-14"></th>
+    </tr>
+  </ng-template>
+  <ng-template #body let-incomeType let-editing="editing" let-ri="rowIndex">
+    <tr [pEditableRow]="incomeType">
+      <td>
+        {{ incomeType.id }}
+      </td>
+      <td>
+        <p-cellEditor>
+          <ng-template #input>
+            <input pInputText type="text" [(ngModel)]="incomeType.name" />
+          </ng-template>
+          <ng-template #output>
+            {{ incomeType.name }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
+      <td  class="p-0">
+        <div class="flex items-center justify-center gap-2">
+          <button
+            *ngIf="!editing"
+            pButton
+            pRipple
+            type="button"
+            pInitEditableRow
+            icon="pi pi-pencil"
+            (click)="onRowEditStart(incomeType)"
+            text
+            rounded
+            severity="secondary"
+          ></button>
+          <button
+            *ngIf="editing"
+            pButton
+            pRipple
+            type="button"
+            pSaveEditableRow
+            icon="pi pi-check"
+            (click)="onRowEditSave(incomeType)"
+            text
+            rounded
+            severity="secondary"
+          ></button>
+          <button
+            *ngIf="editing"
+            pButton
+            pRipple
+            type="button"
+            pCancelEditableRow
+            icon="pi pi-times"
+            (click)="onRowEditCancel()"
+            text
+            rounded
+            severity="secondary"
+          ></button>
+        </div>
+      </td>
+
+      <td class="p-0" >
+        <div class="flex items-center justify-center gap-2">
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-trash"
+            (click)="deleteIncomeType(incomeType)"
+            text
+            rounded
+            severity="secondary"
+          ></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+</div>
+<p-toast />
+<app-param-confirmation-dialog></app-param-confirmation-dialog>

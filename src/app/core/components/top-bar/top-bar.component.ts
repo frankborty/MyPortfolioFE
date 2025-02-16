@@ -45,6 +45,11 @@ export class TopBarComponent implements OnInit {
                 icon: 'pi pi-briefcase',
                 route: '/assets'
             },
+            {
+                label: 'Settings',
+                icon: 'pi pi-cog',
+                route: '/settings'
+            },
 
             
 
