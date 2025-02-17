@@ -94,7 +94,7 @@ export class IncomeTypeSettingComponent implements OnInit {
       )
       .then((confirmed) => {
         if (confirmed) {
-          this.incomeService.deleteIncomeType([incomeType.id]).subscribe({
+          this.incomeService.deleteIncomeType(incomeType.id).subscribe({
             next: () => {
               this.messageService.add({
                 severity: 'success',
@@ -122,7 +122,7 @@ export class IncomeTypeSettingComponent implements OnInit {
   }
 
   addNewIncomeType() {
-    this.incomeService.addIncomeType(['Unknown']).subscribe({
+    this.incomeService.addIncomeType('Unknown').subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',

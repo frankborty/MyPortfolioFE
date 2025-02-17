@@ -1,6 +1,6 @@
 <div class="card" [style]="{ 'min-width': '25rem', 'max-width': '50rem' }">
   <p-table
-  [value]="incomeTypeList"
+  [value]="expenseCategoryList"
   dataKey="id"
   editMode="row"
   [size]="'small'"
@@ -8,11 +8,11 @@
 >
   <ng-template #caption>
     <div class="flex flex-wrap items-center justify-between">
-      <span class="text-xl font-bold">Income Type</span>
+      <span class="text-xl font-bold">Expense Category</span>
       
     <div class="flex gap-2">
-      <p-button icon="pi pi-plus" [rounded]="true" (onClick)="addNewIncomeType()" />
-      <p-button severity="secondary" icon="pi pi-refresh" [rounded]="true" (onClick)="loadIncomeTypes()" />  
+      <p-button icon="pi pi-plus" [rounded]="true" (onClick)="addNewExpenseCategory()" />
+      <p-button severity="secondary" icon="pi pi-refresh" [rounded]="true" (onClick)="loadExpenseCategories()" />  
     </div>
   </div>
 
@@ -26,18 +26,18 @@
       <th class="w-14"></th>
     </tr>
   </ng-template>
-  <ng-template #body let-incomeType let-editing="editing" let-ri="rowIndex">
-    <tr [pEditableRow]="incomeType">
+  <ng-template #body let-expenseCategory let-editing="editing" let-ri="rowIndex">
+    <tr [pEditableRow]="expenseCategory">
       <td>
-        {{ incomeType.id }}
+        {{ expenseCategory.id }}
       </td>
       <td>
         <p-cellEditor>
           <ng-template #input>
-            <input pInputText type="text" [(ngModel)]="incomeType.name" />
+            <input pInputText type="text" [(ngModel)]="expenseCategory.name" />
           </ng-template>
           <ng-template #output>
-            {{ incomeType.name }}
+            {{ expenseCategory.name }}
           </ng-template>
         </p-cellEditor>
       </td>
@@ -50,7 +50,7 @@
             type="button"
             pInitEditableRow
             icon="pi pi-pencil"
-            (click)="onRowEditStart(incomeType)"
+            (click)="onRowEditStart(expenseCategory)"
             text
             rounded
             severity="secondary"
@@ -62,7 +62,7 @@
             type="button"
             pSaveEditableRow
             icon="pi pi-check"
-            (click)="onRowEditSave(incomeType)"
+            (click)="onRowEditSave(expenseCategory)"
             text
             rounded
             severity="secondary"
@@ -89,7 +89,7 @@
             pRipple
             type="button"
             icon="pi pi-trash"
-            (click)="deleteIncomeType(incomeType)"
+            (click)="deleteExpenseCategory(expenseCategory)"
             text
             rounded
             severity="secondary"

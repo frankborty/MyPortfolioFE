@@ -6,10 +6,11 @@ import { ExpenseService } from '../../core/services/expenseService/expense.servi
 import { IncomeService } from '../../core/services/incomeService/income.service';
 import { ImportsModule } from '../../imports';
 import { IncomeTypeSettingComponent } from '../../core/components/settings/incomeTypeSetting/incomeTypeSetting.component';
+import { ExpenseCategorySettingComponent } from '../../core/components/settings/expenseCategorySetting/expenseCategorySetting.component';
 
 @Component({
   selector: 'app-settting-page',
-  imports: [ImportsModule, IncomeTypeSettingComponent],
+  imports: [ImportsModule, IncomeTypeSettingComponent, ExpenseCategorySettingComponent],
   templateUrl: './settting-page.component.html',
   styleUrls: ['./settting-page.component.css']
 })

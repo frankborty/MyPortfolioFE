@@ -38,9 +38,10 @@ export class IncomeService {
       .pipe(catchError(this.errorHandler.handleError));
   }
 
-  addIncomeType(incomeType: string[]) {
+  addIncomeType(incomeTypeName: string) {
+    const url = `${this.apiUrl}/IncomeType?incomeType=${encodeURIComponent(incomeTypeName)}`;
     return this.http
-      .post(`${this.apiUrl}/IncomeType/addList`, incomeType, this.options)
+      .post(url, null, this.options)
       .pipe(catchError(this.errorHandler.handleError));
   }
   //#endregion
@@ -55,12 +56,10 @@ export class IncomeService {
       .pipe(catchError(this.errorHandler.handleError));
   }
 
-  deleteIncomeType(incomeTypeIdList: number[]) {
+  deleteIncomeType(incomeTypeId: number) {
+    const url = `${this.apiUrl}/IncomeType?incomeTypeId=${encodeURIComponent(incomeTypeId)}`;
     return this.http
-      .request('delete', `${this.apiUrl}/IncomeType/deleteList`, {
-        body: incomeTypeIdList,
-        ...this.options,
-      })
+      .delete(url)
       .pipe(catchError(this.errorHandler.handleError));
   }
   //#endregion
