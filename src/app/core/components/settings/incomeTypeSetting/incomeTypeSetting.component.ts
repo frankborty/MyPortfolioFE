@@ -56,7 +56,7 @@ export class IncomeTypeSettingComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: "Errore durante l'update: " + error,
+          detail: error,
         });
       },
     });
@@ -107,7 +107,7 @@ export class IncomeTypeSettingComponent implements OnInit {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: 'Errore durante la cancellazione: ' + error,
+                detail: error,
               });
             },
           });
@@ -135,7 +135,7 @@ export class IncomeTypeSettingComponent implements OnInit {
         this.messageService.add({
           severity: 'error',
           summary: 'Error',
-          detail: "Errore durante l'aggiunta: " + error,
+          detail: error,
         });
       },
     });

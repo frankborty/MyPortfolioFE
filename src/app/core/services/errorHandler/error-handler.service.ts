@@ -20,6 +20,6 @@ export class ErrorHandlerService {
       return throwError(() => new Error('Network error'));
     }
 
-    return throwError(() => new Error(`Server error: ${error.error.detail || error.error.message}`));
+    return throwError(() => new Error(`${error.error.detail || error.error.message || error.error}`));
   }
 }

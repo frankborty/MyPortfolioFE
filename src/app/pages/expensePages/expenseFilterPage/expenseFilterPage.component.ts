@@ -145,11 +145,10 @@ export class ExpenseFilterPageComponent implements OnInit {
           });
         },
         error: (error: any) => {
-          console.error(error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: "Errore durante l' aggiunta dell'income",
+            detail: error,
           });
         },
       });
@@ -178,11 +177,10 @@ export class ExpenseFilterPageComponent implements OnInit {
           });
         },
         error: (error: any) => {
-          console.error(error);
           this.messageService.add({
             severity: 'error',
             summary: 'Error',
-            detail: "Errore durante la modifica dell'income",
+            detail: error,
           });
         },
       });
@@ -217,7 +215,7 @@ export class ExpenseFilterPageComponent implements OnInit {
                 this.messageService.add({
                   severity: 'error',
                   summary: 'Error',
-                  detail: 'Errore durante la cancellazione della spesa',
+                  detail: error,
                 });
               },
             });
