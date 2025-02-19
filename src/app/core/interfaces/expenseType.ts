@@ -5,3 +5,8 @@ export interface ExpenseType {
     name: string;
     category: ExpenseCategory;
 }
+
+export interface ExpenseTypeToAdd{
+    name: string;
+    categoryId: number;
+}

@@ -5,6 +5,7 @@ import { ErrorHandlerService } from '../errorHandler/error-handler.service';
 import { catchError, tap } from 'rxjs';
 import { ExpenseToEdit } from '../../interfaces/expense';
 import { ExpenseCategory } from '../../interfaces/expenseCategory';
+import { ExpenseType, ExpenseTypeToAdd } from '../../interfaces/expenseType';
 
 @Injectable({
   providedIn: 'root',
@@ -55,6 +56,12 @@ export class ExpenseService {
     return this.http
       .post(url, null, this.options)
       .pipe(catchError(this.errorHandler.handleError));
+  }  
+
+  addExpenseType(expenseType: ExpenseType) {
+    return this.http
+      .post(`${this.apiUrl}/ExpenseType`, expenseType, this.options)
+      .pipe(catchError(this.errorHandler.handleError));
   }
 
   //#endregion
@@ -71,6 +78,13 @@ export class ExpenseService {
 
   deleteExpenseCategory(expenseCategoryId: number) {
     const url = `${this.apiUrl}/ExpenseCategory?expenseCategoryId=${encodeURIComponent(expenseCategoryId)}`;
+    return this.http
+      .delete(url)
+      .pipe(catchError(this.errorHandler.handleError));
+  }
+  
+  deleteExpenseType(expenseTypeId: number) {
+    const url = `${this.apiUrl}/ExpenseType?expenseTypeId=${encodeURIComponent(expenseTypeId)}`;
     return this.http
       .delete(url)
       .pipe(catchError(this.errorHandler.handleError));
@@ -93,6 +107,19 @@ export class ExpenseService {
       .put(
         `${this.apiUrl}/ExpenseCategory/${expenseCategoryId}`,
         newExpenseCategory,
+        this.options
+      )
+      .pipe(catchError(this.errorHandler.handleError));
+  }
+
+  editExpenseType(
+    expenseTypeId: number,
+    newExpenseType: ExpenseType
+  ) {
+    return this.http
+      .put(
+        `${this.apiUrl}/ExpenseType/${expenseTypeId}`,
+        newExpenseType,
         this.options
       )
       .pipe(catchError(this.errorHandler.handleError));

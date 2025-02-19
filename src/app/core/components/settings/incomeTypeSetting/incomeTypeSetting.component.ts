@@ -122,7 +122,7 @@ export class IncomeTypeSettingComponent implements OnInit {
   }
 
   addNewIncomeType() {
-    this.incomeService.addIncomeType('Unknown').subscribe({
+    this.incomeService.addIncomeType('AA_NewIncomeType').subscribe({
       next: () => {
         this.messageService.add({
           severity: 'success',
