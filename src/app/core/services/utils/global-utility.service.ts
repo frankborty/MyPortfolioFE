@@ -18,6 +18,10 @@ export class GlobalUtilityService {
     return format(date, 'yyyyMMdd_HHmmss');
   }
 
+  convertStringToYearMonthString(date : string): string{
+    return date.substring(0, 6);
+  }
+
   convertDateToItaString(date : any): string{
     return format(date, 'dd/MM/yyyy');
   }

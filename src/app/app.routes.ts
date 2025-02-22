@@ -7,7 +7,7 @@ import { SetttingPageComponent } from './pages/settting-page/settting-page.compo
 
 
 export const routes: Routes = [
-    { path: '', redirectTo: '/expenses/partial', pathMatch: 'full' }, // Route di default
+    { path: '', redirectTo: '/assets', pathMatch: 'full' }, // Route di default
     { path: 'assets', component: AssetsPageComponent },
     { path: 'income', component: IncomesPageComponent },
     { path: 'expenses/total', component: ExpenseTotalPageComponent },

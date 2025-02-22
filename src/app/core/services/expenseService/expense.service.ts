@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { ErrorHandlerService } from '../errorHandler/error-handler.service';
-import { catchError, tap } from 'rxjs';
+import { catchError } from 'rxjs';
 import { ExpenseToEdit } from '../../interfaces/expense';
 import { ExpenseCategory } from '../../interfaces/expenseCategory';
-import { ExpenseType, ExpenseTypeToAdd } from '../../interfaces/expenseType';
+import { ExpenseType } from '../../interfaces/expenseType';
 
 @Injectable({
   providedIn: 'root',
