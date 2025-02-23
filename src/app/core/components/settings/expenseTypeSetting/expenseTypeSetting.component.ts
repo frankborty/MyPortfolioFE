@@ -105,11 +105,8 @@ export class ExpenseTypeSettingComponent implements OnInit {
     this.updatingItemType.id = -1;
   }
 
-  onRowEditStart(expenseType: ExpenseType) {
-    this.updatingItemType.id = expenseType.id;
-    this.updatingItemType.name = expenseType.name;
-    this.updatingItemType.category.id = expenseType.category.id;
-    this.updatingItemType.category.name = expenseType.category.name;
+  onRowEditStart(expenseType: ExpenseType) {    
+    this.updatingItemType = JSON.parse(JSON.stringify(expenseType));
   }
 
   deleteExpenseType(expenseType: ExpenseType) {

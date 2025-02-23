@@ -62,8 +62,7 @@ export class AssetTotalBarChartComponent implements OnInit {
 
     this.filterAssetValueSummary();
 
-    for (const [categoryName, assetValueByDate] of this
-      .assetCategoryValueDictionary) {
+    for (const [_, assetValueByDate] of this.assetCategoryValueDictionary) {
       this.inputData = {
         labels: Array.from(assetValueByDate.keys()).map(
           (x) => x.substring(4, 6) + '/' + x.substring(0, 4)
@@ -73,8 +72,7 @@ export class AssetTotalBarChartComponent implements OnInit {
       break;
     }
 
-    for (const [categoryName, assetValueByDate] of this
-      .assetCategoryValueDictionary) {
+    for (const [categoryName, assetValueByDate] of this.assetCategoryValueDictionary) {
       let dataset = {
         type: 'bar',
         label: categoryName,
@@ -181,17 +179,13 @@ export class AssetTotalBarChartComponent implements OnInit {
     }
 
     if (this.selectedYear) {
-      const assetDateTmp = this.globalUtilityService.convertStringToDate(
-        assetValue.timeStamp
-      );
+      const assetDateTmp = this.globalUtilityService.convertStringToDate(assetValue.timeStamp);
       if (assetDateTmp.getFullYear() !== this.selectedYear.getFullYear()) {
         return;
       }
     }
 
-    const assetDate = this.globalUtilityService.convertStringToYearMonthString(
-      assetValue.timeStamp
-    );
+    const assetDate = this.globalUtilityService.convertStringToYearMonthString(assetValue.timeStamp);
 
     const currentValue = assetCategoryItem.get(assetDate) ?? 0;
     assetCategoryItem.set(assetDate, currentValue + assetValue.value);

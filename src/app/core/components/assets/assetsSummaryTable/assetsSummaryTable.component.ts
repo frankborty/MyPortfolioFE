@@ -14,17 +14,33 @@ import { ParamConfirmationDialogComponent } from '../../param-confirmation-dialo
   styleUrls: ['./assetsSummaryTable.component.css'],
 })
 export class AssetsSummaryTableComponent implements OnInit {
+
   assetValueSummaryOriginal: AssetValueSummary[] = [];
   assetValueSummaryFiltered: AssetValueSummary[] = [];
-
+  assetValueSummaryToUpdate: AssetValueSummary;
   assetSumTotalByMonth: number[] = [0,0,0,0,0,0,0,0,0,0,0,0];
   assetDeltaByMonth: number[] = [0,0,0,0,0,0,0,0,0,0,0,0];  
 
   selectedYear: Date = new Date('2024-01-01'); //da sistemare con il 2025
+  monthIndexArray: number[]= [0,1,2,3,4,5,6,7,8,9,10,11];
 
   constructor(private assetService: AssetServiceService,
-    private globalUtilityService: GlobalUtilityService
-  ) {}
+    private globalUtilityService: GlobalUtilityService,
+    private messageService: MessageService
+  ) {
+    this.assetValueSummaryToUpdate = {
+      asset: {
+        id: -1,
+        name: '',
+        assetCategory: {
+          id: -1,
+          name: '',
+          isInvested: false
+        }
+      },
+      assetValueList: []
+    };
+  }
 
   ngOnInit() {
     this.loadAssetsSummaryByMonth();
@@ -98,4 +114,50 @@ export class AssetsSummaryTableComponent implements OnInit {
     .filter(asset => asset.asset.assetCategory.name === assetCategory.name)
     .reduce((acc, asset) => acc + asset.assetValueList[monthIndex].value, 0);
   }
+
+  onRowEditStart(assetValueSummaryToUpdate: AssetValueSummary) {
+    this.assetValueSummaryToUpdate = JSON.parse(JSON.stringify(assetValueSummaryToUpdate));
+  }
+    
+  onRowEditSave(assetValueSummaryUpdated: AssetValueSummary) {
+    if(this.assetValueSummaryToUpdate.asset.assetCategory.id != -1) { 
+      this.saveAssetValueType(assetValueSummaryUpdated);
+    }
+  }
+    
+  onRowEditCancel() {
+    this.assetValueSummaryFiltered.forEach((assetSummary) => {
+      if (assetSummary.asset.name == this.assetValueSummaryToUpdate.asset.name) {
+        for(let i = 0; i < 12; i++) {
+          assetSummary.assetValueList[i].value = this.assetValueSummaryToUpdate.assetValueList[i].value;
+        }
+        this.assetValueSummaryToUpdate.asset.assetCategory.id = -1;
+        return;
+      }
+    });
+  }
+
+  saveAssetValueType(asset: AssetValueSummary) {
+    asset.assetValueList.forEach((assetValue) => {
+      assetValue.timeStamp = this.globalUtilityService.convertDateToString(assetValue.timeStamp);
+      assetValue.value = assetValue.value ?? 0;
+    });
+    this.assetService.updateAssetValueSummary(asset).subscribe({
+      next: () => {
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'ExpenseType modificata con successo',
+        });
+      },
+      error: (error: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error,
+        });
+        this.loadAssetsSummaryByMonth();
+      },
+    });
+  } 
 }

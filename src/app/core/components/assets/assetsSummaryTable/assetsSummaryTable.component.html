@@ -1,12 +1,24 @@
 <div class="card">
-  <p-table showGridlines [size]="'small'" [value]="assetValueSummaryFiltered"
-    rowGroupMode="subheader" groupRowsBy="asset.assetCategory.name" [tableStyle]="{'min-width': '60rem'}">
-    
+  <p-table
+    [value]="assetValueSummaryFiltered"
+    dataKey="asset.name"
+    rowGroupMode="subheader"
+    editMode="row"
+    [size]="'small'"
+    groupRowsBy="asset.assetCategory.name"
+    showGridlines
+  >
     <ng-template #caption>
       <div class="flex flex-wrap items-center justify-between">
         <span class="text-xl font-bold">Assets</span>
 
         <div class="flex gap-2">
+          <p-button
+            severity="secondary"
+            icon="pi pi-refresh"
+            [rounded]="true"
+            (onClick)="loadAssetsSummaryByMonth()"
+          />
           <p-floatlabel variant="on" class="align-middle">
             <p-datepicker
               [(ngModel)]="selectedYear"
@@ -20,14 +32,15 @@
               iconDisplay="input"
             />
             <label for="YearLabel">Year</label>
-          </p-floatlabel> 
+          </p-floatlabel>
         </div>
       </div>
     </ng-template>
-    
+
     <ng-template #header>
       <tr class="bg-blue-200">
         <th class="bg-transparent w-48">Name</th>
+        <th class="bg-transparent w-14"></th>
         <th class="bg-transparent">Gen</th>
         <th class="bg-transparent">Feb</th>
         <th class="bg-transparent">Mar</th>
@@ -47,77 +60,108 @@
       <tr pRowGroupHeader class="bg-slate-400">
         <td>
           <div class="flex items-center gap-2">
-            <span class="font-bold">{{ assetSummaryItem.asset.assetCategory.name }}</span>
+            <span class="font-bold">{{
+              assetSummaryItem.asset.assetCategory.name
+            }}</span>
           </div>
         </td>
-        
-        <td class="bg-transparent">{{ CalculateCategoryGroupHeaderMonth(assetSummaryItem.asset.assetCategory, 0) | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ CalculateCategoryGroupHeaderMonth(assetSummaryItem.asset.assetCategory, 1) | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ CalculateCategoryGroupHeaderMonth(assetSummaryItem.asset.assetCategory, 2) | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ CalculateCategoryGroupHeaderMonth(assetSummaryItem.asset.assetCategory, 3) | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ CalculateCategoryGroupHeaderMonth(assetSummaryItem.asset.assetCategory, 4) | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ CalculateCategoryGroupHeaderMonth(assetSummaryItem.asset.assetCategory, 5) | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ CalculateCategoryGroupHeaderMonth(assetSummaryItem.asset.assetCategory, 6) | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ CalculateCategoryGroupHeaderMonth(assetSummaryItem.asset.assetCategory, 7) | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ CalculateCategoryGroupHeaderMonth(assetSummaryItem.asset.assetCategory, 8) | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ CalculateCategoryGroupHeaderMonth(assetSummaryItem.asset.assetCategory, 9) | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ CalculateCategoryGroupHeaderMonth(assetSummaryItem.asset.assetCategory, 10) | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ CalculateCategoryGroupHeaderMonth(assetSummaryItem.asset.assetCategory, 11) | number: '1.2-2':'it-IT' }}</td>
+        <td></td>
+        <td class="bg-transparent" *ngFor="let monthIndex of monthIndexArray">
+          {{
+            CalculateCategoryGroupHeaderMonth(
+              assetSummaryItem.asset.assetCategory,
+              monthIndex
+            ) | number : "1.2-2" : "it-IT"
+          }}
+        </td>
       </tr>
     </ng-template>
-  
 
-    <ng-template #body let-assetSummary let-rowIndex="rowIndex">
-      <tr>
-        <td>{{ assetSummary.asset.name}}</td>
-        <td>{{ assetSummary.assetValueList[0].value | number: '1.2-2':'it-IT' }}</td>
-        <td>{{ assetSummary.assetValueList[1].value | number: '1.2-2':'it-IT' }}</td>
-        <td>{{ assetSummary.assetValueList[2].value | number: '1.2-2':'it-IT' }}</td>
-        <td>{{ assetSummary.assetValueList[3].value | number: '1.2-2':'it-IT' }}</td>
-        <td>{{ assetSummary.assetValueList[4].value | number: '1.2-2':'it-IT' }}</td>
-        <td>{{ assetSummary.assetValueList[5].value | number: '1.2-2':'it-IT' }}</td>
-        <td>{{ assetSummary.assetValueList[6].value | number: '1.2-2':'it-IT' }}</td>
-        <td>{{ assetSummary.assetValueList[7].value | number: '1.2-2':'it-IT' }}</td>
-        <td>{{ assetSummary.assetValueList[8].value | number: '1.2-2':'it-IT' }}</td>
-        <td>{{ assetSummary.assetValueList[9].value | number: '1.2-2':'it-IT' }}</td>
-        <td>{{ assetSummary.assetValueList[10].value | number: '1.2-2':'it-IT' }}</td>
-        <td>{{ assetSummary.assetValueList[11].value | number: '1.2-2':'it-IT' }}</td>
+    <ng-template
+      #body
+      let-assetSummaryItem
+      let-editing="editing"
+      let-ri="rowIndex">
+      <tr [pEditableRow]="assetSummaryItem">
+        <td>{{ assetSummaryItem.asset.name }}</td>
+        <td class="p-0">
+          <div class="flex items-center justify-center gap-2">
+            <button
+              *ngIf="!editing"
+              pButton
+              pRipple
+              type="button"
+              pInitEditableRow
+              icon="pi pi-pencil"
+              (click)="onRowEditStart(assetSummaryItem)"
+              text
+              rounded
+              severity="secondary"
+            ></button>
+            <button
+              *ngIf="editing"
+              pButton
+              pRipple
+              type="button"
+              pSaveEditableRow
+              icon="pi pi-check"
+              (click)="onRowEditSave(assetSummaryItem)"
+              text
+              rounded
+              severity="secondary"
+            ></button>
+            <button
+              *ngIf="editing"
+              pButton
+              pRipple
+              type="button"
+              pCancelEditableRow
+              icon="pi pi-times"
+              (click)="onRowEditCancel()"
+              text
+              rounded
+              severity="secondary"
+            ></button>
+          </div>
+        </td>
+        <td class="bg-transparent" *ngFor="let monthIndex of monthIndexArray">
+          <p-cellEditor>
+            <ng-template #input>
+              <input
+                style="padding: 3px"
+                pInputText
+                type="number"
+                class="w-20"
+                [(ngModel)]="assetSummaryItem.assetValueList[monthIndex].value"
+              />
+            </ng-template>
+            <ng-template #output>
+              {{
+                assetSummaryItem.assetValueList[monthIndex].value
+                  | number : "1.2-2" : "it-IT"
+              }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
       </tr>
     </ng-template>
 
     <ng-template #footer>
       <tr class="!bg-red-400">
         <td class="font-bold bg-transparent">Totale</td>
-        <td class="bg-transparent">{{ assetSumTotalByMonth[0] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetSumTotalByMonth[1] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetSumTotalByMonth[2] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetSumTotalByMonth[3] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetSumTotalByMonth[4] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetSumTotalByMonth[5] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetSumTotalByMonth[6] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetSumTotalByMonth[7] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetSumTotalByMonth[8] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetSumTotalByMonth[9] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetSumTotalByMonth[10] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetSumTotalByMonth[11] | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent"></td>
+        <td class="bg-transparent" *ngFor="let monthIndex of monthIndexArray">
+          {{ assetSumTotalByMonth[monthIndex] | number : "1.2-2" : "it-IT" }}
+        </td>
       </tr>
       <tr class="!bg-blue-400">
         <td class="font-bold bg-transparent">Delta</td>
-        <td class="bg-transparent">{{ assetDeltaByMonth[0] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetDeltaByMonth[1] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetDeltaByMonth[2] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetDeltaByMonth[3] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetDeltaByMonth[4] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetDeltaByMonth[5] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetDeltaByMonth[6] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetDeltaByMonth[7] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetDeltaByMonth[8] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetDeltaByMonth[9] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetDeltaByMonth[10] | number: '1.2-2':'it-IT' }}</td>
-        <td class="bg-transparent">{{ assetDeltaByMonth[11] | number: '1.2-2':'it-IT' }}</td>
+        <td class="bg-transparent"></td>
+        <td class="bg-transparent" *ngFor="let monthIndex of monthIndexArray">
+          {{ assetDeltaByMonth[monthIndex] | number : "1.2-2" : "it-IT" }}
+        </td>
       </tr>
     </ng-template>
-  
   </p-table>
 </div>
 <p-toast />

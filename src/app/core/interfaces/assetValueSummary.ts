@@ -11,6 +11,7 @@ export interface AssetValueList {
 }
 
 export interface AssetSimple {
+  id: number;
   name: string;
   assetCategory: AssetCategory;
 }

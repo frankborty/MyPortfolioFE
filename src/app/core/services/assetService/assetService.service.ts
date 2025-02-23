@@ -22,5 +22,14 @@ export class AssetServiceService {
       .get<AssetValueSummary[]>(`${this.apiUrl}/AssetValue/SummaryByMonth`, this.options)
       .pipe(catchError(this.errorHandler.handleError));
   }
+  //#endregion
+
+  //#region  UPDATE DATA
+  updateAssetValueSummary(assetValueSummary: AssetValueSummary) {
+    return this.http
+      .put<AssetValueSummary>(`${this.apiUrl}/AssetValue/SummaryByMonth`, assetValueSummary, this.options)
+      .pipe(catchError(this.errorHandler.handleError));
+  }
+  //#endregion
 
 }

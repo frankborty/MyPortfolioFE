@@ -36,7 +36,11 @@
         <th class="w-14"></th>
       </tr>
     </ng-template>
-    <ng-template #body let-expenseType let-editing="editing" let-ri="rowIndex">
+    <ng-template 
+      #body 
+      let-expenseType 
+      let-editing="editing" 
+      let-ri="rowIndex">
       <tr [pEditableRow]="expenseType">
         <td>
           <p-cellEditor>
