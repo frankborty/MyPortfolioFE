@@ -81,7 +81,8 @@
       #body
       let-assetSummaryItem
       let-editing="editing"
-      let-ri="rowIndex">
+      let-ri="rowIndex"
+    >
       <tr [pEditableRow]="assetSummaryItem">
         <td>{{ assetSummaryItem.asset.name }}</td>
         <td class="p-0">
@@ -124,7 +125,12 @@
             ></button>
           </div>
         </td>
-        <td class="bg-transparent" *ngFor="let monthIndex of monthIndexArray">
+        <td
+          class="bg-transparent"
+          *ngFor="let monthIndex of monthIndexArray"
+          (dblclick)="openEditValueDialog(assetSummaryItem)"
+          tooltip="Doppio click per modificare il valore"
+        >
           <p-cellEditor>
             <ng-template #input>
               <input
@@ -136,10 +142,18 @@
               />
             </ng-template>
             <ng-template #output>
-              {{
-                assetSummaryItem.assetValueList[monthIndex].value
-                  | number : "1.2-2" : "it-IT"
-              }}
+              <span>
+                {{
+                  assetSummaryItem.assetValueList[monthIndex].value
+                    | number : "1.2-2" : "it-IT"
+                }}
+              </span>
+              <i
+                *ngIf="assetSummaryItem.assetValueList[monthIndex].note?.trim() !==''"
+                class="pi pi-info-circle text-blue-500"
+                [pTooltip]="assetSummaryItem.assetValueList[monthIndex].note"
+                tooltipPosition="top"
+              ></i>
             </ng-template>
           </p-cellEditor>
         </td>

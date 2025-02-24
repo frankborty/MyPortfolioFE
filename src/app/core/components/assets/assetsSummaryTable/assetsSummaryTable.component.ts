@@ -77,6 +77,7 @@ export class AssetsSummaryTableComponent implements OnInit {
         id: 0,
         assetId: -1,
         value: 0,
+        note: '',
         timeStamp: new Date(this.selectedYear.getFullYear(), i+1, 1).toISOString()
       });
     }
@@ -84,6 +85,7 @@ export class AssetsSummaryTableComponent implements OnInit {
       const assetDate = this.globalUtilityService.convertStringToDate(assetValue.timeStamp);
       if(assetDate.getFullYear() == this.selectedYear.getFullYear()) {
         assetValueList[assetDate.getMonth()].value = assetValue.value;
+        assetValueList[assetDate.getMonth()].note = assetValue.note;
       }
     });
     return assetValueList;
@@ -115,6 +117,11 @@ export class AssetsSummaryTableComponent implements OnInit {
     .reduce((acc, asset) => acc + asset.assetValueList[monthIndex].value, 0);
   }
 
+  openEditValueDialog(assetValueSummaryToUpdate: AssetValueSummary) {
+    console.log(assetValueSummaryToUpdate);
+    //apro il dialog per la modifica del valore
+  }
+
   onRowEditStart(assetValueSummaryToUpdate: AssetValueSummary) {
     this.assetValueSummaryToUpdate = JSON.parse(JSON.stringify(assetValueSummaryToUpdate));
   }
@@ -141,6 +148,7 @@ export class AssetsSummaryTableComponent implements OnInit {
     asset.assetValueList.forEach((assetValue) => {
       assetValue.timeStamp = this.globalUtilityService.convertDateToString(assetValue.timeStamp);
       assetValue.value = assetValue.value ?? 0;
+      assetValue.note = assetValue.note ?? '';
     });
     this.assetService.updateAssetValueSummary(asset).subscribe({
       next: () => {
