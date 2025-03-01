@@ -1,19 +1,21 @@
 import { Component, OnInit } from '@angular/core';
 import { ExpenseType } from '../../core/interfaces/expenseType';
 import { ExpenseCategory } from '../../core/interfaces/expenseCategory';
-import { ExpenseService } from '../../core/services/expenseService/expense.service';
-import { ImportsModule } from '../../imports';
-import { IncomeTypeSettingComponent } from '../../core/components/settings/incomeTypeSetting/incomeTypeSetting.component';
+import { AssetSettingComponent } from '../../core/components/settings/assetSetting/assetSetting.component';
 import { ExpenseCategorySettingComponent } from '../../core/components/settings/expenseCategorySetting/expenseCategorySetting.component';
 import { ExpenseTypeSettingComponent } from '../../core/components/settings/expenseTypeSetting/expenseTypeSetting.component';
+import { IncomeTypeSettingComponent } from '../../core/components/settings/incomeTypeSetting/incomeTypeSetting.component';
+import { ExpenseService } from '../../core/services/expenseService/expense.service';
+import { ImportsModule } from '../../imports';
+import { AssetCategorySettingComponent } from '../../core/components/settings/assetCategorySetting/assetCategorySetting.component';
 
 @Component({
-  selector: 'app-settting-page',
-  imports: [ImportsModule, IncomeTypeSettingComponent, ExpenseCategorySettingComponent, ExpenseTypeSettingComponent],
-  templateUrl: './settting-page.component.html',
-  styleUrls: ['./settting-page.component.css']
+  selector: 'app-setting-page',
+  imports: [ImportsModule, IncomeTypeSettingComponent, ExpenseCategorySettingComponent, ExpenseTypeSettingComponent, AssetSettingComponent, AssetCategorySettingComponent],
+  templateUrl: './setting-page.component.html',
+  styleUrls: ['./setting-page.component.css']
 })
-export class SetttingPageComponent implements OnInit {
+export class SettingPageComponent implements OnInit {
   expenseTypeList : ExpenseType[]=[];
   expenseCategoryList: ExpenseCategory[]=[];
 

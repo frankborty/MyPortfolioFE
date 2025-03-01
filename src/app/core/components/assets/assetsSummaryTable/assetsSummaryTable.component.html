@@ -5,7 +5,7 @@
     rowGroupMode="subheader"
     editMode="row"
     [size]="'small'"
-    groupRowsBy="asset.assetCategory.name"
+    groupRowsBy="asset.category.name"
     showGridlines
   >
     <ng-template #caption>
@@ -61,7 +61,7 @@
         <td>
           <div class="flex items-center gap-2">
             <span class="font-bold">{{
-              assetSummaryItem.asset.assetCategory.name
+              assetSummaryItem.asset.category.name
             }}</span>
           </div>
         </td>
@@ -69,7 +69,7 @@
         <td class="bg-transparent" *ngFor="let monthIndex of monthIndexArray">
           {{
             CalculateCategoryGroupHeaderMonth(
-              assetSummaryItem.asset.assetCategory,
+              assetSummaryItem.asset.category,
               monthIndex
             ) | number : "1.2-2" : "it-IT"
           }}

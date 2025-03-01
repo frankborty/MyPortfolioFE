@@ -1,6 +1,6 @@
-<div class="card" [style]="{ 'min-width': '25rem', 'max-width': '50rem' }">
+<div class="card" [style]="{ 'min-width': '25rem' }">
   <p-table
-    [value]="expenseTypeList"
+    [value]="assetList"
     dataKey="id"
     editMode="row"
     [size]="'small'"
@@ -11,14 +11,14 @@
   >
     <ng-template #caption>
       <div class="flex flex-wrap items-center justify-between">
-        <span class="text-xl font-bold">Expense Type</span>
+        <span class="text-xl font-bold">Asset</span>
 
         <div class="flex gap-2">
           <p-button
-            severity="danger"
+            severity="info"
             icon="pi pi-plus"
             [rounded]="true"
-            (onClick)="addNewExpenseType()"
+            (onClick)="addNewAsset()"
           />
           <p-button
             severity="secondary"
@@ -33,24 +33,29 @@
     <ng-template #header>
       <tr>
         <th pSortableColumn="name">Name</th>
-        <th pSortableColumn="category.name">Category</th>
+        <th class="w-14" pSortableColumn="category.name">Category</th>
+        <th
+          class="w-14 items-center text-center"
+          pSortableColumn="category.isInvested"
+        >
+          Invested
+        </th>
+        <th pSortableColumn="isin">ISIN</th>
+        <th pSortableColumn="url">URL</th>
+        <th class="w-44" pSortableColumn="note">Note</th>
         <th class="w-14"></th>
         <th class="w-14"></th>
       </tr>
     </ng-template>
-    <ng-template 
-      #body 
-      let-expenseType 
-      let-editing="editing" 
-      let-ri="rowIndex">
-      <tr [pEditableRow]="expenseType">
+    <ng-template #body let-asset let-editing="editing" let-ri="rowIndex">
+      <tr [pEditableRow]="asset">
         <td>
           <p-cellEditor>
             <ng-template #input>
-              <input pInputText type="text" [(ngModel)]="expenseType.name" />
+              <input pInputText type="text" [(ngModel)]="asset.name" />
             </ng-template>
             <ng-template #output>
-              {{ expenseType.name }}
+              {{ asset.name }}
             </ng-template>
           </p-cellEditor>
         </td>
@@ -58,18 +63,57 @@
           <p-cellEditor>
             <ng-template #input>
               <p-select
-                [options]="expenseCategoryList"
+                [options]="assetCategoryList"
                 optionLabel="name"
                 appendTo="body"
-                [(ngModel)]="expenseType.category"
+                [(ngModel)]="asset.category"
                 [style]="{ width: '100%' }"
               />
             </ng-template>
             <ng-template #output>
-              {{ expenseType.category.name }}
+              {{ asset.category.name }}
             </ng-template>
           </p-cellEditor>
         </td>
+
+        <td class="text-center">
+          <i *ngIf="asset.category.isInvested" class="pi pi-check"></i>
+          <i *ngIf="!asset.category.isInvested" class="pi pi-times"></i>
+        </td>
+
+        <td>
+          <p-cellEditor>
+            <ng-template #input>
+              <input pInputText type="text" [(ngModel)]="asset.isin" />
+            </ng-template>
+            <ng-template #output>
+              {{ asset.isin }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+
+        <td>
+          <p-cellEditor>
+            <ng-template #input>
+              <input pInputText type="text" [(ngModel)]="asset.url" />
+            </ng-template>
+            <ng-template #output>
+              {{ asset.url }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+
+        <td>
+          <p-cellEditor>
+            <ng-template #input>
+              <input pInputText type="text" [(ngModel)]="asset.note" />
+            </ng-template>
+            <ng-template #output>
+              {{ asset.note }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+
         <td class="p-0">
           <div class="flex items-center justify-center gap-2">
             <button
@@ -79,7 +123,7 @@
               type="button"
               pInitEditableRow
               icon="pi pi-pencil"
-              (click)="onRowEditStart(expenseType)"
+              (click)="onRowEditStart(asset)"
               text
               rounded
               severity="secondary"
@@ -91,7 +135,7 @@
               type="button"
               pSaveEditableRow
               icon="pi pi-check"
-              (click)="onRowEditSave(expenseType)"
+              (click)="onRowEditSave(asset)"
               text
               rounded
               severity="secondary"
@@ -118,7 +162,7 @@
               pRipple
               type="button"
               icon="pi pi-trash"
-              (click)="deleteExpenseType(expenseType)"
+              (click)="deleteAsset(asset)"
               text
               rounded
               severity="secondary"

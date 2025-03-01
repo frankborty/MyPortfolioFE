@@ -108,7 +108,7 @@ export class ExpenseCategorySettingComponent implements OnInit {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: error,
+                detail: error["message"]=="Conflict" ? "Impossibile cancellare l'assetCategory in quanto è associata ad almeno un asset" : error,
               });
             },
           });

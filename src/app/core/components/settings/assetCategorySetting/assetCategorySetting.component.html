@@ -1,6 +1,6 @@
-<div class="card border-1" [style]="{ 'min-width': '25rem', 'max-width': '50rem' }">
+<div class="card" [style]="{ 'min-width': '25rem'}">
   <p-table
-    [value]="incomeTypeList"
+    [value]="assetCategoryList"
     dataKey="id"
     editMode="row"
     [size]="'small'"
@@ -11,19 +11,20 @@
   >
     <ng-template #caption>
       <div class="flex flex-wrap items-center justify-between">
-        <span class="text-xl font-bold">Income Type</span>
+        <span class="text-xl font-bold">Asset Category</span>
 
         <div class="flex gap-2">
           <p-button
+            severity="info"
             icon="pi pi-plus"
             [rounded]="true"
-            (onClick)="addNewIncomeType()"
+            (onClick)="addNewAssetCategory()"
           />
           <p-button
             severity="secondary"
             icon="pi pi-refresh"
             [rounded]="true"
-            (onClick)="loadIncomeTypes()"
+            (onClick)="ngOnInit()"
           />
         </div>
       </div>
@@ -32,22 +33,42 @@
     <ng-template #header>
       <tr>
         <th pSortableColumn="name">Name</th>
+        <th class="w-14" pSortableColumn="isInvested">Invested</th>
         <th class="w-14"></th>
         <th class="w-14"></th>
       </tr>
     </ng-template>
-    <ng-template #body let-incomeType let-editing="editing" let-ri="rowIndex">
-      <tr [pEditableRow]="incomeType">
+    <ng-template 
+      #body 
+      let-assetCategory
+      let-editing="editing" 
+      let-ri="rowIndex">
+      <tr [pEditableRow]="assetCategory">
         <td>
           <p-cellEditor>
             <ng-template #input>
-              <input pInputText type="text" [(ngModel)]="incomeType.name" />
+              <input pInputText type="text" [(ngModel)]="assetCategory.name" />
             </ng-template>
             <ng-template #output>
-              {{ incomeType.name }}
+              {{ assetCategory.name }}
+            </ng-template>
+          </p-cellEditor>
+        </td>         
+
+        <td class="text-center">
+          <p-cellEditor>
+            <ng-template #input>
+              <!-- Checkbox per il valore booleano -->
+              <p-checkbox [(ngModel)]="assetCategory.isInvested" binary></p-checkbox>
+            </ng-template>
+            <ng-template #output>
+              <!-- Mostra il valore booleano come checkbox disabilitato -->
+              <i *ngIf="assetCategory.isInvested" class="pi pi-check"></i>
+              <i *ngIf="!assetCategory.isInvested" class="pi pi-times"></i>
             </ng-template>
           </p-cellEditor>
         </td>
+
         <td class="p-0">
           <div class="flex items-center justify-center gap-2">
             <button
@@ -57,7 +78,7 @@
               type="button"
               pInitEditableRow
               icon="pi pi-pencil"
-              (click)="onRowEditStart(incomeType)"
+              (click)="onRowEditStart(assetCategory)"
               text
               rounded
               severity="secondary"
@@ -69,7 +90,7 @@
               type="button"
               pSaveEditableRow
               icon="pi pi-check"
-              (click)="onRowEditSave(incomeType)"
+              (click)="onRowEditSave(assetCategory)"
               text
               rounded
               severity="secondary"
@@ -96,7 +117,7 @@
               pRipple
               type="button"
               icon="pi pi-trash"
-              (click)="deleteIncomeType(incomeType)"
+              (click)="deleteAssetCategory(assetCategory)"
               text
               rounded
               severity="secondary"

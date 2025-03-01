@@ -1,17 +1,11 @@
 import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ImportsModule } from '../../../../imports';
 import {
-  AssetCategory,
   AssetValueList,
   AssetValueSummary,
 } from '../../../interfaces/assetValueSummary';
-import { AssetServiceService } from '../../../services/assetService/assetService.service';
 import { GlobalUtilityService } from '../../../services/utils/global-utility.service';
-
-interface ValueBydate {
-  date: Date;
-  value: number;
-}
+import { AssetService } from '../../../services/assetService/asset.service';
 
 @Component({
   selector: 'app-assetTotalBarChart',
@@ -30,7 +24,7 @@ export class AssetTotalBarChartComponent implements OnInit {
 
   constructor(
     private cd: ChangeDetectorRef,
-    private assetService: AssetServiceService,
+    private assetService: AssetService,
     private globalUtilityService: GlobalUtilityService
   ) {}
 
@@ -155,7 +149,7 @@ export class AssetTotalBarChartComponent implements OnInit {
   filterAssetValueSummary() {
     this.assetCategoryValueDictionary.clear();
     this.assetValueSummaryOriginal.forEach((assetSummary) => {
-      const categoryName = assetSummary.asset.assetCategory.name;
+      const categoryName = assetSummary.asset.category.name;
       if (!this.assetCategoryValueDictionary.has(categoryName)) {
         this.assetCategoryValueDictionary.set(
           categoryName,

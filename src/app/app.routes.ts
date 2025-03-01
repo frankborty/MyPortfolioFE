@@ -3,14 +3,14 @@ import { AssetsPageComponent } from './pages/assets-page/assets-page.component';
 import { IncomesPageComponent } from './pages/incomes-page/incomes-page.component';
 import { ExpenseTotalPageComponent } from './pages/expensePages/expenseTotalPage/expenseTotalPage.component';
 import { ExpenseFilterPageComponent } from './pages/expensePages/expenseFilterPage/expenseFilterPage.component';
-import { SetttingPageComponent } from './pages/settting-page/settting-page.component';
+import { SettingPageComponent } from './pages/setting-page/setting-page.component';
 
 
 export const routes: Routes = [
-    { path: '', redirectTo: '/assets', pathMatch: 'full' }, // Route di default
+    { path: '', redirectTo: '/settings', pathMatch: 'full' }, // Route di default
     { path: 'assets', component: AssetsPageComponent },
     { path: 'income', component: IncomesPageComponent },
     { path: 'expenses/total', component: ExpenseTotalPageComponent },
     { path: 'expenses/partial', component: ExpenseFilterPageComponent },
-    { path: 'settings', component: SetttingPageComponent }
+    { path: 'settings', component: SettingPageComponent }
 ];

@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { AssetServiceService } from '../../../services/assetService/assetService.service';
-import { AssetCategory, AssetValueList, AssetValueSummary } from '../../../interfaces/assetValueSummary';
+import { AssetValueList, AssetValueSummary } from '../../../interfaces/assetValueSummary';
 import { ImportsModule } from '../../../../imports';
 import { GlobalUtilityService } from '../../../services/utils/global-utility.service';
 import { MessageService } from 'primeng/api';
 import { ParamConfirmationDialogComponent } from '../../param-confirmation-dialog/param-confirmation-dialog.component';
+import { AssetService } from '../../../services/assetService/asset.service';
+import { AssetCategory } from '../../../interfaces/assetCategory';
 
 @Component({
   selector: 'app-assetsSummaryTable',
@@ -24,7 +25,7 @@ export class AssetsSummaryTableComponent implements OnInit {
   selectedYear: Date = new Date('2024-01-01'); //da sistemare con il 2025
   monthIndexArray: number[]= [0,1,2,3,4,5,6,7,8,9,10,11];
 
-  constructor(private assetService: AssetServiceService,
+  constructor(private assetService: AssetService,
     private globalUtilityService: GlobalUtilityService,
     private messageService: MessageService
   ) {
@@ -32,7 +33,7 @@ export class AssetsSummaryTableComponent implements OnInit {
       asset: {
         id: -1,
         name: '',
-        assetCategory: {
+        category: {
           id: -1,
           name: '',
           isInvested: false
@@ -113,7 +114,7 @@ export class AssetsSummaryTableComponent implements OnInit {
 
   CalculateCategoryGroupHeaderMonth(assetCategory: AssetCategory, monthIndex: number): number {
     return this.assetValueSummaryFiltered
-    .filter(asset => asset.asset.assetCategory.name === assetCategory.name)
+    .filter(asset => asset.asset.category.name === assetCategory.name)
     .reduce((acc, asset) => acc + asset.assetValueList[monthIndex].value, 0);
   }
 
@@ -127,7 +128,7 @@ export class AssetsSummaryTableComponent implements OnInit {
   }
     
   onRowEditSave(assetValueSummaryUpdated: AssetValueSummary) {
-    if(this.assetValueSummaryToUpdate.asset.assetCategory.id != -1) { 
+    if(this.assetValueSummaryToUpdate.asset.category.id != -1) { 
       this.saveAssetValueType(assetValueSummaryUpdated);
     }
   }
@@ -138,7 +139,7 @@ export class AssetsSummaryTableComponent implements OnInit {
         for(let i = 0; i < 12; i++) {
           assetSummary.assetValueList[i].value = this.assetValueSummaryToUpdate.assetValueList[i].value;
         }
-        this.assetValueSummaryToUpdate.asset.assetCategory.id = -1;
+        this.assetValueSummaryToUpdate.asset.category.id = -1;
         return;
       }
     });

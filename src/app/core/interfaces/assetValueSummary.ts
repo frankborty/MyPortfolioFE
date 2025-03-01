@@ -1,3 +1,5 @@
+import { AssetCategory } from "./assetCategory";
+
 export interface AssetValueSummary {
   asset: AssetSimple;
   assetValueList: AssetValueList[];
@@ -14,11 +16,5 @@ export interface AssetValueList {
 export interface AssetSimple {
   id: number;
   name: string;
-  assetCategory: AssetCategory;
-}
-
-export interface AssetCategory {
-  id: number;
-  name: string;
-  isInvested: boolean;
+  category: AssetCategory;
 }
