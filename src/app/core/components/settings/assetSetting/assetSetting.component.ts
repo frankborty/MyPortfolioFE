@@ -31,8 +31,8 @@ export class AssetSettingComponent implements OnInit {
       isin: '',
       note: '',
       url: '',
+      pmc: 0,
       share: 0,
-      avgPrice: 0,
       timeStamp: '',
       category: {
         id: -1,
@@ -49,8 +49,8 @@ export class AssetSettingComponent implements OnInit {
 
   loadAssetList() {
     this.assetService.getAssetList().subscribe({
-      next: (data: any) => {
-        (data as Asset[]).sort((a, b) => a.name.localeCompare(b.name));
+      next: (data: Asset[]) => {
+        data.sort((a, b) => a.name.localeCompare(b.name));
         this.assetList = data;
       },
       error: (error: any) => {
@@ -166,7 +166,7 @@ export class AssetSettingComponent implements OnInit {
       note: '',
       url: '',
       share: 0,
-      avgPrice: 0,
+      pmc: 0,
       timeStamp: '',
       category: this.assetCategoryList[0],
     };

@@ -21,6 +21,8 @@ import { ToastModule } from 'primeng/toast';
 import { ChartModule } from 'primeng/chart';
 import { RadioButtonModule } from 'primeng/radiobutton';
 import { TooltipModule } from 'primeng/tooltip';
+import { CardModule } from 'primeng/card';
+import { IftaLabelModule } from 'primeng/iftalabel';
 
 
 @NgModule({
@@ -49,7 +51,9 @@ import { TooltipModule } from 'primeng/tooltip';
         ButtonModule,
         ChartModule,
         RadioButtonModule,
-        TooltipModule
+        TooltipModule,
+        CardModule,
+        IftaLabelModule
     ],
     exports: [
         CommonModule,
@@ -76,7 +80,9 @@ import { TooltipModule } from 'primeng/tooltip';
         ButtonModule,
         ChartModule,
         RadioButtonModule,
-        TooltipModule
+        TooltipModule,
+        CardModule,
+        IftaLabelModule
     ],
     providers: [ ]
   })

@@ -7,7 +7,7 @@ export interface Asset {
   note: string;
   share: number;
   url: string;
-  avgPrice: number;
+  pmc: number;
   timeStamp: string;
   category: AssetCategory;
 }

@@ -37,7 +37,13 @@ export class AssetsSummaryTableComponent implements OnInit {
           id: -1,
           name: '',
           isInvested: false
-        }
+        },
+        isin: '',
+        note: '',
+        share: 0,
+        url: '',
+        pmc: 0,
+        timeStamp: ''
       },
       assetValueList: []
     };

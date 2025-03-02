@@ -43,17 +43,24 @@ export class TopBarComponent implements OnInit {
             {
                 label: 'Assets',
                 icon: 'pi pi-briefcase',
-                route: '/assets'
+                items: [
+                    {
+                        label: 'Total',
+                        icon: 'pi pi-th-large',
+                        route: '/assets/total',
+                    },
+                    {
+                        label: 'Financial',
+                        icon: 'pi pi-bolt',
+                        route: '/assets/financial',
+                    }
+                ]
             },
             {
                 label: 'Settings',
                 icon: 'pi pi-cog',
                 route: '/settings'
             },
-
-            
-
-
         ];
     }
 }

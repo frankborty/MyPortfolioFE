@@ -41,7 +41,7 @@
           Invested
         </th>
         <th pSortableColumn="isin">ISIN</th>
-        <th pSortableColumn="url">URL</th>
+        <th class="w-44" pSortableColumn="url">URL</th>
         <th class="w-44" pSortableColumn="note">Note</th>
         <th class="w-14"></th>
         <th class="w-14"></th>
@@ -102,18 +102,27 @@
             </ng-template>
           </p-cellEditor>
         </td>
-
-        <td>
+<!--    <td>
           <p-cellEditor>
             <ng-template #input>
-              <input pInputText type="text" [(ngModel)]="asset.note" />
+              <input pTextArea type="text" [(ngModel)]="asset.note" />
             </ng-template>
             <ng-template #output>
               {{ asset.note }}
             </ng-template>
           </p-cellEditor>
         </td>
-
+      -->
+      <td>
+        <p-cellEditor>
+          <ng-template #input>
+            <textarea rows="1" cols="30" pTextarea [(ngModel)]="asset.note"></textarea>
+          </ng-template>
+          <ng-template #output>
+            {{ asset.note }}
+          </ng-template>
+        </p-cellEditor>
+      </td>
         <td class="p-0">
           <div class="flex items-center justify-center gap-2">
             <button

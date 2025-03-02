@@ -1,0 +1,45 @@
+<p-card [style]="{ width: '25rem', overflow: 'hidden' }">
+  <div class="flex">
+    <div class="w-1/2 pt-1">
+      <div class="flex items-center space-x-2">
+        <p class="card-name">{{ asset.name }}</p>
+        <a [href]="asset.url" target="_blank">
+          <i class="pi pi-external-link text-orange-500 text-sm"></i>
+        </a>
+      </div>
+
+      <p class="card-isin">{{ asset.isin }}</p>
+    </div>
+    <div class="w-1/2">
+      <p class="card-value text-right">
+        {{ assetValue | currency : "EUR" : "symbol" : "1.2-2" : "it-IT" }}
+      </p>
+      <p
+        class="card-value-delta text-right"
+        [ngClass]="assetDeltaAbs >= 0 ? 'positive' : 'negative'"
+      >
+        {{ assetValueDeltaString }}
+      </p>
+    </div>
+  </div>
+
+  <textarea
+  class="mt-2 mb-2"
+    pTextarea
+    [(ngModel)]="asset.note"
+    rows="5"
+    readonly
+    style="width: 100%"
+  ></textarea>
+
+  <ng-template #footer>
+    <div class="flex gap-4 mt-1">
+      <p-button
+        icon="pi pi-plus"
+        severity="secondary"
+        class="w-full"
+        styleClass="w-full"
+      />
+    </div>
+  </ng-template>
+</p-card>

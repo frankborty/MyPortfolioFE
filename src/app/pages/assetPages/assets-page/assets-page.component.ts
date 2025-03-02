@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
-import { ImportsModule } from '../../imports';
-import { AssetsSummaryTableComponent } from '../../core/components/assets/assetsSummaryTable/assetsSummaryTable.component';
-import { AssetTotalBarChartComponent } from '../../core/components/charts/assetTotalBarChart/assetTotalBarChart.component';
+import { ImportsModule } from '../../../imports';
+import { AssetsSummaryTableComponent } from '../../../core/components/assets/assetsSummaryTable/assetsSummaryTable.component';
+import { AssetTotalBarChartComponent } from '../../../core/components/charts/assetTotalBarChart/assetTotalBarChart.component';
 
 @Component({
   selector: 'app-assets-page',

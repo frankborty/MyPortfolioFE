@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError } from 'rxjs';
+import { catchError, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Asset } from '../../interfaces/asset';
 import { AssetCategory } from '../../interfaces/assetCategory';
@@ -28,9 +28,9 @@ export class AssetService {
       .pipe(catchError(this.errorHandler.handleError));
   }
 
-  getAssetList() {
+  getAssetList(): Observable<Asset[]> {
     return this.http
-      .get<AssetValueSummary[]>(`${this.apiUrl}/Asset`, this.options)
+      .get<Asset[]>(`${this.apiUrl}/Asset`, this.options)
       .pipe(catchError(this.errorHandler.handleError));
   }
 

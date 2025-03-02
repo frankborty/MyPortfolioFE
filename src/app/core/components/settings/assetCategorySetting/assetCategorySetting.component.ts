@@ -34,11 +34,6 @@ booleanValue: Boolean[]=[true, false];
   }
 
   ngOnInit() {
-    this.assetCategoryList = [
-      { id: 1, name: 'Category 1', isInvested: true },
-      { id: 2, name: 'Category 2', isInvested: false },
-      // ... altre categorie ...
-    ];
     this.loadAssetCategoryList();
   }
 
