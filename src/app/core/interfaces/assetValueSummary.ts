@@ -1,5 +1,4 @@
 import { Asset } from "./asset";
-import { AssetCategory } from "./assetCategory";
 
 export interface AssetValueSummary {
   asset: Asset;
@@ -11,7 +10,7 @@ export interface AssetValueList {
   assetId: number;
   value: number;
   note: string;
-  timeStamp: string;
+  timeStamp: Date;
 }
 
 

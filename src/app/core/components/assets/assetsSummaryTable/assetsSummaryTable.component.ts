@@ -26,7 +26,6 @@ export class AssetsSummaryTableComponent implements OnInit {
   monthIndexArray: number[]= [0,1,2,3,4,5,6,7,8,9,10,11];
 
   constructor(private assetService: AssetService,
-    private globalUtilityService: GlobalUtilityService,
     private messageService: MessageService
   ) {
     this.assetValueSummaryToUpdate = {
@@ -43,7 +42,8 @@ export class AssetsSummaryTableComponent implements OnInit {
         share: 0,
         url: '',
         pmc: 0,
-        timeStamp: ''
+        currentValue: 0,
+        timeStamp: new Date()
       },
       assetValueList: []
     };
@@ -85,14 +85,13 @@ export class AssetsSummaryTableComponent implements OnInit {
         assetId: -1,
         value: 0,
         note: '',
-        timeStamp: new Date(this.selectedYear.getFullYear(), i+1, 1).toISOString()
+        timeStamp: new Date(this.selectedYear.getFullYear(), i+1, 1)
       });
     }
     assetSummary.assetValueList.forEach((assetValue) => {
-      const assetDate = this.globalUtilityService.convertStringToDate(assetValue.timeStamp);
-      if(assetDate.getFullYear() == this.selectedYear.getFullYear()) {
-        assetValueList[assetDate.getMonth()].value = assetValue.value;
-        assetValueList[assetDate.getMonth()].note = assetValue.note;
+      if(assetValue.timeStamp.getFullYear() == this.selectedYear.getFullYear()) {
+        assetValueList[assetValue.timeStamp.getMonth()].value = assetValue.value;
+        assetValueList[assetValue.timeStamp.getMonth()].note = assetValue.note;
       }
     });
     return assetValueList;
@@ -153,7 +152,6 @@ export class AssetsSummaryTableComponent implements OnInit {
 
   saveAssetValueType(asset: AssetValueSummary) {
     asset.assetValueList.forEach((assetValue) => {
-      assetValue.timeStamp = this.globalUtilityService.convertDateToString(assetValue.timeStamp);
       assetValue.value = assetValue.value ?? 0;
       assetValue.note = assetValue.note ?? '';
     });

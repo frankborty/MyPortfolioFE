@@ -4,7 +4,7 @@ export interface Expense {
     id: number;
     description: string;
     amount: number;
-    date: string | Date;
+    date: Date;
     note: string;
     expenseType: ExpenseType;
 }
@@ -13,7 +13,7 @@ export interface ExpenseToEdit {
     id: number,
     description : string;
     amount : number;
-    date : string;
+    date : Date;
     note : string;
     expenseType : string;
 }

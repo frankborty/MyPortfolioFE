@@ -44,11 +44,8 @@ export class IncomesPageComponent implements OnInit{
     
   loadIncomes(){
     this.incomeService.getIncomes().subscribe({
-      next: (data: any) => {
-        data.map((income: Income) => {
-          income.date = this.globalUtils.convertStringToDate(income.date.toString());
-        });
-        (data as Income[]).sort((a, b) => (b.date as Date).getTime() - (a.date as Date).getTime());
+      next: (data: Income[]) => {
+        data.sort((a, b) => (b.date as Date).getTime() - (a.date as Date).getTime());
         this.incomList=data;
       },
       error: (error: any) => {
@@ -91,7 +88,6 @@ export class IncomesPageComponent implements OnInit{
   addIncome(income: Income){
     this.displayIncomeEditPanel=false;
     if(income){
-      income.date=this.globalUtils.convertDateToString(income.date);
       this.incomeService.addIncome(income).subscribe({
         next: () => {
           this.loadIncomes();
@@ -115,7 +111,6 @@ export class IncomesPageComponent implements OnInit{
   editIncome(income: Income){
     this.displayIncomeEditPanel=false;
     if(income){
-      income.date=this.globalUtils.convertDateToString(income.date);
       this.incomeService.editIncome(income.id, income).subscribe({
         next: () => {
           this.loadIncomes();

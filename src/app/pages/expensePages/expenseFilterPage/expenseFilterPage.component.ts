@@ -64,12 +64,8 @@ export class ExpenseFilterPageComponent implements OnInit {
 
   loadExpenses() {
     this.expenseService.getExpenses().subscribe({
-      next: (data: any) => {
-        data.map((expense: Expense) => {
-          expense.date = this.globalUtils.convertStringToDate(expense.date.toString());
-        });
-        (data as Expense[]).sort((a, b) => (b.date as Date).getTime() - (a.date as Date).getTime());
-
+      next: (data: Expense[]) => {
+        data.sort((a, b) => (b.date as Date).getTime() - (a.date as Date).getTime());
         this.expenseList = data;
         this.filterExpenses();
       },
@@ -130,7 +126,7 @@ export class ExpenseFilterPageComponent implements OnInit {
       let expenseToAdd : ExpenseToEdit = {
         id: -1,
         amount: expense.amount,
-        date: this.globalUtils.convertDateToString(expense.date),
+        date: expense.date,
         description: expense.description,
         expenseType: expense.expenseType.name,
         note: expense.note
@@ -161,7 +157,7 @@ export class ExpenseFilterPageComponent implements OnInit {
       let expenseToEdit : ExpenseToEdit = {
         id: expense.id,
         amount: expense.amount,
-        date: this.globalUtils.convertDateToString(expense.date),
+        date: expense.date,
         description: expense.description,
         expenseType: expense.expenseType.name,
         note: expense.note

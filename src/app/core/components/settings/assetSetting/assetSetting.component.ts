@@ -32,8 +32,9 @@ export class AssetSettingComponent implements OnInit {
       note: '',
       url: '',
       pmc: 0,
+      currentValue: 0,
       share: 0,
-      timeStamp: '',
+      timeStamp: new Date(),
       category: {
         id: -1,
         name: '',
@@ -167,7 +168,8 @@ export class AssetSettingComponent implements OnInit {
       url: '',
       share: 0,
       pmc: 0,
-      timeStamp: '',
+      currentValue: 0,
+      timeStamp: new Date(),
       category: this.assetCategoryList[0],
     };
     this.assetService.addAsset(assetToAdd).subscribe({

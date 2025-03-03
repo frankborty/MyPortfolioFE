@@ -30,8 +30,9 @@ export class AssetCardComponent implements OnInit {
         note: '',
         share: 0,
         url: '',
-        pmc:0,
-        timeStamp: ''
+        pmc: 0,
+        currentValue: 0,
+        timeStamp: new Date()
       };
    }
 

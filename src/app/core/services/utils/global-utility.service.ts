@@ -8,19 +8,10 @@ import { toZonedTime } from 'date-fns-tz';
   providedIn: 'root',
 })
 export class GlobalUtilityService {
-  convertStringToDate(stringDate: string): Date {
-    const format = 'yyyyMMdd_HHmmss';
-    const date = parse(stringDate, format, new Date());
-    return date;
-  }
 
-  convertDateToString(date: any): string {
+  convertDateToYearMonthString(date: Date): string {
     const zonedDate = toZonedTime(date, 'UTC');
-    return format(zonedDate, 'yyyyMMdd_HHmmss');
-  }
-
-  convertStringToYearMonthString(date: string): string {
-    return date.substring(0, 6);
+    return format(zonedDate, 'yyyyMM');
   }
 
   convertDateToItaString(date: any): string {

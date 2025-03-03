@@ -184,8 +184,7 @@ export class ExpenseTotalTypeBarChartComponent implements OnInit, OnChanges {
 
     const grouped = expenseList.reduce((acc, expense) => {
       // Estrai il mese dalla data
-      const date = new Date(expense.date);
-      const month = date.getMonth(); // Esempio: "January 2025"
+      const month = expense.date.getMonth(); // Esempio: "January 2025"
 
       // Raggruppa per mese e somma gli importi
       if (!acc[month]) {

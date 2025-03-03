@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, Observable } from 'rxjs';
+import { catchError, map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Asset } from '../../interfaces/asset';
 import { AssetCategory } from '../../interfaces/assetCategory';
@@ -19,13 +19,21 @@ export class AssetService {
   ) {}
 
   //#region  GET DATA
-  getAssetsSummaryByMonth() {
+  getAssetsSummaryByMonth(): Observable<AssetValueSummary[]> {
     return this.http
-      .get<AssetValueSummary[]>(
-        `${this.apiUrl}/AssetValue/SummaryByMonth`,
-        this.options
-      )
-      .pipe(catchError(this.errorHandler.handleError));
+      .get<AssetValueSummary[]>(`${this.apiUrl}/AssetValue/SummaryByMonth`, this.options)
+      .pipe(
+        map(data =>
+          data.map(summary => ({
+            ...summary,
+            assetValueList: summary.assetValueList.map(value => ({
+              ...value,
+              timeStamp: new Date(value.timeStamp) // Converte la stringa in Date
+            }))
+          }))
+        ),
+        catchError(this.errorHandler.handleError)
+      );
   }
 
   getAssetList(): Observable<Asset[]> {

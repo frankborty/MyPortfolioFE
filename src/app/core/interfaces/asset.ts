@@ -8,7 +8,8 @@ export interface Asset {
   share: number;
   url: string;
   pmc: number;
-  timeStamp: string;
+  currentValue: number;
+  timeStamp: Date;
   category: AssetCategory;
 }
 

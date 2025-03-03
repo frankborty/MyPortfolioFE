@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { ErrorHandlerService } from '../errorHandler/error-handler.service';
 import { HttpClient } from '@angular/common/http';
-import { catchError } from 'rxjs';
+import { catchError, map, Observable } from 'rxjs';
 import { Income } from '../../interfaces/income';
 import { IncomeType } from '../../interfaces/incomeType';
 
@@ -18,10 +18,16 @@ export class IncomeService {
   ) {}
 
   //#region  GET DATA
-  getIncomes() {
+  getIncomes(): Observable<Income[]> {
     return this.http
-      .get(`${this.apiUrl}/Income`, this.options)
-      .pipe(catchError(this.errorHandler.handleError));
+      .get<Income[]>(`${this.apiUrl}/Income`, this.options)
+      .pipe(
+        map(incomes => incomes.map(income => ({
+          ...income,
+          date: new Date(income.date) // Converte la stringa in Date
+        }))),
+        catchError(this.errorHandler.handleError)
+      );
   }
 
   getIncomeTypes() {

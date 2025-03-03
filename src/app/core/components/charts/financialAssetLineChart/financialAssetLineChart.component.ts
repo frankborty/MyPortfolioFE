@@ -62,7 +62,7 @@ export class FinancialAssetLineChartComponent implements OnInit {
     );
 
     // Creiamo un Set direttamente invece di un array
-    const allDatesSet = new Set<string>();
+    const allDatesSet = new Set<Date>();
 
     this.assetValueList.forEach((assetSummary) => {
       assetSummary.assetValueList.forEach((assetValue) => {
@@ -75,7 +75,7 @@ export class FinancialAssetLineChartComponent implements OnInit {
 
     this.inputData = {
       labels: allDatesList.map(
-        (x) => x.substring(4, 6) + '/' + x.substring(0, 4)
+        (x) => x.toISOString().substring(5, 7) + '/' + x.toISOString().substring(0, 4)
       ),
       datasets: [],
     };
@@ -150,28 +150,22 @@ export class FinancialAssetLineChartComponent implements OnInit {
     this.cd.markForCheck();
   }
 
-  filterDate(dateList: string[]): string[] {
-    let filteredDate: string[] = [];
+  filterDate(dateList: Date[]): Date[] {
+    let filteredDate: Date[] = [];
     const nowDate = new Date();
-    let startDate = '20000101_000000';
+    let startDate = new Date('2000-01-01T00:00:00');
     switch (this.selectedTimeFrame) {
       case TimeFrame.LYEAR:
-        startDate = this.globalUtils.convertDateToString(
-          nowDate.setFullYear(nowDate.getFullYear() - 1)
-        );
+        startDate = new Date(nowDate.setFullYear(nowDate.getFullYear() - 1));
         break;
       case TimeFrame.LMONTH:
-        startDate = this.globalUtils.convertDateToString(
-          nowDate.setMonth(nowDate.getMonth() - 1)
-        );
+        startDate = new Date(nowDate.setMonth(nowDate.getMonth() - 1));
         break;
       case TimeFrame.LWEEK:
-        startDate = this.globalUtils.convertDateToString(
-          nowDate.setDate(nowDate.getDate() - 7)
-        );
+        startDate = new Date(nowDate.setDate(nowDate.getDate() - 7));
         break;
     }
-    filteredDate = dateList.filter(x=>x>startDate);
+    filteredDate = dateList.filter(date => date > startDate);
 
     return filteredDate;
   }

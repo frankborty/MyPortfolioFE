@@ -37,11 +37,8 @@ export class ExpenseTotalPageComponent implements OnInit {
   
   loadExpenses(){
     this.expenseService.getExpenses().subscribe({
-      next: (data: any) => {
+      next: (data: Expense[]) => {
         this.originalExpenseList = data;
-        this.originalExpenseList.map((expense: Expense) => {
-          expense.date = this.globalUtils.convertStringToDate(expense.date.toString());
-        });
       },
       error: (error: any) => {
         console.error(error);

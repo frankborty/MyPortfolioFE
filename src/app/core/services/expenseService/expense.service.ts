@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { ErrorHandlerService } from '../errorHandler/error-handler.service';
-import { catchError } from 'rxjs';
-import { ExpenseToEdit } from '../../interfaces/expense';
+import { catchError, map, Observable } from 'rxjs';
+import { Expense, ExpenseToEdit } from '../../interfaces/expense';
 import { ExpenseCategory } from '../../interfaces/expenseCategory';
 import { ExpenseType } from '../../interfaces/expenseType';
 
@@ -19,10 +19,16 @@ export class ExpenseService {
   ) {}
 
   //#region  GET DATA
-  getExpenses() {
+  getExpenses(): Observable<Expense[]> {
     return this.http
-      .get(`${this.apiUrl}/Expense`, this.options)
-      .pipe(catchError(this.errorHandler.handleError));
+      .get<Expense[]>(`${this.apiUrl}/Expense`, this.options)
+      .pipe(
+        map(expenses => expenses.map(expense => ({
+          ...expense,
+          date: new Date(expense.date) // Converte la stringa in Date
+        }))),
+        catchError(this.errorHandler.handleError)
+      );
   }
 
   getExpenseTypes() {
