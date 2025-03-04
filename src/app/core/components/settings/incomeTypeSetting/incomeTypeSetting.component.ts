@@ -3,7 +3,7 @@ import { IncomeType } from '../../../interfaces/incomeType';
 import { IncomeService } from '../../../services/incomeService/income.service';
 import { ImportsModule } from '../../../../imports';
 import { MessageService } from 'primeng/api';
-import { ParamConfirmationDialogComponent } from '../../param-confirmation-dialog/param-confirmation-dialog.component';
+import { ParamConfirmationDialogComponent } from '../../paramConfirmationDialog/paramConfirmationDialog.component';
 
 @Component({
   selector: 'app-incomeTypeSetting',

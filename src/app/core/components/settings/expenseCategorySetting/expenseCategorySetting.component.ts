@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { ImportsModule } from '../../../../imports';
-import { ParamConfirmationDialogComponent } from '../../param-confirmation-dialog/param-confirmation-dialog.component';
 import { ExpenseCategory } from '../../../interfaces/expenseCategory';
 import { ExpenseService } from '../../../services/expenseService/expense.service';
+import { ParamConfirmationDialogComponent } from '../../paramConfirmationDialog/paramConfirmationDialog.component';
 
 @Component({
   selector: 'app-expenseCategorySetting',

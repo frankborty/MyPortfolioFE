@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ParamConfirmationDialogComponent } from '../../param-confirmation-dialog/param-confirmation-dialog.component';
 import { MessageService } from 'primeng/api';
 import { ImportsModule } from '../../../../imports';
 import { Asset } from '../../../interfaces/asset';
@@ -7,6 +6,7 @@ import { AssetCategory } from '../../../interfaces/assetCategory';
 import { AssetService } from '../../../services/assetService/asset.service';
 import { CheckboxModule } from 'primeng/checkbox';
 import { FormsModule } from '@angular/forms';
+import { ParamConfirmationDialogComponent } from '../../paramConfirmationDialog/paramConfirmationDialog.component';
 
 @Component({
   selector: 'app-assetCategorySetting',

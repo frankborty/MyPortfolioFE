@@ -3,8 +3,8 @@ import { MessageService } from 'primeng/api';
 import { ImportsModule } from '../../../../imports';
 import { ExpenseCategory } from '../../../interfaces/expenseCategory';
 import { ExpenseService } from '../../../services/expenseService/expense.service';
-import { ParamConfirmationDialogComponent } from '../../param-confirmation-dialog/param-confirmation-dialog.component';
 import { ExpenseType } from '../../../interfaces/expenseType';
+import { ParamConfirmationDialogComponent } from '../../paramConfirmationDialog/paramConfirmationDialog.component';
 
 @Component({
   selector: 'app-expenseTypeSetting',
