@@ -1,11 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AssetValueList, AssetValueSummary } from '../../../interfaces/assetValueSummary';
 import { ImportsModule } from '../../../../imports';
-import { GlobalUtilityService } from '../../../services/utils/global-utility.service';
 import { MessageService } from 'primeng/api';
-import { ParamConfirmationDialogComponent } from '../../param-confirmation-dialog/param-confirmation-dialog.component';
 import { AssetService } from '../../../services/assetService/asset.service';
 import { AssetCategory } from '../../../interfaces/assetCategory';
+import { ParamConfirmationDialogComponent } from '../../paramConfirmationDialog/paramConfirmationDialog.component';
 
 @Component({
   selector: 'app-assetsSummaryTable',

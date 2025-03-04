@@ -1,10 +1,10 @@
 import { Routes } from '@angular/router';
-import { AssetsPageComponent } from './pages/assetPages/assets-page/assets-page.component';
-import { IncomesPageComponent } from './pages/incomes-page/incomes-page.component';
 import { ExpenseTotalPageComponent } from './pages/expensePages/expenseTotalPage/expenseTotalPage.component';
 import { ExpenseFilterPageComponent } from './pages/expensePages/expenseFilterPage/expenseFilterPage.component';
-import { SettingPageComponent } from './pages/setting-page/setting-page.component';
-import { FinancialAssetsPageComponent } from './pages/assetPages/financialAssets-page/financialAssets-page.component';
+import { AssetsPageComponent } from './pages/assetPages/assetsPage/assetsPage.component';
+import { FinancialAssetsPageComponent } from './pages/assetPages/financialAssetsPage/financialAssetsPage.component';
+import { IncomesPageComponent } from './pages/incomesPage/incomesPage.component';
+import { SettingPageComponent } from './pages/settingPage/settingPage.component';
 
 
 export const routes: Routes = [

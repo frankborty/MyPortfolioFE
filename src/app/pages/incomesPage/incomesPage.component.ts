@@ -1,93 +1,102 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ImportsModule } from '../../imports';
-import { IncomeService } from '../../core/services/incomeService/income.service';
-import { GlobalUtilityService } from '../../core/services/utils/global-utility.service';
+import { ConfirmationService, MessageService } from 'primeng/api';
+import { IncomeStackedBarChartComponent } from '../../core/components/charts/incomeStackedBarChart/incomeStackedBarChart.component';
+import { EditIncomeComponent } from '../../core/components/income/editIncome/editIncome.component';
+import { IncomeSummaryTableComponent } from '../../core/components/income/incomeSummaryTable/incomeSummaryTable.component';
+import { IncomeTableComponent } from '../../core/components/income/incomeTable/incomeTable.component';
+import { OperationType } from '../../core/enum/oprationType';
 import { Income } from '../../core/interfaces/income';
 import { IncomeType } from '../../core/interfaces/incomeType';
-import { IncomeTableComponent } from '../../core/components/income/incomeTable/incomeTable.component';
-import { IncomeSummaryTableComponent } from '../../core/components/income/incomeSummaryTable/incomeSummaryTable.component';
-import { ParamConfirmationDialogComponent } from '../../core/components/param-confirmation-dialog/param-confirmation-dialog.component';
-import { ConfirmationService, MessageService } from 'primeng/api';
-import { EditIncomeComponent } from '../../core/components/income/editIncome/editIncome.component';
-import { OperationType } from '../../core/enum/oprationType';
-import { IncomeStackedBarChartComponent } from '../../core/components/charts/incomeStackedBarChart/incomeStackedBarChart.component';
+import { IncomeService } from '../../core/services/incomeService/income.service';
+import { GlobalUtilityService } from '../../core/services/utils/global-utility.service';
+import { ImportsModule } from '../../imports';
+import { ParamConfirmationDialogComponent } from '../../core/components/paramConfirmationDialog/paramConfirmationDialog.component';
 
 @Component({
-  selector: 'app-incomes-page',
-  imports: [ImportsModule, IncomeTableComponent, IncomeSummaryTableComponent, 
-    EditIncomeComponent, ParamConfirmationDialogComponent, IncomeStackedBarChartComponent],
+  selector: 'app-incomesPage',
+  imports: [
+    ImportsModule,
+    IncomeTableComponent,
+    IncomeSummaryTableComponent,
+    EditIncomeComponent,
+    ParamConfirmationDialogComponent,
+    IncomeStackedBarChartComponent,
+  ],
   providers: [
     ConfirmationService,
     MessageService,
     ParamConfirmationDialogComponent,
   ],
-  templateUrl: './incomes-page.component.html',
-  styleUrl: './incomes-page.component.css'
+  templateUrl: './incomesPage.component.html',
+  styleUrls: ['./incomesPage.component.css'],
 })
-export class IncomesPageComponent implements OnInit{
-  @ViewChild(ParamConfirmationDialogComponent) confirmDialog!: ParamConfirmationDialogComponent;
+export class IncomesPageComponent implements OnInit {
+  @ViewChild(ParamConfirmationDialogComponent)
+  confirmDialog!: ParamConfirmationDialogComponent;
   @ViewChild(EditIncomeComponent) editIncomeDialog!: EditIncomeComponent;
 
-  incomList : Income[] = [];
-  incomeTypeList : IncomeType[] = [];
-  displayIncomeEditPanel : boolean = false;
+  incomList: Income[] = [];
+  incomeTypeList: IncomeType[] = [];
+  displayIncomeEditPanel: boolean = false;
 
-  constructor(private incomeService : IncomeService,
-      private globalUtils : GlobalUtilityService,
-      private messageService : MessageService
-    ) { }
+  constructor(
+    private incomeService: IncomeService,
+    private globalUtils: GlobalUtilityService,
+    private messageService: MessageService
+  ) {}
 
   ngOnInit(): void {
     this.loadIncomes();
     this.loadIncomeTypes();
   }
-    
-  loadIncomes(){
+
+  loadIncomes() {
     this.incomeService.getIncomes().subscribe({
       next: (data: Income[]) => {
-        data.sort((a, b) => (b.date as Date).getTime() - (a.date as Date).getTime());
-        this.incomList=data;
+        data.sort(
+          (a, b) => (b.date as Date).getTime() - (a.date as Date).getTime()
+        );
+        this.incomList = data;
       },
       error: (error: any) => {
         console.error(error);
-      }
+      },
     });
   }
 
-  loadIncomeTypes(){
+  loadIncomeTypes() {
     this.incomeService.getIncomeTypes().subscribe({
       next: (data: any) => {
         this.incomeTypeList = data;
       },
       error: (error: any) => {
         console.error(error);
-      }
+      },
     });
   }
 
-  showAddIncomeDialog(){
-    let defaultIncome : Income = {
+  showAddIncomeDialog() {
+    let defaultIncome: Income = {
       id: -1,
       amount: 0,
       date: new Date(),
-      note: "",
-      incomeType : this.incomeTypeList[0]
-    }
+      note: '',
+      incomeType: this.incomeTypeList[0],
+    };
     this.editIncomeDialog.setIncomeToEdit(defaultIncome);
     this.editIncomeDialog.setCurrentOperation(OperationType.ADD);
-    this.displayIncomeEditPanel=true;
+    this.displayIncomeEditPanel = true;
   }
 
-
-  showEditIncomeDialog(income : Income){
+  showEditIncomeDialog(income: Income) {
     this.editIncomeDialog.setIncomeToEdit(income);
     this.editIncomeDialog.setCurrentOperation(OperationType.EDIT);
-    this.displayIncomeEditPanel=true;
+    this.displayIncomeEditPanel = true;
   }
 
-  addIncome(income: Income){
-    this.displayIncomeEditPanel=false;
-    if(income){
+  addIncome(income: Income) {
+    this.displayIncomeEditPanel = false;
+    if (income) {
       this.incomeService.addIncome(income).subscribe({
         next: () => {
           this.loadIncomes();
@@ -108,9 +117,9 @@ export class IncomesPageComponent implements OnInit{
     }
   }
 
-  editIncome(income: Income){
-    this.displayIncomeEditPanel=false;
-    if(income){
+  editIncome(income: Income) {
+    this.displayIncomeEditPanel = false;
+    if (income) {
       this.incomeService.editIncome(income.id, income).subscribe({
         next: () => {
           this.loadIncomes();
@@ -131,7 +140,7 @@ export class IncomesPageComponent implements OnInit{
     }
   }
 
-  deleteIncome(income: Income){
+  deleteIncome(income: Income) {
     if (income) {
       this.confirmDialog
         .confirmDelete(
@@ -170,6 +179,6 @@ export class IncomesPageComponent implements OnInit{
             });
           }
         });
-      }
+    }
   }
 }

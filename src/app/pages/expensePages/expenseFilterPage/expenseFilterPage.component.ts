@@ -3,7 +3,6 @@ import { ConfirmationService, MessageService } from 'primeng/api';
 import { Nullable } from 'primeng/ts-helpers';
 import { ExpenseTypeLinearChartComponent } from '../../../core/components/charts/expenseTypeLinearChart/expenseTypeLinearChart.component';
 import { ExpenseTableComponent } from '../../../core/components/expense/expenseTable/expenseTable.component';
-import { ParamConfirmationDialogComponent } from '../../../core/components/param-confirmation-dialog/param-confirmation-dialog.component';
 import { Expense, ExpenseToEdit } from '../../../core/interfaces/expense';
 import { ExpenseCategory } from '../../../core/interfaces/expenseCategory';
 import { ExpenseType } from '../../../core/interfaces/expenseType';
@@ -13,6 +12,7 @@ import { ImportsModule } from '../../../imports';
 import { EditExpenseComponent } from '../../../core/components/expense/editExpense/editExpense.component';
 import { OperationType } from '../../../core/enum/oprationType';
 import { ExpensePieChartPanelComponent } from '../../../core/components/charts/expensePieChart/expensePieChartPanel/expensePieChartPanel.component';
+import { ParamConfirmationDialogComponent } from '../../../core/components/paramConfirmationDialog/paramConfirmationDialog.component';
 
 @Component({
   selector: 'app-expenseFilterPage',

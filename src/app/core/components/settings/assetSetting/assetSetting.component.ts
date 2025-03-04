@@ -3,9 +3,9 @@ import { MessageService } from 'primeng/api';
 import { Asset } from '../../../interfaces/asset';
 import { AssetCategory } from '../../../interfaces/assetCategory';
 import { AssetService } from '../../../services/assetService/asset.service';
-import { ParamConfirmationDialogComponent } from '../../param-confirmation-dialog/param-confirmation-dialog.component';
 import { ImportsModule } from '../../../../imports';
 import { FormsModule } from '@angular/forms';
+import { ParamConfirmationDialogComponent } from '../../paramConfirmationDialog/paramConfirmationDialog.component';
 
 @Component({
   selector: 'app-assetSetting',

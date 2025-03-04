@@ -1,15 +1,15 @@
 import { Component, OnInit } from '@angular/core';
-import { ImportsModule } from '../../../imports';
-import { FinancialAssetLineChartComponent } from "../../../core/components/charts/financialAssetLineChart/financialAssetLineChart.component";
-import { AssetService } from '../../../core/services/assetService/asset.service';
-import { Asset } from '../../../core/interfaces/asset';
 import { AssetCardComponent } from '../../../core/components/assets/assetCard/assetCard.component';
+import { FinancialAssetLineChartComponent } from '../../../core/components/charts/financialAssetLineChart/financialAssetLineChart.component';
+import { Asset } from '../../../core/interfaces/asset';
+import { AssetService } from '../../../core/services/assetService/asset.service';
+import { ImportsModule } from '../../../imports';
 
 @Component({
-  selector: 'app-financialAssets-page',
-  imports: [ImportsModule, FinancialAssetLineChartComponent, AssetCardComponent],
-  templateUrl: './financialAssets-page.component.html',
-  styleUrls: ['./financialAssets-page.component.css']
+  selector: 'app-financialAssetsPage',
+    imports: [ImportsModule, FinancialAssetLineChartComponent, AssetCardComponent],
+  templateUrl: './financialAssetsPage.component.html',
+  styleUrls: ['./financialAssetsPage.component.css']
 })
 export class FinancialAssetsPageComponent implements OnInit {
 
