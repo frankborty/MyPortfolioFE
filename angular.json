@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "MyBadPortfolioSite": {
+    "MyPortfolioFE": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:application",
           "options": {
-            "outputPath": "dist/my-bad-portfolio-site",
+            "outputPath": "dist/my-portfolio-fe",
             "index": "src/index.html",
             "browser": "src/main.ts",
             "polyfills": [
@@ -59,10 +59,10 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "MyBadPortfolioSite:build:production"
+              "buildTarget": "MyPortfolioFE:build:production"
             },
             "development": {
-              "buildTarget": "MyBadPortfolioSite:build:development"
+              "buildTarget": "MyPortfolioFE:build:development"
             }
           },
           "defaultConfiguration": "development"

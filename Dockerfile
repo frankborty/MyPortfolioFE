@@ -19,7 +19,7 @@ FROM nginx:latest
 #Copy the build output to replace the default nginx contents
 COPY ./nginx.conf /etc/nginx/conf.d/default.conf
 #COPY the build output to replace the default nginx contents
-COPY --from=build /app/dist/my-bad-portfolio-site/browser /usr/share/nginx/html
+COPY --from=build /app/dist/my-portfolio-fe/browser /usr/share/nginx/html
 
 #Expose port 80
 EXPOSE 80

@@ -10,5 +10,5 @@ import { TopBarComponent } from './core/components/top-bar/top-bar.component';
   styleUrl: './app.component.css'
 })
 export class AppComponent {
-  title = 'MyBadPortfolioSite';
+  title = 'MyPortfolioFE';
 }
