@@ -21,7 +21,7 @@ export class FinancialAssetsPageComponent implements OnInit {
   }
 
   loadAssetList() {
-    this.assetService.getAssetList().subscribe({
+    this.assetService.getAssetWithValueList().subscribe({
       next: (data: Asset[]) => {
         data.sort((a, b) => a.name.localeCompare(b.name));
         this.assetList = data.filter(x => x.category.isInvested);

@@ -42,6 +42,12 @@ export class AssetService {
       .pipe(catchError(this.errorHandler.handleError));
   }
 
+  getAssetWithValueList(): Observable<Asset[]> {
+    return this.http
+      .get<Asset[]>(`${this.apiUrl}/Asset/withValue`, this.options)
+      .pipe(catchError(this.errorHandler.handleError));
+  }
+
   getAssetCategoryList() {
     return this.http
       .get<AssetValueSummary[]>(`${this.apiUrl}/AssetCategory`, this.options)
