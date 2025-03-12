@@ -47,21 +47,32 @@ export class AssetCardComponent implements OnInit, OnChanges {
   }
 
   updateAssetData() {
-    this.asset.pmc=39.944;
-    if(this.asset.name.startsWith("X")){
-      console.log("prova");
+    if (this.asset.name.startsWith('X')) {
+      console.log('prova');
     }
-    let assetDeltaAbs=this.asset.share*(this.asset.currentValue - this.asset.pmc);
-    let assetDeltaRel=this.calculatePercentageChange(this.asset.pmc, this.asset.currentValue);
-    this.assetResultPositive = assetDeltaAbs>0;
-    this.assetValueDeltaString = `(${assetDeltaAbs.toLocaleString('it-IT', { style: 'currency', currency: 'EUR' })} / 
-    ${assetDeltaRel.toLocaleString('it-IT', { style: 'percent', minimumFractionDigits: 2 })})`;
+    let assetDeltaAbs = this.asset.currentValue - this.asset.pmc * this.asset.share;
+    let assetDeltaRel = this.calculatePercentageChange(
+      this.asset.pmc * this.asset.share,
+      this.asset.currentValue
+    );
+    this.assetResultPositive = assetDeltaAbs > 0;
+    this.assetValueDeltaString = `(${assetDeltaAbs.toLocaleString('it-IT', {
+      style: 'currency',
+      currency: 'EUR',
+    })} / 
+    ${assetDeltaRel.toLocaleString('it-IT', {
+      style: 'percent',
+      minimumFractionDigits: 2,
+    })})`;
   }
 
-  calculatePercentageChange(initialPrice: number, currentPrice: number): number {
+  calculatePercentageChange(
+    initialPrice: number,
+    currentPrice: number
+  ): number {
     if (initialPrice === 0) {
       return 0; // Evita la divisione per zero
     }
-    return ((currentPrice - initialPrice) / initialPrice);
+    return (currentPrice - initialPrice) / initialPrice;
   }
 }

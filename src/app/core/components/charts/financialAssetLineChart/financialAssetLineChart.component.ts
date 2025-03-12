@@ -32,8 +32,7 @@ export class FinancialAssetLineChartComponent implements OnInit {
 
   constructor(
     private assetService: AssetService,
-    private cd: ChangeDetectorRef,
-    private globalUtils: GlobalUtilityService
+    private cd: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -62,20 +61,27 @@ export class FinancialAssetLineChartComponent implements OnInit {
     );
 
     // Creiamo un Set direttamente invece di un array
-    const allDatesSet = new Set<Date>();
+    const allDatesArray: Date[] = [];
 
     this.assetValueList.forEach((assetSummary) => {
       assetSummary.assetValueList.forEach((assetValue) => {
-        allDatesSet.add(assetValue.timeStamp);
+        allDatesArray.push(assetValue.timeStamp);
       });
     });
 
+    const uniqueDates = this.removeDuplicateDates(allDatesArray);
     // Se hai ancora bisogno di un array (ordinato) dopo aver raccolto tutte le date uniche
-    const allDatesList = this.filterDate([...allDatesSet].sort());
+    const allDatesList = this.filterDate(
+      [...uniqueDates].sort((a, b) => a.getTime() - b.getTime())
+    );
+    //rimuovo i duplicati
 
     this.inputData = {
       labels: allDatesList.map(
-        (x) => x.toISOString().substring(5, 7) + '/' + x.toISOString().substring(0, 4)
+        (x) =>
+          x.toISOString().substring(5, 7) +
+          '/' +
+          x.toISOString().substring(0, 4)
       ),
       datasets: [],
     };
@@ -84,7 +90,7 @@ export class FinancialAssetLineChartComponent implements OnInit {
       //creo il set di dati d usare nel dataset
       const datasetValue = allDatesList.map((date) => {
         const dataPoint = assetSummary.assetValueList.find(
-          (item) => item.timeStamp === date
+          (item) => item.timeStamp.getTime() === date.getTime()
         );
         return dataPoint ? dataPoint.value : null;
       });
@@ -165,8 +171,13 @@ export class FinancialAssetLineChartComponent implements OnInit {
         startDate = new Date(nowDate.setDate(nowDate.getDate() - 7));
         break;
     }
-    filteredDate = dateList.filter(date => date > startDate);
+    filteredDate = dateList.filter((date) => date > startDate);
 
     return filteredDate;
+  }
+
+  removeDuplicateDates(dates: Date[]): Date[] {
+    return Array.from(new Set(dates.map((date) => date.getTime()))) // Rimuove i duplicati con un Set di timestamp
+      .map((timestamp) => new Date(timestamp)); // Converte di nuovo in Date
   }
 }
