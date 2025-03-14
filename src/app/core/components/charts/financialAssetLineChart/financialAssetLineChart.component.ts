@@ -97,9 +97,27 @@ export class FinancialAssetLineChartComponent implements OnInit {
       let dataset = {
         label: assetSummary.asset.name,
         data: Array.from(datasetValue),
+        hidden: assetSummary.asset.name.startsWith("M.") ? true : false 
       };
       this.inputData.datasets.push(dataset);
     });
+
+    const sumArray: number[] = new Array(allDatesList.length).fill(0);
+
+    this.inputData.datasets.forEach((dataset: { label: string; data: (number | null)[] }) => {
+      dataset.data.forEach((value, index) => {
+        if (index < sumArray.length) { // Evita errori in caso di lunghezze diverse
+          sumArray[index] += value ?? 0;
+        }
+      });
+    });
+
+    let sumDataSet = {
+      label: "Total",
+      data: sumArray,
+      hidden: true 
+    };
+    this.inputData.datasets.push(sumDataSet);
 
     this.options = {
       maintainAspectRatio: false,
