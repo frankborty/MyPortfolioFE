@@ -12,7 +12,10 @@
     </div>
     <div class="w-1/2">
       <p class="card-value text-right">
-        {{ asset.currentValue * asset.share | currency : "EUR" : "symbol" : "1.2-2" : "it-IT" }}
+        {{
+          asset.currentValue * asset.share
+            | currency : "EUR" : "symbol" : "1.2-2" : "it-IT"
+        }}
       </p>
       <p
         class="card-value-delta text-right"
@@ -24,7 +27,7 @@
   </div>
 
   <textarea
-  class="mt-2 mb-2"
+    class="mt-2 mb-2"
     pTextarea
     [(ngModel)]="asset.note"
     rows="5"

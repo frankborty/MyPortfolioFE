@@ -1,0 +1,134 @@
+<div class="card">
+  <p-table
+    showGridlines
+    [size]="'small'"
+    [value]="assetOperationList"
+    [scrollable]="true"
+    scrollHeight="300px"
+    [tableStyle]="{ 'min-width': '30rem' }"
+  >
+    <ng-template #header>
+      <tr>
+        <th pSortableColumn="asset.name">
+          Asset
+          <p-columnFilter
+            field="asset.name"
+            matchMode="in"
+            display="menu"
+            [showMatchModes]="false"
+            [showOperator]="false"
+            [showAddButton]="false"
+            class="ml-auto"
+          >
+            <ng-template #filter let-asset let-filter="filterCallback">
+              <p-multiselect
+                [filter]="true"
+                [ngModel]="asset"
+                [options]="assetList"
+                optionLabel="name"
+                optionValue="name"
+                placeholder="Any"
+                (onChange)="filter($event.value)"
+                class="w-full"
+              >
+                <ng-template let-type #item>
+                  <div class="flex items-center gap-2">
+                    <span>{{ type.name }}</span>
+                  </div>
+                </ng-template>
+              </p-multiselect>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th pSortableColumn="operation.date">
+          Date
+          <p-columnFilter type="date" field="operation.date" display="menu">
+            <ng-template
+              pTemplate="filter"
+              let-value
+              let-filter="filterCallback"
+            >
+              <p-datepicker
+                [ngModel]="value"
+                (onSelect)="filter($event)"
+                dateFormat="dd/mm/yy"
+              />
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th pSortableColumn="operation.operationType">
+          Type
+          <p-columnFilter
+            field="operation.operationType"
+            matchMode="in"
+            display="menu"
+            [showMatchModes]="false"
+            [showOperator]="false"
+            [showAddButton]="false"
+            class="ml-auto"
+          >
+            <ng-template #filter let-asset let-filter="filterCallback">
+              <p-multiselect
+                [filter]="true"
+                [ngModel]="asset"
+                [options]="operationType"
+                placeholder="Any"
+                (onChange)="filter($event.value)"
+                class="w-full"
+              >
+                <ng-template let-type #item>
+                  <div class="flex items-center gap-2">
+                    <span>{{ type }}</span>
+                  </div>
+                </ng-template>
+              </p-multiselect>
+            </ng-template>
+          </p-columnFilter>
+        </th>
+        <th pSortableColumn="operation.share">
+          Share
+          <p-columnFilter
+            type="numeric"
+            field="operation.share"
+            display="menu"
+          />
+        </th>
+        <th pSortableColumn="operation.pmc">
+          PMC (€)
+          <p-columnFilter
+            type="numeric"
+            field="operation.pmc"
+            display="menu"
+            currency="EUR"
+          />
+        </th>
+        <th pSortableColumn="totalImport">
+          Total (€)
+          <p-columnFilter
+            type="numeric"
+            field="totalImport"
+            display="menu"
+            currency="EUR"
+          />
+        </th>
+      </tr>
+    </ng-template>
+
+    <ng-template #body let-assetOperation let-rowIndex="rowIndex">
+      <tr
+        [ngClass]="
+          assetOperation.operation.operationType === 'BUY' ? 'buy' : 'sell'
+        "
+      >
+        <td>{{ assetOperation.asset.name }}</td>
+        <td>{{ assetOperation.operation.date | date : "dd/MM/yyyy" }}</td>
+        <td>{{ assetOperation.operation.operationType }}</td>
+        <td>{{ assetOperation.operation.share }}</td>
+        <td>{{ assetOperation.operation.pmc | number : "1.2-2" : "it-IT" }}</td>
+        <td>{{ assetOperation.totalImport | number : "1.2-2" : "it-IT" }}</td>
+      </tr>
+    </ng-template>
+
+    <ng-template #footer> </ng-template>
+  </p-table>
+</div>

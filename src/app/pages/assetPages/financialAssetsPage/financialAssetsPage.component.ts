@@ -4,10 +4,11 @@ import { FinancialAssetLineChartComponent } from '../../../core/components/chart
 import { Asset } from '../../../core/interfaces/asset';
 import { AssetService } from '../../../core/services/assetService/asset.service';
 import { ImportsModule } from '../../../imports';
+import { AssetOperationTableComponent } from '../../../core/components/assets/assetOperationTable/assetOperationTable.component';
 
 @Component({
   selector: 'app-financialAssetsPage',
-    imports: [ImportsModule, FinancialAssetLineChartComponent, AssetCardComponent],
+    imports: [ImportsModule, FinancialAssetLineChartComponent, AssetCardComponent, AssetOperationTableComponent],
   templateUrl: './financialAssetsPage.component.html',
   styleUrls: ['./financialAssetsPage.component.css']
 })

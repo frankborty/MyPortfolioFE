@@ -6,6 +6,7 @@ import { Asset } from '../../interfaces/asset';
 import { AssetCategory } from '../../interfaces/assetCategory';
 import { AssetValueSummary } from '../../interfaces/assetValueSummary';
 import { ErrorHandlerService } from '../errorHandler/error-handler.service';
+import { AssetOperation } from '../../interfaces/assetOperation';
 
 @Injectable({
   providedIn: 'root'
@@ -53,6 +54,18 @@ export class AssetService {
       .get<AssetValueSummary[]>(`${this.apiUrl}/AssetCategory`, this.options)
       .pipe(catchError(this.errorHandler.handleError));
   }
+
+  getAssetOperationList(): Observable<AssetOperation[]> {
+      return this.http
+        .get<AssetOperation[]>(`${this.apiUrl}/AssetOperation`, this.options)
+        .pipe(
+          map(assets => assets.map(asset => ({
+            ...asset,
+            date: new Date(asset.date) // Converte la stringa in Date
+          }))),
+          catchError(this.errorHandler.handleError)
+        );
+    }
   //#endregion
 
   //#region ADD DATA
