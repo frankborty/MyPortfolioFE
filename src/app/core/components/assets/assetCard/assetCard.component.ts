@@ -47,9 +47,6 @@ export class AssetCardComponent implements OnInit, OnChanges {
   }
 
   updateAssetData() {
-    if (this.asset.name.startsWith('X')) {
-      console.log('prova');
-    }
     let assetDeltaAbs = (this.asset.currentValue - this.asset.pmc) * this.asset.share;
     let assetDeltaRel = this.calculatePercentageChange(
       this.asset.pmc,
