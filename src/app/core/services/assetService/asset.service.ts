@@ -80,6 +80,12 @@ export class AssetService {
       .post(`${this.apiUrl}/AssetCategory`, assetCategory, this.options)
       .pipe(catchError(this.errorHandler.handleError));
   }
+
+  addAssetOperation(assetOperation: AssetOperation) {
+    return this.http
+      .post(`${this.apiUrl}/AssetOperation`, assetOperation, this.options)
+      .pipe(catchError(this.errorHandler.handleError));
+  }
   //#endregion
 
   //#region  DELETE DATA
@@ -94,6 +100,13 @@ export class AssetService {
     const url = `${
       this.apiUrl
     }/AssetCategory?assetCategoryId=${encodeURIComponent(assetCategoryId)}`;
+    return this.http
+      .delete(url)
+      .pipe(catchError(this.errorHandler.handleError));
+  }
+
+  deleteAssetOperation(assetOperationId: number) {
+    const url = `${this.apiUrl}/AssetOperation/${encodeURIComponent(assetOperationId)}`;
     return this.http
       .delete(url)
       .pipe(catchError(this.errorHandler.handleError));
@@ -122,6 +135,18 @@ export class AssetService {
       .put(
         `${this.apiUrl}/AssetCategory/${assetCategoryId}`,
         newAssetCategory,
+        this.options
+      )
+      .pipe(catchError(this.errorHandler.handleError));
+  }
+
+  
+
+  editAssetOperation(assetOperationId: number, newAssetOperation: AssetOperation) {
+    return this.http
+      .put(
+        `${this.apiUrl}/AssetOperation/${assetOperationId}`,
+        newAssetOperation,
         this.options
       )
       .pipe(catchError(this.errorHandler.handleError));

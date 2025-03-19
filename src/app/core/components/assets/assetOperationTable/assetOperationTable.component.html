@@ -1,6 +1,7 @@
 <div class="card">
   <p-table
-    showGridlines
+  
+  showGridlines
     [size]="'small'"
     [value]="assetOperationList"
     [scrollable]="true"
@@ -40,6 +41,7 @@
             </ng-template>
           </p-columnFilter>
         </th>
+        <th class="w-12 text-center">Action</th>
         <th pSortableColumn="operation.date">
           Date
           <p-columnFilter type="date" field="operation.date" display="menu">
@@ -121,9 +123,35 @@
         "
       >
         <td>{{ assetOperation.asset.name }}</td>
+        <td class="p-0">
+          <div class="flex items-center">
+            <button
+              class="border-spacing-0 p-0 m-0"
+              pButton
+              pRipple
+              type="button"
+              icon="pi pi-pencil"
+              (click)="editAssetOperation(assetOperation)"
+              text
+              rounded
+              severity="secondary"
+            ></button>
+  
+            <button
+              pButton
+              pRipple
+              type="button"
+              icon="pi pi-trash"
+              (click)="deleteAssetOperation(assetOperation)"
+              text
+              rounded
+              severity="secondary"
+            ></button>
+          </div>
+        </td>
         <td>{{ assetOperation.operation.date | date : "dd/MM/yyyy" }}</td>
         <td>{{ assetOperation.operation.operationType }}</td>
-        <td>{{ assetOperation.operation.share }}</td>
+        <td>{{ assetOperation.operation.share | number : "1.2-2" : "it-IT" }}</td>
         <td>{{ assetOperation.operation.pmc | number : "1.2-2" : "it-IT" }}</td>
         <td>{{ assetOperation.totalImport | number : "1.2-2" : "it-IT" }}</td>
       </tr>

@@ -10,7 +10,7 @@ import { ExpenseService } from '../../../core/services/expenseService/expense.se
 import { GlobalUtilityService } from '../../../core/services/utils/global-utility.service';
 import { ImportsModule } from '../../../imports';
 import { EditExpenseComponent } from '../../../core/components/expense/editExpense/editExpense.component';
-import { OperationType } from '../../../core/enum/oprationType';
+import { OperationType } from '../../../core/enum/operationType';
 import { ExpensePieChartPanelComponent } from '../../../core/components/charts/expensePieChart/expensePieChartPanel/expensePieChartPanel.component';
 import { ParamConfirmationDialogComponent } from '../../../core/components/paramConfirmationDialog/paramConfirmationDialog.component';
 

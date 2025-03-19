@@ -4,7 +4,7 @@ import { Income } from '../../../interfaces/income';
 import { IncomeType } from '../../../interfaces/incomeType';
 import { ImportsModule } from '../../../../imports';
 import { IncomeService } from '../../../services/incomeService/income.service';
-import { OperationType } from '../../../enum/oprationType';
+import { OperationType } from '../../../enum/operationType';
 
 
 import localeIt from '@angular/common/locales/it';
@@ -59,7 +59,7 @@ export class EditIncomeComponent implements OnInit {
     this.currentIncomeId = income.id;
     this.editIncomeForm.patchValue({
       incType: income.incomeType,
-      incAmount: income.amount.toLocaleString("it-IT"), //non dovrebbe essere necessario ma sennò non gestisce i decimali
+      incAmount: income.amount,
       incDate: income.date,
       incNote: income.note
     });

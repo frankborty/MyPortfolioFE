@@ -1,7 +1,7 @@
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ImportsModule } from '../../../../imports';
-import { OperationType } from '../../../enum/oprationType';
+import { OperationType } from '../../../enum/operationType';
 import { Expense } from '../../../interfaces/expense';
 import { ExpenseType } from '../../../interfaces/expenseType';
 import { ExpenseService } from '../../../services/expenseService/expense.service';
@@ -61,7 +61,7 @@ export class EditExpenseComponent implements OnInit {
     this.currentExpenseId = expense.id;
     this.editExpenseForm.patchValue({
       expDescription: expense.description,
-      expAmount: expense.amount.toLocaleString("it-IT"), //non dovrebbe essere necessario ma sennò non gestisce i decimali
+      expAmount: expense.amount,
       expDate: expense.date,
       expType: expense.expenseType,
       expCategory: expense.expenseType.category.name,

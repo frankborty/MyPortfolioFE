@@ -4,7 +4,7 @@ import { IncomeStackedBarChartComponent } from '../../core/components/charts/inc
 import { EditIncomeComponent } from '../../core/components/income/editIncome/editIncome.component';
 import { IncomeSummaryTableComponent } from '../../core/components/income/incomeSummaryTable/incomeSummaryTable.component';
 import { IncomeTableComponent } from '../../core/components/income/incomeTable/incomeTable.component';
-import { OperationType } from '../../core/enum/oprationType';
+import { OperationType } from '../../core/enum/operationType';
 import { Income } from '../../core/interfaces/income';
 import { IncomeType } from '../../core/interfaces/incomeType';
 import { IncomeService } from '../../core/services/incomeService/income.service';
@@ -31,6 +31,9 @@ import { ParamConfirmationDialogComponent } from '../../core/components/paramCon
   styleUrls: ['./incomesPage.component.css'],
 })
 export class IncomesPageComponent implements OnInit {
+
+
+
   @ViewChild(ParamConfirmationDialogComponent)
   confirmDialog!: ParamConfirmationDialogComponent;
   @ViewChild(EditIncomeComponent) editIncomeDialog!: EditIncomeComponent;

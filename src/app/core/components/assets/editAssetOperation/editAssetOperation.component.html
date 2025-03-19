@@ -1,0 +1,47 @@
+<form [formGroup]="editAssetOperationForm" (ngSubmit)="onUserSave()">
+  <p-floatlabel class="m-3" variant="on">
+    <p-select 
+        formControlName="asset" 
+        [options]="assetList"
+        [fluid]="true"
+        optionLabel="name" 
+        placeholder="Asset"/>
+    <label for="assetName">Asset</label>
+</p-floatlabel>
+
+  <p-floatlabel class="m-3" variant="on">
+      <p-datepicker
+          [fluid]="true"
+          formControlName="date" 
+          inputId="date" 
+          iconDisplay="input" 
+          dateFormat="dd/mm/yy" 
+          showIcon />
+      <label for="date">Date</label>
+  </p-floatlabel>
+  
+  <p-floatlabel class="m-3" variant="on">
+      <p-inputnumber [fluid]="true" formControlName="pmc" inputId="pmc" mode="currency" currency="EUR" locale="it-IT" />
+      <label for="pmc">Price</label>
+  </p-floatlabel>  
+  
+  <p-floatlabel class="m-3" variant="on">
+    <p-inputnumber [fluid]="true" formControlName="share" inputId="share" mode="decimal" [minFractionDigits]="2" [maxFractionDigits]="5" locale="it-IT"/>
+    <label for="share">Share</label>
+</p-floatlabel> 
+
+<p-floatlabel class="m-3" variant="on">
+  <p-select 
+      formControlName="operationType" 
+      [options]="operationTypeList"
+      [fluid]="true"
+      placeholder="Type"/>
+  <label for="operationType">Asset</label>
+</p-floatlabel> 
+
+  <hr class="m-3">    
+  
+  <div class="flex justify-center">
+      <p-button label="Save Operation" severity="warn" type="submit" icon="pi pi-pencil" />
+  </div>
+</form>
