@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  backendUrl: 'http://192.168.1.8:8080/api'
+  backendUrl: 'http://localhost:8080/api',
+  pythonUrl: 'http://mypf_python:50000/stock'
 };

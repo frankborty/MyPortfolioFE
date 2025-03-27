@@ -1,3 +1,20 @@
 :host ::ng-deep .p-datatable-header {
     background-color: #A3D9FF;
 }
+
+.resizable-cell {
+    min-height: 50px;
+    resize: vertical; /* Permette solo il resize verticale */
+    overflow: auto;
+    border: 1px solid #ccc;
+    padding: 5px;
+    background-color: #f8f9fa;
+}
+
+.truncate-text {
+    white-space: nowrap;       /* Evita il ritorno a capo */
+    overflow: hidden;          /* Nasconde il testo in eccesso */
+    text-overflow: ellipsis;   /* Mostra i "..." quando il testo è troppo lungo */
+    max-width: 180px;          /* Imposta una larghezza massima */
+    display: block;            /* Necessario per alcuni browser */
+}

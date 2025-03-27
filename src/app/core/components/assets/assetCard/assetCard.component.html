@@ -1,4 +1,5 @@
-<p-card [style]="{ width: '25rem', overflow: 'hidden' }">
+<p-card [style]="{ width: '25rem', overflow: 'hidden', border: '1px solid black'}" 
+  [ngStyle]="{ '--card-bg-color': assetResultPositive ? 'lightgreen' : '#e57373' }">
   <div class="flex">
     <div class="w-1/2 pt-1">
       <div class="flex items-center space-x-2">
@@ -9,6 +10,7 @@
       </div>
 
       <p class="card-isin">{{ asset.isin }}</p>
+      <p class="card-isin">{{ asset.share }} / {{ asset.pmc | currency : "EUR" : "symbol" : "1.2-2" : "it-IT"}}</p>
     </div>
     <div class="w-1/2">
       <p class="card-value text-right">
@@ -19,21 +21,12 @@
       </p>
       <p
         class="card-value-delta text-right"
-        [ngClass]="assetResultPositive ? 'positive' : 'negative'"
       >
         {{ assetValueDeltaString }}
       </p>
     </div>
   </div>
 
-  <textarea
-    class="mt-2 mb-2"
-    pTextarea
-    [(ngModel)]="asset.note"
-    rows="5"
-    readonly
-    style="width: 100%"
-  ></textarea>
 
   <ng-template #footer>
     <div class="flex gap-4 mt-1">
@@ -42,7 +35,26 @@
         severity="secondary"
         class="w-full"
         styleClass="w-full"
+        (onClick)="addOperation(asset)"
+      />
+      <p-button
+        icon="pi pi-refresh"
+        severity="secondary"
+        class="w-full"
+        styleClass="w-full"
+        (onClick)="updateValue(asset)"
+      />
+      <p-button
+        icon="pi pi-info"
+        severity="secondary"
+        class="w-full"
+        styleClass="w-full"
+        (onClick)="showDetails()"
       />
     </div>
   </ng-template>
 </p-card>
+
+<p-dialog header="Financial Asset Details" [modal]="true" [(visible)]="detailsPanelVisible" >
+  <app-financialAssetDetailsCard [asset]="asset" [operationList]="operationList"></app-financialAssetDetailsCard>
+</p-dialog>

@@ -11,6 +11,7 @@ import { AssetOperationType } from '../../../core/enum/assetOperationType';
 import { EditAssetOperationComponent } from '../../../core/components/assets/editAssetOperation/editAssetOperation.component';
 import { OperationType } from '../../../core/enum/operationType';
 import { ConfirmationService, MessageService } from 'primeng/api';
+import { Nullable } from 'primeng/ts-helpers';
 
 @Component({
   selector: 'app-financialAssetsPage',
@@ -36,6 +37,7 @@ export class FinancialAssetsPageComponent implements OnInit {
   @ViewChild(AssetOperationTableComponent) assetOperationTable!: AssetOperationTableComponent;
   displayAssetOperationEditPanel: boolean = false;
   assetList: Asset[] = [];
+  operationList: AssetOperation[] = [];
   constructor(
     private assetService: AssetService,
     private messageService: MessageService
@@ -43,6 +45,7 @@ export class FinancialAssetsPageComponent implements OnInit {
 
   ngOnInit() {
     this.loadAssetList();
+    this.loadAssetOperationList();
   }
 
   loadAssetList() {
@@ -57,10 +60,65 @@ export class FinancialAssetsPageComponent implements OnInit {
     });
   }
 
-  showAddAssetOperationDialog() {
+  
+
+  loadAssetOperationList() {
+    this.assetService.getAssetOperationList().subscribe({
+      next: (data: AssetOperation[]) => {
+        this.operationList = data.sort(
+          (a, b) => (b.date as Date).getTime() - (a.date as Date).getTime()
+        );
+      },
+      error: (error: any) => {
+        console.error(error);
+      },
+    });
+  }
+
+  updateAllAssetValue(){
+    this.assetService.getAllAssetCurrentValue().subscribe({
+      next: () => {
+        this.loadAssetList();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Valore di tutti gli asset aggiornato'
+        });
+      },
+      error: (error: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error,
+        });
+      },
+    });
+  }
+
+  updateAssetValue(assetValueId: number){
+    this.assetService.getAssetCurrentValue(assetValueId).subscribe({
+      next: (newValue: any) => {
+        this.loadAssetList();
+        this.messageService.add({
+          severity: 'success',
+          summary: 'Success',
+          detail: 'Valore di '+newValue.symbol+' aggiornato: ' + newValue.price+ '€',
+        });
+      },
+      error: (error: any) => {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: error,
+        });
+      },
+    });
+  }
+
+  showAddAssetOperationDialog(assetId: number | Nullable) {
     let defaultAssetOperation: AssetOperation = {
       assetOperationId: -1,
-      assetId: -1,
+      assetId: assetId ?? -1,
       date: new Date(),
       pmc: 0,
       share: 0,

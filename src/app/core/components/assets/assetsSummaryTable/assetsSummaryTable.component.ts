@@ -31,6 +31,7 @@ export class AssetsSummaryTableComponent implements OnInit {
       asset: {
         id: -1,
         name: '',
+        pyName: '',
         category: {
           id: -1,
           name: '',

@@ -9,10 +9,11 @@ import { ErrorHandlerService } from '../errorHandler/error-handler.service';
 import { AssetOperation } from '../../interfaces/assetOperation';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AssetService {
   private apiUrl = environment.backendUrl;
+  private pythonUrl = environment.pythonUrl;
   private options = { headers: { 'Content-Type': 'application/json' } };
   constructor(
     private http: HttpClient,
@@ -22,15 +23,18 @@ export class AssetService {
   //#region  GET DATA
   getAssetsSummaryByMonth(): Observable<AssetValueSummary[]> {
     return this.http
-      .get<AssetValueSummary[]>(`${this.apiUrl}/AssetValue/SummaryByMonth`, this.options)
+      .get<AssetValueSummary[]>(
+        `${this.apiUrl}/AssetValue/SummaryByMonth`,
+        this.options
+      )
       .pipe(
-        map(data =>
-          data.map(summary => ({
+        map((data) =>
+          data.map((summary) => ({
             ...summary,
-            assetValueList: summary.assetValueList.map(value => ({
+            assetValueList: summary.assetValueList.map((value) => ({
               ...value,
-              timeStamp: new Date(value.timeStamp) // Converte la stringa in Date
-            }))
+              timeStamp: new Date(value.timeStamp), // Converte la stringa in Date
+            })),
           }))
         ),
         catchError(this.errorHandler.handleError)
@@ -56,16 +60,30 @@ export class AssetService {
   }
 
   getAssetOperationList(): Observable<AssetOperation[]> {
-      return this.http
-        .get<AssetOperation[]>(`${this.apiUrl}/AssetOperation`, this.options)
-        .pipe(
-          map(assets => assets.map(asset => ({
+    return this.http
+      .get<AssetOperation[]>(`${this.apiUrl}/AssetOperation`, this.options)
+      .pipe(
+        map((assets) =>
+          assets.map((asset) => ({
             ...asset,
-            date: new Date(asset.date) // Converte la stringa in Date
-          }))),
-          catchError(this.errorHandler.handleError)
-        );
-    }
+            date: new Date(asset.date), // Converte la stringa in Date
+          }))
+        ),
+        catchError(this.errorHandler.handleError)
+      );
+  }
+
+  getAssetCurrentValue(assetId: number) {
+    return this.http
+      .get(`${this.apiUrl}/AssetValue/${assetId}/LoadFinancialValue?pythonUrl=${this.pythonUrl}`, this.options)
+      .pipe(catchError(this.errorHandler.handleError));
+  }
+
+  getAllAssetCurrentValue() {
+    return this.http
+    .get(`${this.apiUrl}/AssetValue/LoadAllFinancialValue?pythonUrl=${this.pythonUrl}`, this.options)
+      .pipe(catchError(this.errorHandler.handleError));
+  }
   //#endregion
 
   //#region ADD DATA
@@ -106,7 +124,9 @@ export class AssetService {
   }
 
   deleteAssetOperation(assetOperationId: number) {
-    const url = `${this.apiUrl}/AssetOperation/${encodeURIComponent(assetOperationId)}`;
+    const url = `${this.apiUrl}/AssetOperation/${encodeURIComponent(
+      assetOperationId
+    )}`;
     return this.http
       .delete(url)
       .pipe(catchError(this.errorHandler.handleError));
@@ -140,9 +160,10 @@ export class AssetService {
       .pipe(catchError(this.errorHandler.handleError));
   }
 
-  
-
-  editAssetOperation(assetOperationId: number, newAssetOperation: AssetOperation) {
+  editAssetOperation(
+    assetOperationId: number,
+    newAssetOperation: AssetOperation
+  ) {
     return this.http
       .put(
         `${this.apiUrl}/AssetOperation/${assetOperationId}`,

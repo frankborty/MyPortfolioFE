@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { AssetService } from '../../../services/assetService/asset.service';
 import { AssetValueSummary } from '../../../interfaces/assetValueSummary';
 import { ImportsModule } from '../../../../imports';
@@ -18,6 +18,8 @@ enum TimeFrame {
   styleUrls: ['./financialAssetLineChart.component.css'],
 })
 export class FinancialAssetLineChartComponent implements OnInit {
+  
+  @Output() updateAllAssetValueCallBack = new EventEmitter();
   assetValueList: AssetValueSummary[] = [];
   inputData: any;
   options: any;
@@ -37,6 +39,15 @@ export class FinancialAssetLineChartComponent implements OnInit {
 
   ngOnInit() {
     this.loadAssetsValueList();
+  }
+
+  refreshData() {
+    this.updateAllAssetValueCallBack.emit();
+    this.loadAssetsValueList();
+  }
+
+  updateAllValue(){
+    this.updateAllAssetValueCallBack.emit();
   }
 
   loadAssetsValueList() {
@@ -60,7 +71,6 @@ export class FinancialAssetLineChartComponent implements OnInit {
       '--p-content-border-color'
     );
 
-    // Creiamo un Set direttamente invece di un array
     const allDatesArray: Date[] = [];
 
     this.assetValueList.forEach((assetSummary) => {
@@ -74,8 +84,7 @@ export class FinancialAssetLineChartComponent implements OnInit {
     const allDatesList = this.filterDate(
       [...uniqueDates].sort((a, b) => a.getTime() - b.getTime())
     );
-    //rimuovo i duplicati
-
+    
     this.inputData = {
       labels: allDatesList.map(
         (x) =>
@@ -90,7 +99,7 @@ export class FinancialAssetLineChartComponent implements OnInit {
       //creo il set di dati d usare nel dataset
       const datasetValue = allDatesList.map((date) => {
         const dataPoint = assetSummary.assetValueList.find(
-          (item) => item.timeStamp.getTime() === date.getTime()
+          (item) => new Date(item.timeStamp.getFullYear(), item.timeStamp.getMonth(), item.timeStamp.getDate()).getTime() === date.getTime()
         );
         return dataPoint ? dataPoint.value : null;
       });
@@ -144,6 +153,14 @@ export class FinancialAssetLineChartComponent implements OnInit {
             boxHeight: 10,
           },
         },
+        tooltip: {
+          callbacks: {
+            label: (tooltipItem: any) => {
+              const formattedString = `${tooltipItem.dataset.label}: ${tooltipItem.formattedValue.toLocaleString('it-IT')} €`;
+              return formattedString;
+            },
+          }
+        }
       },
       scales: {
         x: {
@@ -195,7 +212,10 @@ export class FinancialAssetLineChartComponent implements OnInit {
   }
 
   removeDuplicateDates(dates: Date[]): Date[] {
-    return Array.from(new Set(dates.map((date) => date.getTime()))) // Rimuove i duplicati con un Set di timestamp
-      .map((timestamp) => new Date(timestamp)); // Converte di nuovo in Date
+    return Array.from(
+      new Set(
+        dates.map(date => new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime())
+      )
+    ).map(timestamp => new Date(timestamp));
   }
 }

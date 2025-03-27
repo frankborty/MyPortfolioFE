@@ -28,6 +28,7 @@ export class AssetSettingComponent implements OnInit {
     this.updatingItem = {
       id: -1,
       name: '',
+      pyName: '',
       isin: '',
       note: '',
       url: '',
@@ -97,6 +98,8 @@ export class AssetSettingComponent implements OnInit {
       asset.name != this.updatingItem?.name ||
       asset.category.id != this.updatingItem.category.id ||
       asset.isin != this.updatingItem.isin ||
+      asset.url != this.updatingItem.url ||
+      asset.pyName != this.updatingItem.pyName ||
       asset.note != this.updatingItem.note
     ) {
       this.editAsset(asset);
@@ -164,6 +167,7 @@ export class AssetSettingComponent implements OnInit {
       id: -1,
       name: 'AAA_NewAsset',
       isin: '',
+      pyName: '',
       note: '',
       url: '',
       share: 0,

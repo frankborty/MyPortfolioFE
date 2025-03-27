@@ -1,0 +1,42 @@
+.card-name {
+    font-size: var(--p-card-title-font-size);
+    font-weight: var(--p-card-title-font-weight);
+  }
+  
+  .card-isin {
+    font-size: 14px;
+    font-family: "Inter var", -apple-system, BlinkMacSystemFont, "Segoe UI",
+      Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol";
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    color: var(--p-card-subtitle-color);
+  }
+  
+  .card-value {
+    padding: 0;
+    margin: 0;
+    border: 0;
+    font-size: 30px;
+    font-weight: bold;
+  }
+  
+  .positive {
+    color: green;
+  }
+  
+  .negative {
+    color: red;
+  }
+  
+  ::ng-deep .p-card-body {
+    padding: 7px;
+    background-color: var(--card-bg-color) !important;
+  }
+  
+  .buy {
+    background-color: lightgreen;
+  }
+  
+  .sell {
+    background-color: #e57373;
+  }

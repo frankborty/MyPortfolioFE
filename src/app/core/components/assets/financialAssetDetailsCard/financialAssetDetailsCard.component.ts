@@ -1,34 +1,25 @@
-import {
-  Component,
-  EventEmitter,
-  Input,
-  OnChanges,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, Input, OnChanges, OnInit } from '@angular/core';
 import { ImportsModule } from '../../../../imports';
 import { Asset } from '../../../interfaces/asset';
-import { FinancialAssetDetailsCardComponent } from '../financialAssetDetailsCard/financialAssetDetailsCard.component';
+import { AssetService } from '../../../services/assetService/asset.service';
 import { AssetOperation } from '../../../interfaces/assetOperation';
 
 @Component({
-  selector: 'app-assetCard',
-  imports: [ImportsModule, FinancialAssetDetailsCardComponent],
-  templateUrl: './assetCard.component.html',
-  styleUrls: ['./assetCard.component.css'],
+  selector: 'app-financialAssetDetailsCard',
+  imports: [ImportsModule],
+  templateUrl: './financialAssetDetailsCard.component.html',
+  styleUrls: ['./financialAssetDetailsCard.component.css']
 })
-export class AssetCardComponent implements OnInit, OnChanges {
+export class FinancialAssetDetailsCardComponent implements OnInit, OnChanges {
 
-  @Output() addAssetOperationCallBack = new EventEmitter<number>();
-  @Output() updateAssetValueCallBack = new EventEmitter<number>();
   @Input() asset: Asset;
   @Input() operationList: AssetOperation[] = [];
-
+  
+  assetOperationList: AssetOperation[] = [];
   assetResultPositive = false;
-  assetValueDeltaString = '--- $ / ---%';
+  assetValueDeltaString = '--- € | --- € / ---%';
   detailsPanelVisible= false;
 
-  //@Input() assetOperation : any;
   constructor() {
     this.asset = {
       id: -1,
@@ -47,12 +38,16 @@ export class AssetCardComponent implements OnInit, OnChanges {
       currentValue: 0,
       timeStamp: new Date(),
     };
-  }
+   }
 
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   ngOnChanges() {
     this.updateAssetData();
+    if(this.operationList.length > 0){
+      this.assetOperationList=this.operationList.filter(o=>o.assetId===this.asset.id);
+    }
   }
 
   updateAssetData() {
@@ -63,7 +58,8 @@ export class AssetCardComponent implements OnInit, OnChanges {
       this.asset.currentValue
     );
     this.assetResultPositive = assetDeltaAbs >= 0;
-    this.assetValueDeltaString = `${assetDeltaAbs.toLocaleString('it-IT', {
+    this.assetValueDeltaString = `
+    ${assetDeltaAbs.toLocaleString('it-IT', {
       style: 'currency',
       currency: 'EUR',
     })} / 
@@ -82,18 +78,5 @@ export class AssetCardComponent implements OnInit, OnChanges {
     }
     return (currentPrice - initialPrice) / initialPrice;
   }
-
-  addOperation(asset: Asset) {
-    this.addAssetOperationCallBack.emit(asset.id);
-  }
-
-  updateValue(asset: Asset) {
-    this.updateAssetValueCallBack.emit(asset.id);
-  }
-
-  showDetails() {
-    this.detailsPanelVisible=true;
-  }
-
 
 }

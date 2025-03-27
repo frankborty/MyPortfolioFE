@@ -30,4 +30,5 @@
 
 ::ng-deep .p-card-body {
   padding: 7px;
+  background-color: var(--card-bg-color) !important;
 }

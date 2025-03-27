@@ -10,7 +10,7 @@
   >
     <ng-template #header>
       <tr>
-        <th pSortableColumn="asset.name">
+        <th class="pt-0 pb-0 b-0" pSortableColumn="asset.name">
           Asset
           <p-columnFilter
             field="asset.name"
@@ -41,8 +41,8 @@
             </ng-template>
           </p-columnFilter>
         </th>
-        <th class="w-12 text-center">Action</th>
-        <th pSortableColumn="operation.date">
+        <th class="w-12 text-center pt-0.5 pb-0">Action</th>
+        <th class="pt-0 pb-0" pSortableColumn="operation.date">
           Date
           <p-columnFilter type="date" field="operation.date" display="menu">
             <ng-template
@@ -58,7 +58,7 @@
             </ng-template>
           </p-columnFilter>
         </th>
-        <th pSortableColumn="operation.operationType">
+        <th class="pt-0 pb-0" pSortableColumn="operation.operationType">
           Type
           <p-columnFilter
             field="operation.operationType"
@@ -87,7 +87,7 @@
             </ng-template>
           </p-columnFilter>
         </th>
-        <th pSortableColumn="operation.share">
+        <th class="pt-0 pb-0" pSortableColumn="operation.share">
           Share
           <p-columnFilter
             type="numeric"
@@ -95,7 +95,7 @@
             display="menu"
           />
         </th>
-        <th pSortableColumn="operation.pmc">
+        <th class="pt-0 pb-0" pSortableColumn="operation.pmc">
           PMC (€)
           <p-columnFilter
             type="numeric"
@@ -104,7 +104,7 @@
             currency="EUR"
           />
         </th>
-        <th pSortableColumn="totalImport">
+        <th class="pt-0 pb-0" pSortableColumn="totalImport">
           Total (€)
           <p-columnFilter
             type="numeric"

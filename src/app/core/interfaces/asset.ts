@@ -4,6 +4,7 @@ export interface Asset {
   id: number;
   name: string;
   isin: string;
+  pyName: string;
   note: string;
   share: number;
   url: string;

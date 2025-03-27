@@ -1,18 +1,27 @@
 <div class="grid grid-cols-12 gap-4 mt-3 mb-3">
   <div class="col-span-12 space-y-6">
-    <div>
-      <app-assetOperationTable
-      (editAssetOperationCallBack)="showEditAssetOperationDialog($event)"
-      (deleteAssetOperationCallBack)="deleteAssetOperation($event)"
-      ></app-assetOperationTable>
-    </div>
-    <div>
-      <app-financialAssetLineChart></app-financialAssetLineChart>
-    </div>
     <div class="flex flex-wrap gap-3">
       <div *ngFor="let asset of assetList">
-        <app-assetCard [asset]="asset"></app-assetCard>
+        <app-assetCard
+          [asset]="asset"
+          [operationList]="operationList"
+          (addAssetOperationCallBack)="showAddAssetOperationDialog($event)"
+          (updateAssetValueCallBack)="updateAssetValue($event)"
+        ></app-assetCard>
       </div>
+    </div>
+
+    <div>
+      <app-financialAssetLineChart
+        (updateAllAssetValueCallBack)="updateAllAssetValue()"
+      ></app-financialAssetLineChart>
+    </div>
+
+    <div>
+      <app-assetOperationTable
+        (editAssetOperationCallBack)="showEditAssetOperationDialog($event)"
+        (deleteAssetOperationCallBack)="deleteAssetOperation($event)"
+      ></app-assetOperationTable>
     </div>
   </div>
 </div>

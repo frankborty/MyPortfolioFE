@@ -41,6 +41,7 @@
           Invested
         </th>
         <th pSortableColumn="isin">ISIN</th>
+        <th pSortableColumn="name">PyName</th>
         <th class="w-44" pSortableColumn="url">URL</th>
         <th class="w-44" pSortableColumn="note">Note</th>
         <th class="w-14"></th>
@@ -48,7 +49,7 @@
       </tr>
     </ng-template>
     <ng-template #body let-asset let-editing="editing" let-ri="rowIndex">
-      <tr [pEditableRow]="asset">
+      <tr class="align-top" [pEditableRow]="asset">
         <td>
           <p-cellEditor>
             <ng-template #input>
@@ -59,6 +60,7 @@
             </ng-template>
           </p-cellEditor>
         </td>
+
         <td>
           <p-cellEditor>
             <ng-template #input>
@@ -95,34 +97,43 @@
         <td>
           <p-cellEditor>
             <ng-template #input>
+              <input pInputText type="text" [(ngModel)]="asset.pyName" />
+            </ng-template>
+            <ng-template #output>
+              {{ asset.pyName }}
+            </ng-template>
+          </p-cellEditor>
+        </td>
+
+        <td>
+          <p-cellEditor>
+            <ng-template #input>
               <input pInputText type="text" [(ngModel)]="asset.url" />
             </ng-template>
             <ng-template #output>
-              {{ asset.url }}
+              <tr>
+                <td class="truncate-text">{{ asset.url }}</td>
+              </tr>
             </ng-template>
           </p-cellEditor>
         </td>
-<!--    <td>
+        <td>
           <p-cellEditor>
             <ng-template #input>
-              <input pTextArea type="text" [(ngModel)]="asset.note" />
+              <textarea
+                rows="5"
+                cols="30"
+                pTextarea
+                [(ngModel)]="asset.note"
+              ></textarea>
             </ng-template>
             <ng-template #output>
-              {{ asset.note }}
+              <tr>
+                <td class="truncate-text">{{ asset.note }}</td>
+              </tr>
             </ng-template>
           </p-cellEditor>
         </td>
-      -->
-      <td>
-        <p-cellEditor>
-          <ng-template #input>
-            <textarea rows="1" cols="30" pTextarea [(ngModel)]="asset.note"></textarea>
-          </ng-template>
-          <ng-template #output>
-            {{ asset.note }}
-          </ng-template>
-        </p-cellEditor>
-      </td>
         <td class="p-0">
           <div class="flex items-center justify-center gap-2">
             <button

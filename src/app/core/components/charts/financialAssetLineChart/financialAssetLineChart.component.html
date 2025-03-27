@@ -1,12 +1,24 @@
 <div class="card relative w-full p-3" style="border-color: #e5e7eb; border-width: 1px;"> 
   <p-chart type="line" [data]="inputData" [options]="options" class="w-full md:w-[30rem]" />
+  <div class="absolute top-3 left-3">
+    <div class="flex gap-2">
+      <p-button
+        severity="secondary"
+        icon="pi pi-sparkles"
+        pTooltip="Aggiorna i valori degli asset finanziari"
+        [rounded]="true"
+        (onClick)="updateAllValue()"
+      />
+    </div>
+  </div>
+  
   <div class="absolute top-3 right-3">
     <div class="flex gap-2">
       <p-button
         severity="secondary"
         icon="pi pi-refresh"
         [rounded]="true"
-        (onClick)="loadAssetsValueList()"
+        (onClick)="refreshData()"
       />
     <p-floatlabel variant="on">
       <p-select [options]="timeFrameOptions" [(ngModel)]="selectedTimeFrame" 
