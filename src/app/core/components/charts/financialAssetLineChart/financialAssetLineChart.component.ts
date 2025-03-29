@@ -1,36 +1,30 @@
 import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
-import { AssetService } from '../../../services/assetService/asset.service';
-import { AssetValueSummary } from '../../../interfaces/assetValueSummary';
 import { ImportsModule } from '../../../../imports';
-import { GlobalUtilityService } from '../../../services/utils/global-utility.service';
-
-enum TimeFrame {
-  LYEAR = 'Last Year',
-  LMONTH = 'Last Month',
-  LWEEK = 'Last Week',
-  ALL = 'All',
-}
+import { TimeFrame } from '../../../enum/timeFrame.enum';
+import { AssetValueSummary } from '../../../interfaces/assetValueSummary';
+import { AssetService } from '../../../services/assetService/asset.service';
 
 @Component({
   selector: 'app-financialAssetLineChart',
-  imports: [ImportsModule],
+    imports: [ImportsModule],
   templateUrl: './financialAssetLineChart.component.html',
-  styleUrls: ['./financialAssetLineChart.component.css'],
+  styleUrls: ['./financialAssetLineChart.component.css']
 })
 export class FinancialAssetLineChartComponent implements OnInit {
-  
   @Output() updateAllAssetValueCallBack = new EventEmitter();
-  assetValueList: AssetValueSummary[] = [];
+  assetTotalValueList: AssetValueSummary[] = [];
+  assetUnitValueList: AssetValueSummary[] = [];
   inputData: any;
   options: any;
 
   selectedTimeFrame = TimeFrame.ALL;
-  timeFrameOptions: TimeFrame[] = [
-    TimeFrame.ALL,
-    TimeFrame.LWEEK,
-    TimeFrame.LMONTH,
-    TimeFrame.LYEAR,
+  timeFrameOptions: TimeFrame[] = [TimeFrame.ALL, TimeFrame.LYEAR];
+
+  chartOptions: any[] = [
+    { label: 'Unitario', value: 'unit' },
+    { label: 'Totale', value: 'total' },
   ];
+  chartType: string = 'unit';
 
   constructor(
     private assetService: AssetService,
@@ -38,22 +32,26 @@ export class FinancialAssetLineChartComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.loadAssetsValueList();
+    this.loadAssetsTotalValueList();
+    this.loadAssetsUnitValueList();
   }
 
   refreshData() {
     this.updateAllAssetValueCallBack.emit();
-    this.loadAssetsValueList();
+    this.loadAssetsTotalValueList();
+    this.loadAssetsUnitValueList();
   }
 
-  updateAllValue(){
+  updateAllValue() {
     this.updateAllAssetValueCallBack.emit();
   }
 
-  loadAssetsValueList() {
+  loadAssetsTotalValueList() {
     this.assetService.getAssetsSummaryByMonth().subscribe({
       next: (data: AssetValueSummary[]) => {
-        this.assetValueList = data.filter((x) => x.asset.category.isInvested);
+        this.assetTotalValueList = data.filter(
+          (x) => x.asset.category.isInvested
+        );
         this.initChart();
       },
       error: (error: any) => {
@@ -61,6 +59,21 @@ export class FinancialAssetLineChartComponent implements OnInit {
       },
     });
   }
+
+  loadAssetsUnitValueList() {
+    this.assetService.getAssetsUnitPriceByMonth().subscribe({
+      next: (data: AssetValueSummary[]) => {
+        this.assetUnitValueList = data.filter(
+          (x) => x.asset.category.isInvested
+        );
+        this.initChart();
+      },
+      error: (error: any) => {
+        console.error(error);
+      },
+    });
+  }
+
   initChart() {
     const documentStyle = getComputedStyle(document.documentElement);
     const textColor = documentStyle.getPropertyValue('--p-text-color');
@@ -73,7 +86,14 @@ export class FinancialAssetLineChartComponent implements OnInit {
 
     const allDatesArray: Date[] = [];
 
-    this.assetValueList.forEach((assetSummary) => {
+    let assetValueList: AssetValueSummary[] = [];
+    if (this.chartType === 'unit') {
+      assetValueList = this.assetUnitValueList;
+    } else {
+      assetValueList = this.assetTotalValueList;
+    }
+
+    assetValueList.forEach((assetSummary) => {
       assetSummary.assetValueList.forEach((assetValue) => {
         allDatesArray.push(assetValue.timeStamp);
       });
@@ -84,7 +104,7 @@ export class FinancialAssetLineChartComponent implements OnInit {
     const allDatesList = this.filterDate(
       [...uniqueDates].sort((a, b) => a.getTime() - b.getTime())
     );
-    
+
     this.inputData = {
       labels: allDatesList.map(
         (x) =>
@@ -95,38 +115,45 @@ export class FinancialAssetLineChartComponent implements OnInit {
       datasets: [],
     };
 
-    this.assetValueList.forEach((assetSummary) => {
+    assetValueList.forEach((assetSummary) => {
       //creo il set di dati d usare nel dataset
       const datasetValue = allDatesList.map((date) => {
         const dataPoint = assetSummary.assetValueList.find(
-          (item) => new Date(item.timeStamp.getFullYear(), item.timeStamp.getMonth(), item.timeStamp.getDate()).getTime() === date.getTime()
+          (item) =>
+            new Date(
+              item.timeStamp.getFullYear(),
+              item.timeStamp.getMonth(),
+              item.timeStamp.getDate()
+            ).getTime() === date.getTime()
         );
         return dataPoint ? dataPoint.value : null;
       });
       let dataset = {
         label: assetSummary.asset.name,
         data: Array.from(datasetValue),
-        hidden: assetSummary.asset.name.startsWith("M.") ? true : false 
       };
       this.inputData.datasets.push(dataset);
     });
-
-    const sumArray: number[] = new Array(allDatesList.length).fill(0);
-
-    this.inputData.datasets.forEach((dataset: { label: string; data: (number | null)[] }) => {
-      dataset.data.forEach((value, index) => {
-        if (index < sumArray.length) { // Evita errori in caso di lunghezze diverse
-          sumArray[index] += value ?? 0;
+    if (this.chartType === 'total') {
+      const sumArray: number[] = new Array(allDatesList.length).fill(0);
+      this.inputData.datasets.forEach(
+        (dataset: { label: string; data: (number | null)[] }) => {
+          dataset.data.forEach((value, index) => {
+            if (index < sumArray.length) {
+              // Evita errori in caso di lunghezze diverse
+              sumArray[index] += value ?? 0;
+            }
+          });
         }
-      });
-    });
+      );
 
-    let sumDataSet = {
-      label: "Total",
-      data: sumArray,
-      hidden: true 
-    };
-    this.inputData.datasets.push(sumDataSet);
+      let sumDataSet = {
+        label: 'Total',
+        data: sumArray,
+        hidden: true,
+      };
+      this.inputData.datasets.push(sumDataSet);
+    }
 
     this.options = {
       maintainAspectRatio: false,
@@ -135,7 +162,8 @@ export class FinancialAssetLineChartComponent implements OnInit {
         legend: {
           title: {
             display: true, // Mostra il titolo
-            text: 'Investimenti totali', // Testo del titolo
+            text:
+              this.chartType == 'unit' ? 'Valore Unitario' : 'Valore Totale', // Testo del titolo
             font: {
               size: 18, // Dimensione del carattere
               weight: 'bold', // Spessore del carattere
@@ -156,11 +184,13 @@ export class FinancialAssetLineChartComponent implements OnInit {
         tooltip: {
           callbacks: {
             label: (tooltipItem: any) => {
-              const formattedString = `${tooltipItem.dataset.label}: ${tooltipItem.formattedValue.toLocaleString('it-IT')} €`;
+              const formattedString = `${
+                tooltipItem.dataset.label
+              }: ${tooltipItem.formattedValue.toLocaleString('it-IT')} €`;
               return formattedString;
             },
-          }
-        }
+          },
+        },
       },
       scales: {
         x: {
@@ -214,8 +244,14 @@ export class FinancialAssetLineChartComponent implements OnInit {
   removeDuplicateDates(dates: Date[]): Date[] {
     return Array.from(
       new Set(
-        dates.map(date => new Date(date.getFullYear(), date.getMonth(), date.getDate()).getTime())
+        dates.map((date) =>
+          new Date(
+            date.getFullYear(),
+            date.getMonth(),
+            date.getDate()
+          ).getTime()
+        )
       )
-    ).map(timestamp => new Date(timestamp));
+    ).map((timestamp) => new Date(timestamp));
   }
 }

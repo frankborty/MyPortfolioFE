@@ -8,7 +8,7 @@ import { SettingPageComponent } from './pages/settingPage/settingPage.component'
 
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'assets/financial', pathMatch: 'full' }, // Route di default
+    { path: '', redirectTo: '', pathMatch: 'full' }, // Route di default
     { path: 'assets', component: AssetsPageComponent },
     { path: 'assets/total', component: AssetsPageComponent },
     { path: 'assets/financial', component: FinancialAssetsPageComponent },

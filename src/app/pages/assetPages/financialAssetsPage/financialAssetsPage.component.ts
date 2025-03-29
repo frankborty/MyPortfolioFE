@@ -1,6 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { AssetCardComponent } from '../../../core/components/assets/assetCard/assetCard.component';
-import { FinancialAssetLineChartComponent } from '../../../core/components/charts/financialAssetLineChart/financialAssetLineChart.component';
 import { Asset } from '../../../core/interfaces/asset';
 import { AssetService } from '../../../core/services/assetService/asset.service';
 import { ImportsModule } from '../../../imports';
@@ -12,6 +11,7 @@ import { EditAssetOperationComponent } from '../../../core/components/assets/edi
 import { OperationType } from '../../../core/enum/operationType';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Nullable } from 'primeng/ts-helpers';
+import { FinancialAssetLineChartComponent } from '../../../core/components/charts/financialAssetLineChart/financialAssetLineChart.component';
 
 @Component({
   selector: 'app-financialAssetsPage',

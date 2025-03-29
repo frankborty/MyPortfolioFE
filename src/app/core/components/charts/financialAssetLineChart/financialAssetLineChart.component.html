@@ -1,5 +1,14 @@
-<div class="card relative w-full p-3" style="border-color: #e5e7eb; border-width: 1px;"> 
-  <p-chart type="line" [data]="inputData" [options]="options" class="w-full md:w-[30rem]" />
+<div
+  class="card relative w-full p-3"
+  style="border-color: #e5e7eb; border-width: 1px"
+>
+  <p-chart
+    type="line"
+    [data]="inputData"
+    [options]="options"
+    class="w-full md:w-[30rem]"
+  />
+
   <div class="absolute top-3 left-3">
     <div class="flex gap-2">
       <p-button
@@ -9,9 +18,18 @@
         [rounded]="true"
         (onClick)="updateAllValue()"
       />
+      <p-selectbutton
+        (onChange)="initChart()"
+        [options]="chartOptions"
+        [(ngModel)]="chartType"
+        optionLabel="label"
+        optionValue="value"
+        aria-labelledby="basic"
+      />
+  
     </div>
   </div>
-  
+
   <div class="absolute top-3 right-3">
     <div class="flex gap-2">
       <p-button
@@ -20,12 +38,15 @@
         [rounded]="true"
         (onClick)="refreshData()"
       />
-    <p-floatlabel variant="on">
-      <p-select [options]="timeFrameOptions" [(ngModel)]="selectedTimeFrame" 
-      (ngModelChange)="initChart()"
-      styleClass="w-40"/>
-      <label for="YearLabel">Year</label>
-    </p-floatlabel>
+      <p-floatlabel variant="on">
+        <p-select
+          [options]="timeFrameOptions"
+          [(ngModel)]="selectedTimeFrame"
+          (ngModelChange)="initChart()"
+          styleClass="w-40"
+        />
+        <label for="YearLabel">Year</label>
+      </p-floatlabel>
     </div>
   </div>
 </div>

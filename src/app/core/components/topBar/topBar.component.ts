@@ -27,15 +27,15 @@ export class TopBarComponent implements OnInit {
         icon: 'pi pi-money-bill',
         items: [
           {
-            label: 'Partial',
-            icon: 'pi pi-bolt',
-            route: '/expenses/partial',
-          },
-          {
             label: 'Total',
             icon: 'pi pi-th-large',
             route: '/expenses/total',
           },
+          {
+            label: 'Partial',
+            icon: 'pi pi-bolt',
+            route: '/expenses/partial',
+          }
         ],
       },
       {
@@ -44,12 +44,12 @@ export class TopBarComponent implements OnInit {
         items: [
           {
             label: 'Total',
-            icon: 'pi pi-th-large',
+            icon: 'pi pi-credit-card',
             route: '/assets/total',
           },
           {
             label: 'Financial',
-            icon: 'pi pi-bolt',
+            icon: 'pi pi-sort-alt-slash',
             route: '/assets/financial',
           },
         ],

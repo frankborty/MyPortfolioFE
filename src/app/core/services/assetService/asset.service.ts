@@ -41,6 +41,27 @@ export class AssetService {
       );
   }
 
+  
+  getAssetsUnitPriceByMonth(): Observable<AssetValueSummary[]> {
+    return this.http
+      .get<AssetValueSummary[]>(
+        `${this.apiUrl}/AssetValue/UnitPriceByMonth`,
+        this.options
+      )
+      .pipe(
+        map((data) =>
+          data.map((summary) => ({
+            ...summary,
+            assetValueList: summary.assetValueList.map((value) => ({
+              ...value,
+              timeStamp: new Date(value.timeStamp), // Converte la stringa in Date
+            })),
+          }))
+        ),
+        catchError(this.errorHandler.handleError)
+      );
+  }
+
   getAssetList(): Observable<Asset[]> {
     return this.http
       .get<Asset[]>(`${this.apiUrl}/Asset`, this.options)
