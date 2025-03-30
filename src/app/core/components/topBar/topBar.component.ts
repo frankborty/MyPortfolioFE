@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, signal } from '@angular/core';
 import { RouterModule, Router } from '@angular/router';
 import { MenuItem } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { Menubar } from 'primeng/menubar';
 import { ImportsModule } from '../../../imports';
+import { StatusService } from '../../services/utils/status.service';
 
 @Component({
   selector: 'app-topBar',
@@ -12,8 +13,13 @@ import { ImportsModule } from '../../../imports';
   styleUrls: ['./topBar.component.css'],
 })
 export class TopBarComponent implements OnInit {
+  public statusError = signal(false);
+  public statusErrorMsg = signal("");
   items: MenuItem[] | undefined;
-  constructor(private router: Router) {}
+  constructor(private router: Router, statusService: StatusService) {
+    this.statusError = statusService.backEndStatusError;
+    this.statusErrorMsg = statusService.backEndStatusErrorMsg;
+  }
 
   ngOnInit() {
     this.items = [

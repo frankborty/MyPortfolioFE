@@ -15,7 +15,9 @@
   </ng-template>
 
   <ng-template #end>
-      <i class="pi pi-circle-fill m-2" style="color: rgb(64, 192, 64)" pTooltip="BE OK"></i>
-      <i class="pi pi-circle-fill m-2" style="color: rgb(230, 45, 20)" pTooltip="BE KO"></i>
+    <i class="pi pi-circle-fill m-2" 
+       [style.color]="statusError() ? 'rgb(230, 45, 20)' : 'rgb(64, 192, 64)'" 
+       [pTooltip]="statusError() ? 'BE KO: '+ statusErrorMsg()  :'BE OK'">
+    </i>
   </ng-template>
 </p-menubar>
