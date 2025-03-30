@@ -7,6 +7,7 @@ import {
 import { ImportsModule } from '../../../../imports';
 import { Income } from '../../../interfaces/income';
 import { IncomeType } from '../../../interfaces/incomeType';
+import { IncomeService } from '../../../services/incomeService/income.service';
 
 @Component({
   selector: 'app-incomeTable',
@@ -15,13 +16,16 @@ import { IncomeType } from '../../../interfaces/incomeType';
   styleUrls: ['./incomeTable.component.css'],
 })
 export class IncomeTableComponent {
-  @Input() incomeList: Income[] = [];
-  @Input() incomeTypeList: IncomeType[] = [];
+  incomeList: any;
+  incomeTypeList: any;
   
   @Output() editIncomeCallBack = new EventEmitter<Income>();
   @Output() deleteIncomeCallBack = new EventEmitter<Income>();
 
-  constructor() {}
+  constructor(incomeService : IncomeService) {
+    this.incomeList = incomeService.incomeList;
+    this.incomeTypeList = incomeService.incomeTypeList;
+  }
 
   deleteIncome(income: Income) {
     this.deleteIncomeCallBack.emit(income);

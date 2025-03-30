@@ -1,4 +1,4 @@
-import { Component, Input, OnChanges, OnInit } from '@angular/core';
+import { Component, effect, Input, OnChanges, OnInit } from '@angular/core';
 import { ImportsModule } from '../../../../imports';
 import { Asset } from '../../../interfaces/asset';
 import { AssetService } from '../../../services/assetService/asset.service';
@@ -11,10 +11,8 @@ import { AssetOperation } from '../../../interfaces/assetOperation';
   styleUrls: ['./financialAssetDetailsCard.component.css']
 })
 export class FinancialAssetDetailsCardComponent implements OnInit, OnChanges {
-
   @Input() asset: Asset;
-  @Input() operationList: AssetOperation[] = [];
-  
+  @Input() assetOperation: AssetOperation[] = [];  
   assetOperationList: AssetOperation[] = [];
   assetResultPositive = false;
   assetValueDeltaString = '--- € | --- € / ---%';
@@ -43,11 +41,11 @@ export class FinancialAssetDetailsCardComponent implements OnInit, OnChanges {
   ngOnInit() {
   }
 
-  ngOnChanges() {
-    this.updateAssetData();
-    if(this.operationList.length > 0){
-      this.assetOperationList=this.operationList.filter(o=>o.assetId===this.asset.id);
+  ngOnChanges() {    
+    if(this.assetOperation.length > 0){
+      this.assetOperationList=this.assetOperation.filter((o : AssetOperation) => o.assetId===this.asset.id);
     }
+    this.updateAssetData();
   }
 
   updateAssetData() {
@@ -80,3 +78,7 @@ export class FinancialAssetDetailsCardComponent implements OnInit, OnChanges {
   }
 
 }
+function signal<T>(arg0: never[]) {
+  throw new Error('Function not implemented.');
+}
+

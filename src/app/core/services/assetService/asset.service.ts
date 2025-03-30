@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { catchError, map, Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { Asset } from '../../interfaces/asset';
@@ -12,6 +12,15 @@ import { AssetOperation } from '../../interfaces/assetOperation';
   providedIn: 'root',
 })
 export class AssetService {
+  public assetList = signal<Asset[]>([]);
+  public assetWithValueList = signal<Asset[]>([]);
+  public assetSummaryByMonth = signal<AssetValueSummary[]>([]);
+  public assetUnitPriceByMonth = signal<AssetValueSummary[]>([]);
+  public assetCategoryList = signal<AssetCategory[]>([]);
+  public assetOperationList = signal<AssetOperation[]>([]);
+  public assetError = signal(false);
+  public assetErrorMessage = signal('');
+
   private apiUrl = environment.backendUrl;
   private pythonUrl = environment.pythonUrl;
   private options = { headers: { 'Content-Type': 'application/json' } };
@@ -20,9 +29,40 @@ export class AssetService {
     private errorHandler: ErrorHandlerService
   ) {}
 
+
   //#region  GET DATA
-  getAssetsSummaryByMonth(): Observable<AssetValueSummary[]> {
-    return this.http
+  fetchAssetList(): void {
+    this.http
+      .get<Asset[]>(`${this.apiUrl}/Asset`, this.options)
+      .pipe(catchError(this.errorHandler.handleError))
+      .subscribe({
+        next: (data: Asset[]) => {
+          this.assetList.set(data.sort((a, b) => a.name.localeCompare(b.name)));
+        },
+        error: (error: any) => {
+          this.assetError.set(true);
+          this.assetErrorMessage.set(error.message);
+        },
+      });
+  }
+
+  fetchAssetCategoryList(): void {
+    this.http
+      .get<AssetCategory[]>(`${this.apiUrl}/AssetCategory`, this.options)
+      .pipe(catchError(this.errorHandler.handleError))
+      .subscribe({
+        next: (data: AssetCategory[]) => {
+          this.assetCategoryList.set(data);
+        },
+        error: (error: any) => {
+          this.assetError.set(true);
+          this.assetErrorMessage.set(error.message);
+        },
+      });
+  }
+
+  fetchAssetsSummaryByMonth(): void {
+    this.http
       .get<AssetValueSummary[]>(
         `${this.apiUrl}/AssetValue/SummaryByMonth`,
         this.options
@@ -38,12 +78,20 @@ export class AssetService {
           }))
         ),
         catchError(this.errorHandler.handleError)
-      );
+      )
+      .subscribe({
+        next: (data: AssetValueSummary[]) => {
+          this.assetSummaryByMonth.set(data);
+        },
+        error: (error: any) => {
+          this.assetError.set(true);
+          this.assetErrorMessage.set(error.message);
+        },
+      });
   }
 
-  
-  getAssetsUnitPriceByMonth(): Observable<AssetValueSummary[]> {
-    return this.http
+  fetchAssetsUnitPriceByMonth(): void {
+    this.http
       .get<AssetValueSummary[]>(
         `${this.apiUrl}/AssetValue/UnitPriceByMonth`,
         this.options
@@ -59,29 +107,20 @@ export class AssetService {
           }))
         ),
         catchError(this.errorHandler.handleError)
-      );
+      )
+      .subscribe({
+        next: (data: AssetValueSummary[]) => {
+          this.assetUnitPriceByMonth.set(data);
+        },
+        error: (error: any) => {
+          this.assetError.set(true);
+          this.assetErrorMessage.set(error.message);
+        },
+      });
   }
 
-  getAssetList(): Observable<Asset[]> {
-    return this.http
-      .get<Asset[]>(`${this.apiUrl}/Asset`, this.options)
-      .pipe(catchError(this.errorHandler.handleError));
-  }
-
-  getAssetWithValueList(): Observable<Asset[]> {
-    return this.http
-      .get<Asset[]>(`${this.apiUrl}/Asset/withValue`, this.options)
-      .pipe(catchError(this.errorHandler.handleError));
-  }
-
-  getAssetCategoryList() {
-    return this.http
-      .get<AssetValueSummary[]>(`${this.apiUrl}/AssetCategory`, this.options)
-      .pipe(catchError(this.errorHandler.handleError));
-  }
-
-  getAssetOperationList(): Observable<AssetOperation[]> {
-    return this.http
+  fetchAssetOperationList(): void {
+    this.http
       .get<AssetOperation[]>(`${this.apiUrl}/AssetOperation`, this.options)
       .pipe(
         map((assets) =>
@@ -91,18 +130,50 @@ export class AssetService {
           }))
         ),
         catchError(this.errorHandler.handleError)
-      );
+      )
+      .subscribe({
+        next: (data: AssetOperation[]) => {
+          this.assetOperationList.set(data.sort(
+            (a, b) => (b.date as Date).getTime() - (a.date as Date).getTime()
+          ));
+        },
+        error: (error: any) => {
+          this.assetError.set(true);
+          this.assetErrorMessage.set(error.message);
+        },
+      });
+  }
+
+  fetchAssetWithValueList(): void {
+    this.http
+      .get<Asset[]>(`${this.apiUrl}/Asset/withValue`, this.options)
+      .pipe(catchError(this.errorHandler.handleError))
+      .subscribe({
+        next: (data: Asset[]) => {
+          this.assetWithValueList.set(data);
+        },
+        error: (error: any) => {
+          this.assetError.set(true);
+          this.assetErrorMessage.set(error.message);
+        },
+      });
   }
 
   getAssetCurrentValue(assetId: number) {
     return this.http
-      .get(`${this.apiUrl}/AssetValue/${assetId}/LoadFinancialValue?pythonUrl=${this.pythonUrl}`, this.options)
+      .get(
+        `${this.apiUrl}/AssetValue/${assetId}/LoadFinancialValue?pythonUrl=${this.pythonUrl}`,
+        this.options
+      )
       .pipe(catchError(this.errorHandler.handleError));
   }
 
   getAllAssetCurrentValue() {
     return this.http
-    .get(`${this.apiUrl}/AssetValue/LoadAllFinancialValue?pythonUrl=${this.pythonUrl}`, this.options)
+      .get(
+        `${this.apiUrl}/AssetValue/LoadAllFinancialValue?pythonUrl=${this.pythonUrl}`,
+        this.options
+      )
       .pipe(catchError(this.errorHandler.handleError));
   }
   //#endregion

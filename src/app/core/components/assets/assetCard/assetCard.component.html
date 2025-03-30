@@ -56,5 +56,7 @@
 </p-card>
 
 <p-dialog header="Financial Asset Details" [modal]="true" [(visible)]="detailsPanelVisible" >
-  <app-financialAssetDetailsCard [asset]="asset" [operationList]="operationList"></app-financialAssetDetailsCard>
+  <app-financialAssetDetailsCard [asset]="asset"
+  [assetOperation]="assetOperationList"
+  ></app-financialAssetDetailsCard>
 </p-dialog>

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, effect, OnInit, signal, ViewChild } from '@angular/core';
 import { IncomeType } from '../../../interfaces/incomeType';
 import { IncomeService } from '../../../services/incomeService/income.service';
 import { ImportsModule } from '../../../../imports';
@@ -16,31 +16,36 @@ export class IncomeTypeSettingComponent implements OnInit {
   @ViewChild(ParamConfirmationDialogComponent)
   confirmDialog!: ParamConfirmationDialogComponent;
   updatingItemType: IncomeType;
-  incomeTypeList: IncomeType[] = [];
+  incomeTypeList = signal<IncomeType[]>([]);
+
   constructor(
     private incomeService: IncomeService,
     private messageService: MessageService
   ) {
+    this.incomeTypeList = incomeService.incomeTypeList;
     this.updatingItemType = {
       id: -1,
       name: '',
     };
+
+    effect(() => {
+      let updateError = this.incomeService.incomeError();
+      if (updateError) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: this.incomeService.incomeErrorMessage(),
+        });
+        this.incomeService.incomeError.set(false);
+      }
+    });
   }
 
   ngOnInit() {
-    this.loadIncomeTypes();
   }
 
   loadIncomeTypes() {
-    this.incomeService.getIncomeTypes().subscribe({
-      next: (data: any) => {
-        (data as IncomeType[]).sort((a, b) => a.name.localeCompare(b.name));
-        this.incomeTypeList = data;
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
+    this.incomeService.fetchIncomeTypeList();
   }
 
   editIncomeType(incomeType: IncomeType) {
@@ -71,7 +76,7 @@ export class IncomeTypeSettingComponent implements OnInit {
 
   onRowEditCancel() {
     if (this.updatingItemType.id != -1) {
-      this.incomeTypeList.forEach((it) => {
+      this.incomeTypeList().forEach((it) => {
         if (it.id == this.updatingItemType.id) {
           it.name = this.updatingItemType.name;
           this.updatingItemType.id = -1;
@@ -107,7 +112,10 @@ export class IncomeTypeSettingComponent implements OnInit {
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: error["message"]=="Conflict" ? "Impossibile cancellare l'assetCategory in quanto è associata ad almeno un asset" : error,
+                detail:
+                  error['message'] == 'Conflict'
+                    ? "Impossibile cancellare l'assetCategory in quanto è associata ad almeno un asset"
+                    : error,
               });
             },
           });

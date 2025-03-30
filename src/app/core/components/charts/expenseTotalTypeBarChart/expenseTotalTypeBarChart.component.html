@@ -16,7 +16,7 @@
       <p-radiobutton class="mr-2" name="filter" value="category" (onClick)="initChart()" [(ngModel)]="filterType" />
       <p-multiselect
         styleClass="w-56"
-        [options]="expenseCategoryList"
+        [options]="expenseCategoryList()"
         (onChange)="initChart()"
         (onClear)="initChart()"
         [(ngModel)]="selectedExpenseCategories"
@@ -29,7 +29,7 @@
       <p-radiobutton class="mr-2" name="filter" value="type" (onClick)="initChart()" [(ngModel)]="filterType" />
       <p-multiselect
         styleClass="w-56"
-        [options]="expenseTypeList"
+        [options]="expenseTypeList()"
         (onChange)="initChart()"
         (onClear)="initChart()"
         [(ngModel)]="selectedExpenseTypes"

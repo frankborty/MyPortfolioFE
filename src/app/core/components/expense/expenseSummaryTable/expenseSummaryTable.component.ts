@@ -1,13 +1,9 @@
-import {
-  Component,
-  Input,
-  OnChanges,
-  OnInit,
-} from '@angular/core';
+import { Component, effect, Input, OnChanges, OnInit, signal } from '@angular/core';
 import { ImportsModule } from '../../../../imports';
 import { Expense } from '../../../interfaces/expense';
 import { ExpenseType } from '../../../interfaces/expenseType';
 import { Nullable } from 'primeng/ts-helpers';
+import { ExpenseService } from '../../../services/expenseService/expense.service';
 
 interface ExpenseTypeSummary {
   name: string;
@@ -30,12 +26,25 @@ interface ExpenseTypeSummary {
   dec: number;
 }
 
-interface CategorySummary{
+interface CategorySummary {
   name: string;
   total: number;
   average: number;
   count: number;
-  monthExpense: [number, number, number, number, number, number, number, number, number, number, number, number];
+  monthExpense: [
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number,
+    number
+  ];
 }
 
 @Component({
@@ -44,33 +53,42 @@ interface CategorySummary{
   templateUrl: './expenseSummaryTable.component.html',
   styleUrls: ['./expenseSummaryTable.component.css'],
 })
-export class ExpenseSummaryTableComponent implements OnInit, OnChanges {
-  @Input() expenseList: Expense[] = [];
-  @Input() expenseTypeList: ExpenseType[] = [];
-  expenseTypeSummaryList: ExpenseTypeSummary[] = [];
-  categorySummaryList : { key: string; value: CategorySummary }[] = [];
+export class ExpenseSummaryTableComponent implements OnInit {
+  public expenseList = signal<Expense[]>([]);
+  public expenseTypeList = signal<ExpenseType[]>([]);
 
-  totalSum : number = 0;
+  expenseTypeSummaryList: ExpenseTypeSummary[] = [];
+  categorySummaryList: { key: string; value: CategorySummary }[] = [];
+
+  totalSum: number = 0;
   totalCount: number = 0;
-  totalAvg : number = 0;
-  totalPerMese: number[] = [0,0,0,0,0,0,0,0,0,0,0,0];
+  totalAvg: number = 0;
+  totalPerMese: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   selectedYear: Date = new Date('2025-01-01');
 
-  constructor() {}
+  constructor(expenseService: ExpenseService) {
+    this.expenseList = expenseService.expenseList;
+    this.expenseTypeList = expenseService.expenseTypeList;
 
-  ngOnInit() {}
-
-  ngOnChanges(): void {
-    if(this.expenseTypeList.length > 0 && this.expenseTypeList.length > 0) {
-        this.processInputData();  
+    effect(() => {
+      this.expenseList = expenseService.expenseList;
+      this.expenseTypeList = expenseService.expenseTypeList;
+      if (this.expenseList().length > 0 && this.expenseTypeList().length > 0) {
+        this.processInputData();
       }
+    });
+  }
+
+  ngOnInit() {
+    this.processInputData();
   }
 
   processInputData() {
     this.expenseTypeSummaryList = [];
-    let filteredByYear = this.expenseList.filter(
-      (expense) => new Date(expense.date).getFullYear() === this.selectedYear.getFullYear()
+    let filteredByYear = this.expenseList().filter(
+      (expense) =>
+        new Date(expense.date).getFullYear() === this.selectedYear.getFullYear()
     );
 
     const groupedByType = filteredByYear.reduce((acc, expense) => {
@@ -85,11 +103,11 @@ export class ExpenseSummaryTableComponent implements OnInit, OnChanges {
     this.initSummaryValue();
     this.categorySummaryList = [];
 
-    for(const typeItemKeys in groupedByType) {
+    for (const typeItemKeys in groupedByType) {
       const type = groupedByType[typeItemKeys];
 
       const totaleSpeso = type.reduce((acc, curr) => acc + curr.amount, 0);
-      const mediaSpesaMensile = totaleSpeso/12;
+      const mediaSpesaMensile = totaleSpeso / 12;
       const spesePerMese = this.groupExpensesByMonth(type);
 
       const summaryType: ExpenseTypeSummary = {
@@ -111,7 +129,7 @@ export class ExpenseSummaryTableComponent implements OnInit, OnChanges {
         oct: spesePerMese[9],
         nov: spesePerMese[10],
         dec: spesePerMese[11],
-      }
+      };
       const existingIndex = this.expenseTypeSummaryList.findIndex(
         (summary) => summary.name === summaryType.name
       );
@@ -124,68 +142,84 @@ export class ExpenseSummaryTableComponent implements OnInit, OnChanges {
     }
   }
   initSummaryValue() {
-    this.totalSum=0;
-    this.totalCount=0;
+    this.totalSum = 0;
+    this.totalCount = 0;
     this.totalAvg = 0;
-    this.totalPerMese=[0,0,0,0,0,0,0,0,0,0,0,0];
+    this.totalPerMese = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   }
 
   updateTotalValue(summaryType: ExpenseTypeSummary) {
-    this.totalSum+=summaryType.total;
-    this.totalCount+=summaryType.count;
-    this.totalAvg = this.totalSum/12;
-    this.totalPerMese[0]+=summaryType.jan;
-    this.totalPerMese[1]+=summaryType.feb;
-    this.totalPerMese[2]+=summaryType.mar;
-    this.totalPerMese[3]+=summaryType.apr;
-    this.totalPerMese[4]+=summaryType.may;
-    this.totalPerMese[5]+=summaryType.jun;
-    this.totalPerMese[6]+=summaryType.jul;
-    this.totalPerMese[7]+=summaryType.aug;
-    this.totalPerMese[8]+=summaryType.sep;
-    this.totalPerMese[9]+=summaryType.oct;
-    this.totalPerMese[10]+=summaryType.nov;
-    this.totalPerMese[11]+=summaryType.dec;
+    this.totalSum += summaryType.total;
+    this.totalCount += summaryType.count;
+    this.totalAvg = this.totalSum / 12;
+    this.totalPerMese[0] += summaryType.jan;
+    this.totalPerMese[1] += summaryType.feb;
+    this.totalPerMese[2] += summaryType.mar;
+    this.totalPerMese[3] += summaryType.apr;
+    this.totalPerMese[4] += summaryType.may;
+    this.totalPerMese[5] += summaryType.jun;
+    this.totalPerMese[6] += summaryType.jul;
+    this.totalPerMese[7] += summaryType.aug;
+    this.totalPerMese[8] += summaryType.sep;
+    this.totalPerMese[9] += summaryType.oct;
+    this.totalPerMese[10] += summaryType.nov;
+    this.totalPerMese[11] += summaryType.dec;
   }
 
-  
   updateCategorySummaryList(summaryType: ExpenseTypeSummary) {
     let categoryName = summaryType.categoryName;
-    const existingItem = this.categorySummaryList.find(item => item.key === categoryName);
+    const existingItem = this.categorySummaryList.find(
+      (item) => item.key === categoryName
+    );
 
     if (existingItem) {
       // Aggiorna il valore dell'elemento esistente
-      existingItem.value.total+=summaryType.total;
-      existingItem.value.count+=summaryType.count;
-      existingItem.value.average = existingItem.value.total/12;
-      existingItem.value.monthExpense[0]+=summaryType.jan;
-      existingItem.value.monthExpense[1]+=summaryType.feb;
-      existingItem.value.monthExpense[2]+=summaryType.mar;
-      existingItem.value.monthExpense[3]+=summaryType.apr;
-      existingItem.value.monthExpense[4]+=summaryType.may;
-      existingItem.value.monthExpense[5]+=summaryType.jun;
-      existingItem.value.monthExpense[6]+=summaryType.jul;
-      existingItem.value.monthExpense[7]+=summaryType.aug;
-      existingItem.value.monthExpense[8]+=summaryType.sep;
-      existingItem.value.monthExpense[9]+=summaryType.oct;
-      existingItem.value.monthExpense[10]+=summaryType.nov;
-      existingItem.value.monthExpense[11]+=summaryType.dec;
+      existingItem.value.total += summaryType.total;
+      existingItem.value.count += summaryType.count;
+      existingItem.value.average = existingItem.value.total / 12;
+      existingItem.value.monthExpense[0] += summaryType.jan;
+      existingItem.value.monthExpense[1] += summaryType.feb;
+      existingItem.value.monthExpense[2] += summaryType.mar;
+      existingItem.value.monthExpense[3] += summaryType.apr;
+      existingItem.value.monthExpense[4] += summaryType.may;
+      existingItem.value.monthExpense[5] += summaryType.jun;
+      existingItem.value.monthExpense[6] += summaryType.jul;
+      existingItem.value.monthExpense[7] += summaryType.aug;
+      existingItem.value.monthExpense[8] += summaryType.sep;
+      existingItem.value.monthExpense[9] += summaryType.oct;
+      existingItem.value.monthExpense[10] += summaryType.nov;
+      existingItem.value.monthExpense[11] += summaryType.dec;
     } else {
       // Aggiungi l'elemento se non esiste
-      const categoryToAdd : CategorySummary= {
+      const categoryToAdd: CategorySummary = {
         name: summaryType.categoryName,
-        total : summaryType.total,
-        count : summaryType.count,
-        average : summaryType.total/summaryType.count,
-        monthExpense : [summaryType.jan, summaryType.feb, summaryType.mar, summaryType.apr, summaryType.may, summaryType.jun,
-          summaryType.jul, summaryType.aug, summaryType.sep, summaryType.oct, summaryType.nov, summaryType.dec]
-      }
-      this.categorySummaryList.push({ key: categoryToAdd.name, value: categoryToAdd });
+        total: summaryType.total,
+        count: summaryType.count,
+        average: summaryType.total / summaryType.count,
+        monthExpense: [
+          summaryType.jan,
+          summaryType.feb,
+          summaryType.mar,
+          summaryType.apr,
+          summaryType.may,
+          summaryType.jun,
+          summaryType.jul,
+          summaryType.aug,
+          summaryType.sep,
+          summaryType.oct,
+          summaryType.nov,
+          summaryType.dec,
+        ],
+      };
+      this.categorySummaryList.push({
+        key: categoryToAdd.name,
+        value: categoryToAdd,
+      });
     }
   }
 
   initSummaryList() {
-    this.expenseTypeSummaryList = this.expenseTypeList.map(expenseType => ({
+    this.expenseTypeSummaryList = this.expenseTypeList().map((expenseType) => ({
       name: expenseType.name,
       categoryName: expenseType.category.name,
       categoryId: expenseType.category.id,
@@ -209,13 +243,20 @@ export class ExpenseSummaryTableComponent implements OnInit, OnChanges {
 
   CalculateCategoryFooter(categoryName: string) {
     const categoryTotalCount = this.expenseTypeSummaryList
-      .filter(x => x.categoryName === categoryName)
+      .filter((x) => x.categoryName === categoryName)
       .reduce((acc, curr) => acc + curr.count, 0);
 
     const categoryTotalSum = this.expenseTypeSummaryList
-        .filter(x => x.categoryName === categoryName)
-        .reduce((acc, curr) => acc + curr.total, 0);
-    return "Total: " + categoryTotalCount+ " | Sum: " + categoryTotalSum + "  | Avg: " + (categoryTotalSum/12).toFixed(2);
+      .filter((x) => x.categoryName === categoryName)
+      .reduce((acc, curr) => acc + curr.total, 0);
+    return (
+      'Total: ' +
+      categoryTotalCount +
+      ' | Sum: ' +
+      categoryTotalSum +
+      '  | Avg: ' +
+      (categoryTotalSum / 12).toFixed(2)
+    );
   }
 
   groupExpensesByMonth(expenseList: Expense[]): number[] {
@@ -250,42 +291,60 @@ export class ExpenseSummaryTableComponent implements OnInit, OnChanges {
     return monthlyTotals;
   }
 
-  CalculateCategoryGroupFooterAverage(expenseType: Nullable | ExpenseTypeSummary) : number {
-    if(expenseType){
-      const categorySummary = this.categorySummaryList.find(item => item.key === expenseType.categoryName);
-      if(categorySummary){
-        return categorySummary.value.total/12;
+  CalculateCategoryGroupFooterAverage(
+    expenseType: Nullable | ExpenseTypeSummary
+  ): number {
+    if (expenseType) {
+      const categorySummary = this.categorySummaryList.find(
+        (item) => item.key === expenseType.categoryName
+      );
+      if (categorySummary) {
+        return categorySummary.value.total / 12;
       }
     }
     return 0;
   }
 
-  CalculateCategoryGroupFooterCount(expenseType: Nullable | ExpenseTypeSummary) : number{
-    if(expenseType){
-      const categorySummary = this.categorySummaryList.find(item => item.key === expenseType.categoryName);
-      if(categorySummary){
+  CalculateCategoryGroupFooterCount(
+    expenseType: Nullable | ExpenseTypeSummary
+  ): number {
+    if (expenseType) {
+      const categorySummary = this.categorySummaryList.find(
+        (item) => item.key === expenseType.categoryName
+      );
+      if (categorySummary) {
         return categorySummary.value.count;
       }
     }
     return 0;
   }
-    
-  CalculateCategoryGroupFooterSum(expenseType: Nullable | ExpenseTypeSummary) : number {
-    if(expenseType){
-      const categorySummary = this.categorySummaryList.find(item => item.key === expenseType.categoryName);
-      if(categorySummary){
+
+  CalculateCategoryGroupFooterSum(
+    expenseType: Nullable | ExpenseTypeSummary
+  ): number {
+    if (expenseType) {
+      const categorySummary = this.categorySummaryList.find(
+        (item) => item.key === expenseType.categoryName
+      );
+      if (categorySummary) {
         return categorySummary.value.total;
       }
     }
     return 0;
   }
 
-  CalculateCategoryGroupFooterMonth(expenseType: any,month: number): string|number {if(expenseType){
-    const categorySummary = this.categorySummaryList.find(item => item.key === expenseType.categoryName);
-    if(categorySummary){
-      return categorySummary.value.monthExpense[month];
+  CalculateCategoryGroupFooterMonth(
+    expenseType: any,
+    month: number
+  ): string | number {
+    if (expenseType) {
+      const categorySummary = this.categorySummaryList.find(
+        (item) => item.key === expenseType.categoryName
+      );
+      if (categorySummary) {
+        return categorySummary.value.monthExpense[month];
+      }
     }
-  }
-  return 0;
+    return 0;
   }
 }

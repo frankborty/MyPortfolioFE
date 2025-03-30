@@ -1,13 +1,15 @@
 <div class="grid grid-cols-12 gap-4 mt-3 mb-3">
   <div class="col-span-12 space-y-6">
     <div class="flex flex-wrap gap-3">
-      <div *ngFor="let asset of assetList">
+      <div *ngFor="let asset of financialAssetList">
+        <div>
         <app-assetCard
           [asset]="asset"
-          [operationList]="operationList"
+          [assetOperationList]="operationList()"
           (addAssetOperationCallBack)="showAddAssetOperationDialog($event)"
           (updateAssetValueCallBack)="updateAssetValue($event)"
         ></app-assetCard>
+      </div>
       </div>
     </div>
     
@@ -36,7 +38,7 @@
   [closable]="true"
 >
   <app-editAssetOperation
-    [assetList]="assetList"
+    [assetList]="assetList()"
     (editAssetOperationCallBack)="editAssetOperation($event)"
     (addAssetOperationCallBack)="addAssetOperation($event)"
   ></app-editAssetOperation>

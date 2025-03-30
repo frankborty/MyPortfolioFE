@@ -29,26 +29,4 @@ export class SettingPageComponent implements OnInit {
   constructor(private expenseService: ExpenseService) {}
 
   ngOnInit() {}
-
-  loadExpenseTypes() {
-    this.expenseService.getExpenseTypes().subscribe({
-      next: (data: any) => {
-        this.expenseTypeList = data;
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
-  }
-
-  loadExpenseCategories() {
-    this.expenseService.getExpenseCategories().subscribe({
-      next: (data: any) => {
-        this.expenseCategoryList = data;
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
-  }
 }

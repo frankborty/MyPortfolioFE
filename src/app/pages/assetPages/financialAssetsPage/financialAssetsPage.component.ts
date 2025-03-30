@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, effect, OnInit, signal, ViewChild } from '@angular/core';
 import { AssetCardComponent } from '../../../core/components/assets/assetCard/assetCard.component';
 import { Asset } from '../../../core/interfaces/asset';
 import { AssetService } from '../../../core/services/assetService/asset.service';
@@ -36,44 +36,30 @@ export class FinancialAssetsPageComponent implements OnInit {
   @ViewChild(EditAssetOperationComponent) editAssetOperationDialog!: EditAssetOperationComponent;
   @ViewChild(AssetOperationTableComponent) assetOperationTable!: AssetOperationTableComponent;
   displayAssetOperationEditPanel: boolean = false;
-  assetList: Asset[] = [];
-  operationList: AssetOperation[] = [];
+  assetList = signal<Asset[]>([]);
+  operationList = signal<AssetOperation[]>([]);
+  financialAssetList : Asset[] =[];
   constructor(
     private assetService: AssetService,
     private messageService: MessageService
-  ) {}
+  ) {
+    this.assetList = assetService.assetWithValueList;
+    this.operationList = assetService.assetOperationList;
+
+    effect(() => {
+      this.financialAssetList = this.assetList().filter((asset) => asset.category.isInvested);
+    });
+  }
 
   ngOnInit() {
-    this.loadAssetList();
-    this.loadAssetOperationList();
   }
 
   loadAssetList() {
-    this.assetService.getAssetWithValueList().subscribe({
-      next: (data: Asset[]) => {
-        data.sort((a, b) => a.name.localeCompare(b.name));
-        this.assetList = data.filter((x) => x.category.isInvested);
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
+    this.assetService.fetchAssetWithValueList();
+    this.assetService.fetchAssetOperationList();
   }
 
-  
 
-  loadAssetOperationList() {
-    this.assetService.getAssetOperationList().subscribe({
-      next: (data: AssetOperation[]) => {
-        this.operationList = data.sort(
-          (a, b) => (b.date as Date).getTime() - (a.date as Date).getTime()
-        );
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
-  }
 
   updateAllAssetValue(){
     this.assetService.getAllAssetCurrentValue().subscribe({
@@ -137,7 +123,6 @@ export class FinancialAssetsPageComponent implements OnInit {
       this.assetService.addAssetOperation(assetOperation).subscribe({
         next: () => {
           this.loadAssetList();
-          this.assetOperationTable.loadDataAndPrepareAssetOperationList();
           this.messageService.add({
             severity: 'success',
             summary: 'Success',
@@ -161,7 +146,6 @@ export class FinancialAssetsPageComponent implements OnInit {
         this.assetService.editAssetOperation(assetOperation.assetOperationId, assetOperation).subscribe({
           next: () => {
             this.loadAssetList();
-            this.assetOperationTable.loadDataAndPrepareAssetOperationList();
             this.messageService.add({
               severity: 'success',
               summary: 'Success',
@@ -204,7 +188,6 @@ export class FinancialAssetsPageComponent implements OnInit {
             this.assetService.deleteAssetOperation(assetOperation.assetOperationId).subscribe({
               next: () => {
                 this.loadAssetList();
-                this.assetOperationTable.loadDataAndPrepareAssetOperationList();
                 this.messageService.add({
                   severity: 'success',
                   summary: 'Success',
@@ -212,7 +195,6 @@ export class FinancialAssetsPageComponent implements OnInit {
                 });
               },
               error: (error: any) => {
-                console.error(error);
                 this.messageService.add({
                   severity: 'error',
                   summary: 'Error',

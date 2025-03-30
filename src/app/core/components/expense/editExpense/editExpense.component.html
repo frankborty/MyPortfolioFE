@@ -27,7 +27,7 @@
     <p-select 
       (onChange)="changeSelectedType($event)"
         formControlName="expType" 
-        [options]="expenseTypeList"
+        [options]="expenseTypeList()"
         [fluid]="true"
         optionLabel="name" 
         placeholder="Type"

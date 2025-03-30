@@ -1,14 +1,17 @@
 import {
   ChangeDetectorRef,
   Component,
+  effect,
   Input,
   OnChanges,
   OnInit,
+  signal,
   SimpleChanges,
 } from '@angular/core';
 import { ImportsModule } from '../../../../imports';
 import { Income } from '../../../interfaces/income';
 import { IncomeType } from '../../../interfaces/incomeType';
+import { IncomeService } from '../../../services/incomeService/income.service';
 
 @Component({
   selector: 'app-incomeStackedBarChart',
@@ -16,18 +19,21 @@ import { IncomeType } from '../../../interfaces/incomeType';
   templateUrl: './incomeStackedBarChart.component.html',
   styleUrls: ['./incomeStackedBarChart.component.css'],
 })
-export class IncomeStackedBarChartComponent implements OnChanges {
-  @Input() incomeList: Income[] = [];
-  @Input() incomeTypeList: IncomeType[] = [];
+export class IncomeStackedBarChartComponent {
+  incomeList = signal<Income[]>([]);
+  incomeTypeList = signal<IncomeType[]>([]);
   inputData: any;
   options: any;
 
   selectedYear: Date = new Date('2024-01-01');
 
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(incomeService: IncomeService, private cd: ChangeDetectorRef) {
+    this.incomeList = incomeService.incomeList;
+    this.incomeTypeList = incomeService.incomeTypeList;
 
-  ngOnChanges(): void {
-    this.initChart();
+    effect(() => {
+      this.initChart();
+    });
   }
 
   initChart() {
@@ -40,7 +46,7 @@ export class IncomeStackedBarChartComponent implements OnChanges {
       '--p-content-border-color'
     );
 
-    const filteredData = this.incomeList.filter(
+    const filteredData = this.incomeList().filter(
       (income) =>
         new Date(income.date).getFullYear() === this.selectedYear.getFullYear()
     );
@@ -64,14 +70,17 @@ export class IncomeStackedBarChartComponent implements OnChanges {
     };
 
     let incomeTotal = 0;
-    this.incomeTypeList.forEach((incomeType)=>{
-      let dataValue=this.getIncomeGroupedByType(filteredData, incomeType.name);
-      dataValue.forEach(i => incomeTotal+=i);
+    this.incomeTypeList().forEach((incomeType) => {
+      let dataValue = this.getIncomeGroupedByType(
+        filteredData,
+        incomeType.name
+      );
+      dataValue.forEach((i) => (incomeTotal += i));
       let dataset = {
         type: 'bar',
         label: incomeType.name,
         data: dataValue,
-      }
+      };
       this.inputData.datasets.push(dataset);
     });
 
@@ -94,10 +103,13 @@ export class IncomeStackedBarChartComponent implements OnChanges {
           },
         },
         subtitle: {
-          text: 'Total: '+incomeTotal.toLocaleString("it-IT", {
+          text:
+            'Total: ' +
+            incomeTotal.toLocaleString('it-IT', {
               minimumFractionDigits: 2,
-              maximumFractionDigits: 2
-            })+" €",
+              maximumFractionDigits: 2,
+            }) +
+            ' €',
           display: true,
           padding: {
             top: 0,
@@ -137,13 +149,14 @@ export class IncomeStackedBarChartComponent implements OnChanges {
   }
 
   getIncomeGroupedByType(incomeList: Income[], typeName: string) {
-    let incomePerMonth = [0,0,0,0,0,0,0,0,0,0,0,0];
-    incomeList = incomeList.filter(income => income.incomeType.name == typeName);
-    incomeList.forEach(income=>{
+    let incomePerMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    incomeList = incomeList.filter(
+      (income) => income.incomeType.name == typeName
+    );
+    incomeList.forEach((income) => {
       let incomeMonth = (income.date as Date).getMonth();
-      incomePerMonth[incomeMonth]+=income.amount;
+      incomePerMonth[incomeMonth] += income.amount;
     });
     return incomePerMonth;
   }
-
 }

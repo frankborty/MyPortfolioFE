@@ -1,4 +1,10 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  effect,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { ImportsModule } from '../../../../imports';
 import {
   AssetValueList,
@@ -14,7 +20,7 @@ import { AssetService } from '../../../services/assetService/asset.service';
   styleUrls: ['./assetTotalBarChart.component.css'],
 })
 export class AssetTotalBarChartComponent implements OnInit {
-  assetValueSummaryOriginal: AssetValueSummary[] = [];
+  assetValueSummaryOriginal = signal<AssetValueSummary[]>([]);
   assetValueSummaryFiltered: AssetValueSummary[] = [];
   assetCategoryValueDictionary = new Map<string, Map<string, number>>();
 
@@ -26,22 +32,20 @@ export class AssetTotalBarChartComponent implements OnInit {
     private cd: ChangeDetectorRef,
     private assetService: AssetService,
     private globalUtilityService: GlobalUtilityService
-  ) {}
+  ) {
+    this.assetValueSummaryOriginal = this.assetService.assetSummaryByMonth;
+
+    effect(() => {
+      this.initChart();
+    });
+  }
 
   ngOnInit() {
     this.loadAssetsSummaryByMonth();
   }
 
   loadAssetsSummaryByMonth() {
-    this.assetService.getAssetsSummaryByMonth().subscribe({
-      next: (data: AssetValueSummary[]) => {
-        this.assetValueSummaryOriginal = data;
-        this.initChart();
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
+    this.assetService.fetchAssetsSummaryByMonth();
   }
 
   initChart() {
@@ -63,14 +67,15 @@ export class AssetTotalBarChartComponent implements OnInit {
       this.inputData = {
         labels: Array.from(assetValueByDate.keys()).map(
           (x) => x.substring(4, 6) + '/' + x.substring(0, 4)
-        )
+        ),
       };
       break;
     }
 
     this.inputData.datasets = [];
-    
-    for (const [categoryName, assetValueByDate] of this.assetCategoryValueDictionary) {
+
+    for (const [categoryName, assetValueByDate] of this
+      .assetCategoryValueDictionary) {
       let dataset = {
         type: 'bar',
         label: categoryName,
@@ -152,7 +157,7 @@ export class AssetTotalBarChartComponent implements OnInit {
 
   filterAssetValueSummary() {
     this.assetCategoryValueDictionary.clear();
-    this.assetValueSummaryOriginal.forEach((assetSummary) => {
+    this.assetValueSummaryOriginal().forEach((assetSummary) => {
       const categoryName = assetSummary.asset.category.name;
       if (!this.assetCategoryValueDictionary.has(categoryName)) {
         this.assetCategoryValueDictionary.set(
@@ -183,7 +188,9 @@ export class AssetTotalBarChartComponent implements OnInit {
       }
     }
 
-    const assetDate = this.globalUtilityService.convertDateToYearMonthString(assetValue.timeStamp);
+    const assetDate = this.globalUtilityService.convertDateToYearMonthString(
+      assetValue.timeStamp
+    );
 
     const currentValue = assetCategoryItem.get(assetDate) ?? 0;
     assetCategoryItem.set(assetDate, currentValue + assetValue.value);
@@ -191,14 +198,20 @@ export class AssetTotalBarChartComponent implements OnInit {
 
   getTotalByDate(): number[] {
     const totalByDate = new Map<string, number>();
-    this.assetValueSummaryOriginal.forEach((assetSummary) => {
+    this.assetValueSummaryOriginal().forEach((assetSummary) => {
       assetSummary.assetValueList.forEach((assetValue) => {
         if (this.selectedYear) {
-          if (assetValue.timeStamp.getFullYear() !== this.selectedYear.getFullYear()) {
+          if (
+            assetValue.timeStamp.getFullYear() !==
+            this.selectedYear.getFullYear()
+          ) {
             return;
           }
         }
-        const assetDate = this.globalUtilityService.convertDateToYearMonthString(assetValue.timeStamp);
+        const assetDate =
+          this.globalUtilityService.convertDateToYearMonthString(
+            assetValue.timeStamp
+          );
         totalByDate.set(
           assetDate,
           (totalByDate.get(assetDate) ?? 0) + assetValue.value

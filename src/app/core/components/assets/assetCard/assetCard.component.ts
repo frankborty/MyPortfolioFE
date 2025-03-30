@@ -18,15 +18,14 @@ import { AssetOperation } from '../../../interfaces/assetOperation';
   styleUrls: ['./assetCard.component.css'],
 })
 export class AssetCardComponent implements OnInit, OnChanges {
-
   @Output() addAssetOperationCallBack = new EventEmitter<number>();
   @Output() updateAssetValueCallBack = new EventEmitter<number>();
   @Input() asset: Asset;
-  @Input() operationList: AssetOperation[] = [];
+  @Input() assetOperationList: AssetOperation[] = [];
 
   assetResultPositive = false;
   assetValueDeltaString = '--- $ / ---%';
-  detailsPanelVisible= false;
+  detailsPanelVisible = false;
 
   //@Input() assetOperation : any;
   constructor() {
@@ -56,8 +55,7 @@ export class AssetCardComponent implements OnInit, OnChanges {
   }
 
   updateAssetData() {
-    let assetDeltaAbs =
-      (this.asset.currentValue - this.asset.pmc) * this.asset.share;
+    let assetDeltaAbs = (this.asset.currentValue - this.asset.pmc) * this.asset.share;
     let assetDeltaRel = this.calculatePercentageChange(
       this.asset.pmc,
       this.asset.currentValue
@@ -92,8 +90,6 @@ export class AssetCardComponent implements OnInit, OnChanges {
   }
 
   showDetails() {
-    this.detailsPanelVisible=true;
+    this.detailsPanelVisible = true;
   }
-
-
 }

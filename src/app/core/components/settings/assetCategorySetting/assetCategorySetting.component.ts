@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { ImportsModule } from '../../../../imports';
 import { Asset } from '../../../interfaces/asset';
@@ -10,26 +10,33 @@ import { ParamConfirmationDialogComponent } from '../../paramConfirmationDialog/
 
 @Component({
   selector: 'app-assetCategorySetting',
-    imports: [ImportsModule, ParamConfirmationDialogComponent, CheckboxModule, FormsModule],
-    providers: [MessageService],
+  imports: [
+    ImportsModule,
+    ParamConfirmationDialogComponent,
+    CheckboxModule,
+    FormsModule,
+  ],
+  providers: [MessageService],
   templateUrl: './assetCategorySetting.component.html',
-  styleUrls: ['./assetCategorySetting.component.css']
+  styleUrls: ['./assetCategorySetting.component.css'],
 })
 export class AssetCategorySettingComponent implements OnInit {
   @ViewChild(ParamConfirmationDialogComponent)
   confirmDialog!: ParamConfirmationDialogComponent;
   updatingItemCategory: AssetCategory;
-  assetCategoryList: AssetCategory[] = [];
-booleanValue: Boolean[]=[true, false];
+    assetCategoryList = signal<AssetCategory[]>([]);
+  booleanValue: Boolean[] = [true, false];
 
   constructor(
     private assetService: AssetService,
     private messageService: MessageService
   ) {
+    
+    this.assetCategoryList = assetService.assetCategoryList;
     this.updatingItemCategory = {
-        id: -1,
-        name: '',
-        isInvested: false,
+      id: -1,
+      name: '',
+      isInvested: false,
     };
   }
 
@@ -38,35 +45,30 @@ booleanValue: Boolean[]=[true, false];
   }
 
   loadAssetCategoryList() {
-    this.assetService.getAssetCategoryList().subscribe({
-      next: (data: any) => {
-        (data as AssetCategory[]).sort((a, b) => a.name.localeCompare(b.name));
-        this.assetCategoryList = data;
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
+    this.assetService.fetchAssetCategoryList();
+    this.assetService.fetchAssetList();
   }
 
   editAssetCategory(assetCategory: AssetCategory) {
-    this.assetService.editAssetCategory(assetCategory.id, assetCategory).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'AssetCategory modificata con successo',
-        });
-      },
-      error: (error: any) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error,
-        });
-        this.loadAssetCategoryList();
-      },
-    });
+    this.assetService
+      .editAssetCategory(assetCategory.id, assetCategory)
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'AssetCategory modificata con successo',
+          });
+          this.loadAssetCategoryList();
+        },
+        error: (error: any) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error,
+          });
+        },
+      });
   }
 
   onRowEditSave(assetCategory: AssetCategory) {
@@ -81,7 +83,7 @@ booleanValue: Boolean[]=[true, false];
 
   onRowEditCancel() {
     if (this.updatingItemCategory.id != -1) {
-      this.assetCategoryList.forEach((it) => {
+      this.assetCategoryList().forEach((it) => {
         if (it.id == this.updatingItemCategory.id) {
           it.name = this.updatingItemCategory.name;
           it.isInvested = this.updatingItemCategory.isInvested;
@@ -100,9 +102,7 @@ booleanValue: Boolean[]=[true, false];
   deleteAssetCategory(assetCategory: AssetCategory) {
     this.confirmDialog
       .confirmDelete(
-        "Sei sicuro di cancellare l'assetCategory " +
-          assetCategory.name +
-          '?'
+        "Sei sicuro di cancellare l'assetCategory " + assetCategory.name + '?'
       )
       .then((confirmed) => {
         if (confirmed) {
@@ -119,7 +119,10 @@ booleanValue: Boolean[]=[true, false];
               this.messageService.add({
                 severity: 'error',
                 summary: 'Error',
-                detail: error["message"]=="Conflict" ? "Impossibile cancellare l'assetCategory in quanto è associata ad almeno un asset" : error,
+                detail:
+                  error['message'] == 'Conflict'
+                    ? "Impossibile cancellare l'assetCategory in quanto è associata ad almeno un asset"
+                    : error,
               });
             },
           });

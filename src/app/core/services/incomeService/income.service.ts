@@ -1,8 +1,8 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { environment } from '../../../../environments/environment';
 import { ErrorHandlerService } from '../errorHandler/error-handler.service';
 import { HttpClient } from '@angular/common/http';
-import { catchError, map, Observable } from 'rxjs';
+import { catchError, map } from 'rxjs';
 import { Income } from '../../interfaces/income';
 import { IncomeType } from '../../interfaces/incomeType';
 
@@ -10,6 +10,11 @@ import { IncomeType } from '../../interfaces/incomeType';
   providedIn: 'root',
 })
 export class IncomeService {
+  public incomeList = signal<Income[]>([]);
+  public incomeTypeList = signal<IncomeType[]>([]);
+  public incomeError = signal(false);
+  public incomeErrorMessage = signal('');
+
   private apiUrl = environment.backendUrl;
   private options = { headers: { 'Content-Type': 'application/json' } };
   constructor(
@@ -17,24 +22,50 @@ export class IncomeService {
     private errorHandler: ErrorHandlerService
   ) {}
 
-  //#region  GET DATA
-  getIncomes(): Observable<Income[]> {
-    return this.http
+  //#region GET DATA
+  fetchIncomeList(): void {
+    this.http
       .get<Income[]>(`${this.apiUrl}/Income`, this.options)
       .pipe(
-        map(incomes => incomes.map(income => ({
-          ...income,
-          date: new Date(income.date) // Converte la stringa in Date
-        }))),
+        map((incomes) =>
+          incomes.map((income) => ({
+            ...income,
+            date: new Date(income.date), // Converte la stringa in Date
+          }))
+        ),
         catchError(this.errorHandler.handleError)
-      );
+      )
+      .subscribe({
+        next: (data: Income[]) => {
+          this.incomeList.set(
+            data.sort((a, b) => (b.date as Date).getTime() - (a.date as Date).getTime())
+          );
+        },
+        error: (error: any) => {
+          this.incomeError.set(true);
+          this.incomeErrorMessage.set(error.message);
+        },
+      });
+  }
+  
+  fetchIncomeTypeList(): void {
+    this.http
+      .get<IncomeType[]>(`${this.apiUrl}/IncomeType`, this.options)
+      .pipe(catchError(this.errorHandler.handleError))
+      .subscribe({
+        next: (data: IncomeType[]) => {
+          this.incomeTypeList.set(
+            data.sort((a, b) => a.name.localeCompare(b.name))
+          );
+        },
+        error: (error: any) => {
+          this.incomeError.set(true);
+          this.incomeErrorMessage.set(error.message);
+        },
+      });
   }
 
-  getIncomeTypes() {
-    return this.http
-      .get(`${this.apiUrl}/IncomeType`, this.options)
-      .pipe(catchError(this.errorHandler.handleError));
-  }
+  
   //endregion
 
   //#region ADD DATA
@@ -45,7 +76,9 @@ export class IncomeService {
   }
 
   addIncomeType(incomeTypeName: string) {
-    const url = `${this.apiUrl}/IncomeType?incomeType=${encodeURIComponent(incomeTypeName)}`;
+    const url = `${this.apiUrl}/IncomeType?incomeType=${encodeURIComponent(
+      incomeTypeName
+    )}`;
     return this.http
       .post(url, null, this.options)
       .pipe(catchError(this.errorHandler.handleError));
@@ -63,7 +96,9 @@ export class IncomeService {
   }
 
   deleteIncomeType(incomeTypeId: number) {
-    const url = `${this.apiUrl}/IncomeType?incomeTypeId=${encodeURIComponent(incomeTypeId)}`;
+    const url = `${this.apiUrl}/IncomeType?incomeTypeId=${encodeURIComponent(
+      incomeTypeId
+    )}`;
     return this.http
       .delete(url)
       .pipe(catchError(this.errorHandler.handleError));
@@ -79,7 +114,11 @@ export class IncomeService {
 
   editIncomeType(incomeTypeId: number, incomeTypeToUpdate: IncomeType) {
     return this.http
-      .put(`${this.apiUrl}/IncomeType/${incomeTypeId}`, incomeTypeToUpdate, this.options)
+      .put(
+        `${this.apiUrl}/IncomeType/${incomeTypeId}`,
+        incomeTypeToUpdate,
+        this.options
+      )
       .pipe(catchError(this.errorHandler.handleError));
   }
   //#endregion

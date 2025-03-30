@@ -31,7 +31,7 @@
   
   <p-multiselect
     styleClass="w-56"
-    [options]="expenseCategoryList"
+    [options]="expenseCategoryList()"
     [(ngModel)]="selectedCategoryList"
     (ngModelChange)="filterData()"
     optionLabel="name"

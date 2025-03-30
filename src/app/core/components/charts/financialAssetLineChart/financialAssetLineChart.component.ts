@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { ChangeDetectorRef, Component, effect, EventEmitter, OnInit, Output, signal } from '@angular/core';
 import { ImportsModule } from '../../../../imports';
 import { TimeFrame } from '../../../enum/timeFrame.enum';
 import { AssetValueSummary } from '../../../interfaces/assetValueSummary';
@@ -12,8 +12,8 @@ import { AssetService } from '../../../services/assetService/asset.service';
 })
 export class FinancialAssetLineChartComponent implements OnInit {
   @Output() updateAllAssetValueCallBack = new EventEmitter();
-  assetTotalValueList: AssetValueSummary[] = [];
-  assetUnitValueList: AssetValueSummary[] = [];
+  assetTotalValueList = signal<AssetValueSummary[]>([]);
+  assetUnitValueList = signal<AssetValueSummary[]>([]);
   inputData: any;
   options: any;
 
@@ -29,50 +29,31 @@ export class FinancialAssetLineChartComponent implements OnInit {
   constructor(
     private assetService: AssetService,
     private cd: ChangeDetectorRef
-  ) {}
+  ) {
+    this.assetTotalValueList = assetService.assetSummaryByMonth;
+    this.assetUnitValueList = assetService.assetUnitPriceByMonth;
+
+    effect(() => {
+      if(this.assetTotalValueList().length > 0 && this.assetUnitValueList().length > 0){
+        this.initChart();
+      }
+    });
+  }
 
   ngOnInit() {
-    this.loadAssetsTotalValueList();
-    this.loadAssetsUnitValueList();
   }
 
   refreshData() {
     this.updateAllAssetValueCallBack.emit();
-    this.loadAssetsTotalValueList();
-    this.loadAssetsUnitValueList();
+    this.assetService.fetchAssetsSummaryByMonth();
+    this.assetService.fetchAssetsUnitPriceByMonth();
+    this.initChart();
   }
 
   updateAllValue() {
     this.updateAllAssetValueCallBack.emit();
   }
 
-  loadAssetsTotalValueList() {
-    this.assetService.getAssetsSummaryByMonth().subscribe({
-      next: (data: AssetValueSummary[]) => {
-        this.assetTotalValueList = data.filter(
-          (x) => x.asset.category.isInvested
-        );
-        this.initChart();
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
-  }
-
-  loadAssetsUnitValueList() {
-    this.assetService.getAssetsUnitPriceByMonth().subscribe({
-      next: (data: AssetValueSummary[]) => {
-        this.assetUnitValueList = data.filter(
-          (x) => x.asset.category.isInvested
-        );
-        this.initChart();
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
-  }
 
   initChart() {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -88,9 +69,9 @@ export class FinancialAssetLineChartComponent implements OnInit {
 
     let assetValueList: AssetValueSummary[] = [];
     if (this.chartType === 'unit') {
-      assetValueList = this.assetUnitValueList;
+      assetValueList = this.assetUnitValueList().filter(x=>x.asset.category.isInvested);
     } else {
-      assetValueList = this.assetTotalValueList;
+      assetValueList = this.assetTotalValueList().filter(x=>x.asset.category.isInvested);
     }
 
     assetValueList.forEach((assetSummary) => {

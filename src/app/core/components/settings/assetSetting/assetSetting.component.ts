@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, effect, OnInit, signal, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { Asset } from '../../../interfaces/asset';
 import { AssetCategory } from '../../../interfaces/assetCategory';
@@ -18,13 +18,29 @@ export class AssetSettingComponent implements OnInit {
   @ViewChild(ParamConfirmationDialogComponent)
   confirmDialog!: ParamConfirmationDialogComponent;
   updatingItem: Asset;
-  assetList: Asset[] = [];
-  assetCategoryList: AssetCategory[] = [];
+  assetList = signal<Asset[]>([]);
+  assetCategoryList = signal<AssetCategory[]>([]);
+
 
   constructor(
     private assetService: AssetService,
     private messageService: MessageService
   ) {
+    this.assetList = assetService.assetList;
+    this.assetCategoryList = assetService.assetCategoryList;
+
+    effect(() => {
+      let updateError = this.assetService.assetError();
+      if (updateError) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: this.assetService.assetErrorMessage(),
+        });
+        this.assetService.assetError.set(false);
+      }
+    });
+
     this.updatingItem = {
       id: -1,
       name: '',
@@ -45,32 +61,10 @@ export class AssetSettingComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.loadAssetList();
-    this.loadAssetCategoryList();
   }
 
   loadAssetList() {
-    this.assetService.getAssetList().subscribe({
-      next: (data: Asset[]) => {
-        data.sort((a, b) => a.name.localeCompare(b.name));
-        this.assetList = data;
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
-  }
-
-  loadAssetCategoryList() {
-    this.assetService.getAssetCategoryList().subscribe({
-      next: (data: any) => {
-        (data as AssetCategory[]).sort((a, b) => a.name.localeCompare(b.name));
-        this.assetCategoryList = data;
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
+    this.assetService.fetchAssetList();
   }
 
   editAsset(asset: Asset) {
@@ -109,7 +103,7 @@ export class AssetSettingComponent implements OnInit {
 
   onRowEditCancel() {
     if (this.updatingItem.id != -1) {
-      this.assetList.forEach((it) => {
+      this.assetList().forEach((it) => {
         if (it.id == this.updatingItem.id) {
           it.name = this.updatingItem.name;
           it.category.id = this.updatingItem.category.id;
@@ -174,7 +168,7 @@ export class AssetSettingComponent implements OnInit {
       pmc: 0,
       currentValue: 0,
       timeStamp: new Date(),
-      category: this.assetCategoryList[0],
+      category: this.assetCategoryList()[0],
     };
     this.assetService.addAsset(assetToAdd).subscribe({
       next: () => {

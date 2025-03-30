@@ -1,6 +1,6 @@
 <div class="card" [style]="{ 'min-width': '25rem' }">
   <p-table
-    [value]="assetList"
+    [value]="assetList()"
     dataKey="id"
     editMode="row"
     [size]="'small'"
@@ -65,7 +65,7 @@
           <p-cellEditor>
             <ng-template #input>
               <p-select
-                [options]="assetCategoryList"
+                [options]="assetCategoryList()"
                 optionLabel="name"
                 appendTo="body"
                 [(ngModel)]="asset.category"

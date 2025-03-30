@@ -1,30 +1,56 @@
-import { ChangeDetectorRef, Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  effect,
+  Input,
+  OnChanges,
+  OnInit,
+  signal,
+  SimpleChanges,
+} from '@angular/core';
 import { ImportsModule } from '../../../../imports';
 import { Expense } from '../../../interfaces/expense';
 import { ExpenseType } from '../../../interfaces/expenseType';
 import { ExpenseCategory } from '../../../interfaces/expenseCategory';
+import { ExpenseService } from '../../../services/expenseService/expense.service';
 
 @Component({
   selector: 'app-expenseTotalTypeBarChart',
   imports: [ImportsModule],
   templateUrl: './expenseTotalTypeBarChart.component.html',
-  styleUrls: ['./expenseTotalTypeBarChart.component.css']
+  styleUrls: ['./expenseTotalTypeBarChart.component.css'],
 })
 export class ExpenseTotalTypeBarChartComponent implements OnInit, OnChanges {
-  @Input() expenseList: Expense[] = [];
-  @Input() expenseTypeList: ExpenseType[] = [];
-  @Input() expenseCategoryList: ExpenseCategory[] = [];
+  public expenseList = signal<Expense[]>([]);
+  public expenseTypeList = signal<ExpenseType[]>([]);
+  public expenseCategoryList = signal<ExpenseCategory[]>([]);
+
   selectedExpenseTypes: ExpenseType[] = [];
   selectedExpenseCategories: ExpenseCategory[] = [];
-  
+
   inputData: any;
   options: any;
 
   selectedYear: Date = new Date('2024-01-01');
-  filterType = "category";
-  constructor(private cd: ChangeDetectorRef) {}
+  filterType = 'category';
+  constructor(expenseService: ExpenseService, private cd: ChangeDetectorRef) {
+    this.expenseList = expenseService.expenseList;
+    this.expenseTypeList = expenseService.expenseTypeList;
+    this.expenseCategoryList = expenseService.expenseCategoryList;
 
-  ngOnInit() { }
+    effect(() => {
+      if (
+        this.expenseList().length > 0 &&
+        this.expenseTypeList().length > 0 &&
+        this.expenseCategoryList().length > 0
+      ) {
+        this.selectedExpenseCategories = this.expenseCategoryList();
+        this.initChart();
+      }
+    });
+  }
+
+  ngOnInit() {}
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['expenseList']) {
@@ -32,7 +58,7 @@ export class ExpenseTotalTypeBarChartComponent implements OnInit, OnChanges {
     }
 
     if (changes['expenseCategoryList']) {
-      this.selectedExpenseCategories = this.expenseCategoryList;
+      this.selectedExpenseCategories = this.expenseCategoryList();
       this.initChart();
     }
   }
@@ -47,9 +73,10 @@ export class ExpenseTotalTypeBarChartComponent implements OnInit, OnChanges {
       '--p-content-border-color'
     );
 
-    const filteredData = this.expenseList.filter(
-      (expense) => new Date(expense.date).getFullYear() === this.selectedYear.getFullYear()
-    );    
+    const filteredData = this.expenseList().filter(
+      (expense) =>
+        new Date(expense.date).getFullYear() === this.selectedYear.getFullYear()
+    );
 
     let expenseGrouped = this.getExpensesGroupedByFilter(filteredData);
 
@@ -71,13 +98,21 @@ export class ExpenseTotalTypeBarChartComponent implements OnInit, OnChanges {
       datasets: [],
     };
 
-    let datasets = expenseGrouped.map(categoryData => {
+    let datasets = expenseGrouped.map((categoryData) => {
       let dataValue = this.groupExpensesByMonth(categoryData.expenses);
       let totalSum = dataValue.reduce((a, b) => a + b, 0);
       let mediaMensile = totalSum / 12;
       return {
         type: 'bar',
-        label: categoryData.category +"("+categoryData.expenses.length+"|" + totalSum.toFixed(2)+"|"+mediaMensile.toFixed(2)+")",
+        label:
+          categoryData.category +
+          '(' +
+          categoryData.expenses.length +
+          '|' +
+          totalSum.toFixed(2) +
+          '|' +
+          mediaMensile.toFixed(2) +
+          ')',
         data: dataValue,
       };
     });
@@ -87,37 +122,40 @@ export class ExpenseTotalTypeBarChartComponent implements OnInit, OnChanges {
       maintainAspectRatio: false,
       aspectRatio: 0.8,
       plugins: {
-          title: {
-            display: true, // Mostra il titolo
-            text: 'Spese mensili per categoria/tipo', // Testo del titolo
-            font: {
-              size: 18, // Dimensione del carattere
-              weight: 'bold', // Spessore del carattere
-            },
-            color: 'rgba(0, 0, 0, 0.8)', // Colore del titolo
-            align: 'center', // Allineamento: può essere 'start', 'center', o 'end'
-            padding: {
-              top: 10,
-              bottom: 5,
-            },
+        title: {
+          display: true, // Mostra il titolo
+          text: 'Spese mensili per categoria/tipo', // Testo del titolo
+          font: {
+            size: 18, // Dimensione del carattere
+            weight: 'bold', // Spessore del carattere
           },
-          subtitle: {
-            text: "(Count|Total|Avg)",
-            display: true,
-            padding: {
-              top: 0,
-              bottom: 0
-            }
+          color: 'rgba(0, 0, 0, 0.8)', // Colore del titolo
+          align: 'center', // Allineamento: può essere 'start', 'center', o 'end'
+          padding: {
+            top: 10,
+            bottom: 5,
           },
-          labels: {
-            color: textColor,
-            boxWidth: 10,
-            boxHeight: 10,
+        },
+        subtitle: {
+          text: '(Count|Total|Avg)',
+          display: true,
+          padding: {
+            top: 0,
+            bottom: 0,
           },
+        },
+        labels: {
+          color: textColor,
+          boxWidth: 10,
+          boxHeight: 10,
+        },
       },
       tooltip: {
         callbacks: {
-          label: function (context: { dataset: { label: string; }; parsed: { y: string | null; }; }) {
+          label: function (context: {
+            dataset: { label: string };
+            parsed: { y: string | null };
+          }) {
             let label = context.dataset.label || '';
             if (label) {
               label += ': ';
@@ -126,8 +164,8 @@ export class ExpenseTotalTypeBarChartComponent implements OnInit, OnChanges {
               label += context.parsed.y + ' pippo';
             }
             return label;
-          }
-        }
+          },
+        },
       },
       scales: {
         x: {
@@ -157,21 +195,30 @@ export class ExpenseTotalTypeBarChartComponent implements OnInit, OnChanges {
     this.cd.markForCheck();
   }
 
-
   getExpensesGroupedByFilter(filteredData: Expense[]) {
-    if(this.filterType==="category"){
-      return this.selectedExpenseCategories.map(category => {
+    if (this.filterType === 'category') {
+      if(this.selectedExpenseCategories == null) {
+        this.selectedExpenseCategories = [];
+      }
+
+      return this.selectedExpenseCategories.map((category) => {
         return {
           category: category.name,
-          expenses: filteredData.filter(expense => expense.expenseType.category.name === category.name)
+          expenses: filteredData.filter(
+            (expense) => expense.expenseType.category.name === category.name
+          ),
         };
       });
-    }
-    else{
-      return this.selectedExpenseTypes.map(type => {
+    } else {
+      if(this.selectedExpenseTypes == null) {
+        this.selectedExpenseTypes = [];
+      }
+      return this.selectedExpenseTypes.map((type) => {
         return {
           category: type.name,
-          expenses: filteredData.filter(expense => expense.expenseType.name === type.name)
+          expenses: filteredData.filter(
+            (expense) => expense.expenseType.name === type.name
+          ),
         };
       });
     }

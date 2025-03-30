@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, signal } from '@angular/core';
 import { ConfirmationService, MessageService } from 'primeng/api';
 import { Nullable } from 'primeng/ts-helpers';
 import { ExpenseTypeLinearChartComponent } from '../../../core/components/charts/expenseTypeLinearChart/expenseTypeLinearChart.component';
@@ -13,6 +13,7 @@ import { EditExpenseComponent } from '../../../core/components/expense/editExpen
 import { OperationType } from '../../../core/enum/operationType';
 import { ExpensePieChartPanelComponent } from '../../../core/components/charts/expensePieChart/expensePieChartPanel/expensePieChartPanel.component';
 import { ParamConfirmationDialogComponent } from '../../../core/components/paramConfirmationDialog/paramConfirmationDialog.component';
+import { ExpenseSummaryTableComponent } from '../../../core/components/expense/expenseSummaryTable/expenseSummaryTable.component';
 
 @Component({
   selector: 'app-expenseFilterPage',
@@ -21,7 +22,7 @@ import { ParamConfirmationDialogComponent } from '../../../core/components/param
     ImportsModule,
     EditExpenseComponent,
     ParamConfirmationDialogComponent,
-    ExpensePieChartPanelComponent,
+    ExpensePieChartPanelComponent 
   ],
   providers: [
     ConfirmationService,
@@ -43,7 +44,8 @@ export class ExpenseFilterPageComponent implements OnInit {
   filteredExpenseList: Expense[] = [];
   selectedYear: Date | Nullable = new Date();
   selectedMonth: Date | Nullable = new Date();
-  expenseTypes: ExpenseType[] = [];
+  public expenseTypeList = signal<ExpenseType[]>([]);
+
   expenseCategories: ExpenseCategory[] = [];
 
   displayExpenseEditPanel: boolean = false;
@@ -54,48 +56,21 @@ export class ExpenseFilterPageComponent implements OnInit {
     private expenseService: ExpenseService,
     private globalUtils: GlobalUtilityService,
     private messageService: MessageService
-  ) {}
+  ) {
+    this.expenseTypeList = this.expenseService.expenseTypeList;
+  }
 
   ngOnInit() {
-    this.loadExpenses();
-    this.loadExpenseTypes();
-    this.loadExpenseCategories();
   }
 
   loadExpenses() {
-    this.expenseService.getExpenses().subscribe({
-      next: (data: Expense[]) => {
-        data.sort((a, b) => (b.date as Date).getTime() - (a.date as Date).getTime());
-        this.expenseList = data;
-        this.filterExpenses();
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
+    this.expenseService.fetchExpenseList();
   }
 
   loadExpenseTypes() {
-    this.expenseService.getExpenseTypes().subscribe({
-      next: (data: any) => {
-        this.expenseTypes = data;
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
+    this.expenseService.fetchExpenseTypeList();
   }
 
-  loadExpenseCategories() {
-    this.expenseService.getExpenseCategories().subscribe({
-      next: (data: any) => {
-        this.expenseCategories = data;
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
-  }
 
   //#region NEW
 
@@ -106,7 +81,7 @@ export class ExpenseFilterPageComponent implements OnInit {
         amount: 0,
         date: new Date(),
         note: "",
-        expenseType : this.expenseTypes[0]
+        expenseType : this.expenseTypeList()[0]
       }
       this.editExpenseDialog.setExpenseToEdit(defaultExpense);
       this.editExpenseDialog.setCurrentOperation(OperationType.ADD);
@@ -207,7 +182,6 @@ export class ExpenseFilterPageComponent implements OnInit {
                 });
               },
               error: (error: any) => {
-                console.error(error);
                 this.messageService.add({
                   severity: 'error',
                   summary: 'Error',

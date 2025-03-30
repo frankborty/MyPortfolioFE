@@ -1,5 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-import { AssetValueList, AssetValueSummary } from '../../../interfaces/assetValueSummary';
+import { Component, effect, OnInit, signal } from '@angular/core';
+import {
+  AssetValueList,
+  AssetValueSummary,
+} from '../../../interfaces/assetValueSummary';
 import { ImportsModule } from '../../../../imports';
 import { MessageService } from 'primeng/api';
 import { AssetService } from '../../../services/assetService/asset.service';
@@ -14,19 +17,25 @@ import { ParamConfirmationDialogComponent } from '../../paramConfirmationDialog/
   styleUrls: ['./assetsSummaryTable.component.css'],
 })
 export class AssetsSummaryTableComponent implements OnInit {
-
-  assetValueSummaryOriginal: AssetValueSummary[] = [];
+  assetValueSummaryOriginal = signal<AssetValueSummary[]>([]);
   assetValueSummaryFiltered: AssetValueSummary[] = [];
   assetValueSummaryToUpdate: AssetValueSummary;
-  assetSumTotalByMonth: number[] = [0,0,0,0,0,0,0,0,0,0,0,0];
-  assetDeltaByMonth: number[] = [0,0,0,0,0,0,0,0,0,0,0,0];  
+  assetSumTotalByMonth: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+  assetDeltaByMonth: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
   selectedYear: Date = new Date('2024-01-01'); //da sistemare con il 2025
-  monthIndexArray: number[]= [0,1,2,3,4,5,6,7,8,9,10,11];
+  monthIndexArray: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
-  constructor(private assetService: AssetService,
+  constructor(
+    private assetService: AssetService,
     private messageService: MessageService
   ) {
+    this.assetValueSummaryOriginal = this.assetService.assetSummaryByMonth;
+
+    effect(() => {      
+      this.filterAssetValueSummary();
+    });
+
     this.assetValueSummaryToUpdate = {
       asset: {
         id: -1,
@@ -35,7 +44,7 @@ export class AssetsSummaryTableComponent implements OnInit {
         category: {
           id: -1,
           name: '',
-          isInvested: false
+          isInvested: false,
         },
         isin: '',
         note: '',
@@ -43,54 +52,47 @@ export class AssetsSummaryTableComponent implements OnInit {
         url: '',
         pmc: 0,
         currentValue: 0,
-        timeStamp: new Date()
+        timeStamp: new Date(),
       },
-      assetValueList: []
+      assetValueList: [],
     };
   }
 
-  ngOnInit() {
-    this.loadAssetsSummaryByMonth();
-  }
+  ngOnInit() {}
 
   loadAssetsSummaryByMonth() {
-    this.assetService.getAssetsSummaryByMonth().subscribe({
-      next: (data: AssetValueSummary[]) => {
-        this.assetValueSummaryOriginal = data;
-        this.filterAssetValueSummary();
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
+    this.assetService.fetchAssetsSummaryByMonth();
   }
 
   filterAssetValueSummary() {
     this.assetValueSummaryFiltered = [];
-    this.assetValueSummaryOriginal.forEach((assetSummary) => {
+    this.assetValueSummaryOriginal().forEach((assetSummary) => {
       this.assetValueSummaryFiltered.push({
         asset: assetSummary.asset,
-        assetValueList: this.prepareAssetValueList(assetSummary)
+        assetValueList: this.prepareAssetValueList(assetSummary),
       });
     });
     this.calculateSumTotalByMonth();
     this.calculateDeltaByMonth();
   }
 
-  prepareAssetValueList(assetSummary: AssetValueSummary) : AssetValueList[] {
+  prepareAssetValueList(assetSummary: AssetValueSummary): AssetValueList[] {
     let assetValueList: AssetValueList[] = [];
-    for(let i = 0; i < 12; i++) {
+    for (let i = 0; i < 12; i++) {
       assetValueList.push({
         id: 0,
         assetId: -1,
         value: 0,
         note: '',
-        timeStamp: new Date(this.selectedYear.getFullYear(), i+1, 1)
+        timeStamp: new Date(this.selectedYear.getFullYear(), i + 1, 1),
       });
     }
     assetSummary.assetValueList.forEach((assetValue) => {
-      if(assetValue.timeStamp.getFullYear() == this.selectedYear.getFullYear()) {
-        assetValueList[assetValue.timeStamp.getMonth()].value = assetValue.value;
+      if (
+        assetValue.timeStamp.getFullYear() == this.selectedYear.getFullYear()
+      ) {
+        assetValueList[assetValue.timeStamp.getMonth()].value =
+          assetValue.value;
         assetValueList[assetValue.timeStamp.getMonth()].note = assetValue.note;
       }
     });
@@ -98,7 +100,7 @@ export class AssetsSummaryTableComponent implements OnInit {
   }
 
   calculateSumTotalByMonth() {
-    this.assetSumTotalByMonth = [0,0,0,0,0,0,0,0,0,0,0,0];
+    this.assetSumTotalByMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     this.assetValueSummaryFiltered.forEach((assetSummary) => {
       assetSummary.assetValueList.forEach((assetValue, index) => {
         this.assetSumTotalByMonth[index] += assetValue.value;
@@ -107,42 +109,47 @@ export class AssetsSummaryTableComponent implements OnInit {
   }
 
   calculateDeltaByMonth() {
-    this.assetDeltaByMonth = [0,0,0,0,0,0,0,0,0,0,0,0];
-    for(let i = 0; i < 12; i++) {
-      if(i == 0) {
+    this.assetDeltaByMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    for (let i = 0; i < 12; i++) {
+      if (i == 0) {
         this.assetDeltaByMonth[i] = 0;
       } else {
-        this.assetDeltaByMonth[i] = this.assetSumTotalByMonth[i] - this.assetSumTotalByMonth[i-1];
+        this.assetDeltaByMonth[i] =
+          this.assetSumTotalByMonth[i] - this.assetSumTotalByMonth[i - 1];
       }
     }
   }
 
-  CalculateCategoryGroupHeaderMonth(assetCategory: AssetCategory, monthIndex: number): number {
+  CalculateCategoryGroupHeaderMonth(
+    assetCategory: AssetCategory,
+    monthIndex: number
+  ): number {
     return this.assetValueSummaryFiltered
-    .filter(asset => asset.asset.category.name === assetCategory.name)
-    .reduce((acc, asset) => acc + asset.assetValueList[monthIndex].value, 0);
+      .filter((asset) => asset.asset.category.name === assetCategory.name)
+      .reduce((acc, asset) => acc + asset.assetValueList[monthIndex].value, 0);
   }
 
-  openEditValueDialog(assetValueSummaryToUpdate: AssetValueSummary) {
-    console.log(assetValueSummaryToUpdate);
-    //apro il dialog per la modifica del valore
-  }
 
   onRowEditStart(assetValueSummaryToUpdate: AssetValueSummary) {
-    this.assetValueSummaryToUpdate = JSON.parse(JSON.stringify(assetValueSummaryToUpdate));
+    this.assetValueSummaryToUpdate = JSON.parse(
+      JSON.stringify(assetValueSummaryToUpdate)
+    );
   }
-    
+
   onRowEditSave(assetValueSummaryUpdated: AssetValueSummary) {
-    if(this.assetValueSummaryToUpdate.asset.category.id != -1) { 
+    if (this.assetValueSummaryToUpdate.asset.category.id != -1) {
       this.saveAssetValueType(assetValueSummaryUpdated);
     }
   }
-    
+
   onRowEditCancel() {
     this.assetValueSummaryFiltered.forEach((assetSummary) => {
-      if (assetSummary.asset.name == this.assetValueSummaryToUpdate.asset.name) {
-        for(let i = 0; i < 12; i++) {
-          assetSummary.assetValueList[i].value = this.assetValueSummaryToUpdate.assetValueList[i].value;
+      if (
+        assetSummary.asset.name == this.assetValueSummaryToUpdate.asset.name
+      ) {
+        for (let i = 0; i < 12; i++) {
+          assetSummary.assetValueList[i].value =
+            this.assetValueSummaryToUpdate.assetValueList[i].value;
         }
         this.assetValueSummaryToUpdate.asset.category.id = -1;
         return;
@@ -172,5 +179,5 @@ export class AssetsSummaryTableComponent implements OnInit {
         this.loadAssetsSummaryByMonth();
       },
     });
-  } 
+  }
 }

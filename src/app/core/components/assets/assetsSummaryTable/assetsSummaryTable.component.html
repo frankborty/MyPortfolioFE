@@ -128,7 +128,6 @@
         <td
           class="bg-transparent"
           *ngFor="let monthIndex of monthIndexArray"
-          (dblclick)="openEditValueDialog(assetSummaryItem)"
           tooltip="Doppio click per modificare il valore"
         >
           <p-cellEditor>
@@ -149,7 +148,10 @@
                 }}
               </span>
               <i
-                *ngIf="assetSummaryItem.assetValueList[monthIndex].note?.trim() !==''"
+                *ngIf="
+                  assetSummaryItem.assetValueList[monthIndex].note?.trim() !==
+                  ''
+                "
                 class="pi pi-info-circle text-blue-500"
                 [pTooltip]="assetSummaryItem.assetValueList[monthIndex].note"
                 tooltipPosition="top"

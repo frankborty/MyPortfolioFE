@@ -1,6 +1,6 @@
 <div class="card" [style]="{ 'min-width': '25rem', 'max-width': '50rem' }">
   <p-table
-    [value]="expenseTypeList"
+    [value]="expenseTypeList()"
     dataKey="id"
     editMode="row"
     [size]="'small'"
@@ -58,7 +58,7 @@
           <p-cellEditor>
             <ng-template #input>
               <p-select
-                [options]="expenseCategoryList"
+                [options]="expenseCategoryList()"
                 optionLabel="name"
                 appendTo="body"
                 [(ngModel)]="expenseType.category"

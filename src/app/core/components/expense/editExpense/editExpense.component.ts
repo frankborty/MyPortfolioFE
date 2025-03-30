@@ -1,4 +1,4 @@
-import { Component, EventEmitter, OnInit, Output } from '@angular/core';
+import { Component, effect, EventEmitter, OnInit, Output, signal } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ImportsModule } from '../../../../imports';
 import { OperationType } from '../../../enum/operationType';
@@ -16,14 +16,21 @@ import { SelectChangeEvent } from 'primeng/select';
 export class EditExpenseComponent implements OnInit {
   @Output() editExpenseCallBack = new EventEmitter<Expense>();
   @Output() addExpenseCallBack = new EventEmitter<Expense>();
-
-  expenseTypeList : ExpenseType[] = [];
+  public expenseTypeList = signal<ExpenseType[]>([]);
   selectedExpenseType: ExpenseType | undefined;
   editExpenseForm : FormGroup;
   currentExpenseId : number = -1;
   currentOperation : OperationType = OperationType.EDIT;
 
   constructor(private expenseService : ExpenseService) { 
+    this.expenseTypeList = this.expenseService.expenseTypeList;
+
+    effect(() => {  
+      if (this.expenseTypeList().length > 0) {
+        this.selectedExpenseType = this.expenseTypeList()[0];
+      }
+    });
+
     this.editExpenseForm = new FormGroup({
       expDescription: new FormControl('', [Validators.required, Validators.minLength(3)]),
       expAmount: new FormControl('', [Validators.required, Validators.min(0.01)]),
@@ -34,19 +41,7 @@ export class EditExpenseComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-    this.expenseService.getExpenseTypes().subscribe({
-      next: (data: any) => {
-        this.expenseTypeList = data;
-        if (this.expenseTypeList.length > 0) {
-          this.selectedExpenseType = this.expenseTypeList[0];
-        }
-      },
-      error: (error: any) => {
-        console.error(error);
-      }
-    });
-  }
+  ngOnInit(): void {}
 
   changeSelectedType($event: SelectChangeEvent) {    
     let expenseCategory = ($event.value as ExpenseType).category;
@@ -72,7 +67,6 @@ export class EditExpenseComponent implements OnInit {
 
   onUserSave() {
     if(this.editExpenseForm.invalid){
-      console.log('Form is invalid');
       return;
     }
     const formValue = this.editExpenseForm.value;

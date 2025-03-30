@@ -1,13 +1,16 @@
 import {
   ChangeDetectorRef,
   Component,
+  effect,
   Input,
   OnChanges,
   OnInit,
+  signal,
   SimpleChanges,
 } from '@angular/core';
 import { ImportsModule } from '../../../../imports';
 import { Expense } from '../../../interfaces/expense';
+import { ExpenseService } from '../../../services/expenseService/expense.service';
 
 @Component({
   selector: 'app-expenseTotalLinearChart',
@@ -15,20 +18,20 @@ import { Expense } from '../../../interfaces/expense';
   templateUrl: './expenseTotalLinearChart.component.html',
   styleUrls: ['./expenseTotalLinearChart.component.css'],
 })
-export class ExpenseTotalLinearChartComponent implements OnInit, OnChanges {
-  @Input() expenseList: Expense[] = [];
+export class ExpenseTotalLinearChartComponent implements OnInit {
+  public expenseList = signal<Expense[]>([]);
   inputData: any;
   options: any;
-  constructor(private cd: ChangeDetectorRef) {}
+  constructor(expenseService: ExpenseService, private cd: ChangeDetectorRef) {
+      this.expenseList = expenseService.expenseList;
+      effect(() => {  
+        if (this.expenseList().length > 0) {
+          this.initChart();
+        }
+      });
+    }
 
   ngOnInit() {}
-
-  ngOnChanges(changes: SimpleChanges): void {
-    // Controlla se expenseList è stato modificato
-    if (changes['expenseList']) {
-      this.initChart();
-    }
-  }
 
   initChart() {
     const documentStyle = getComputedStyle(document.documentElement);
@@ -41,17 +44,17 @@ export class ExpenseTotalLinearChartComponent implements OnInit, OnChanges {
     );
 
     let data2023 = this.groupExpensesByMonth(
-      this.expenseList.filter(
+      this.expenseList().filter(
         (expense) => new Date(expense.date).getFullYear() === 2023
       )
     );
     let data2024 = this.groupExpensesByMonth(
-      this.expenseList.filter(
+      this.expenseList().filter(
         (expense) => new Date(expense.date).getFullYear() === 2024
       )
     );
     let data2025 = this.groupExpensesByMonth(
-      this.expenseList.filter(
+      this.expenseList().filter(
         (expense) => new Date(expense.date).getFullYear() === 2025
       )
     );

@@ -1,25 +1,36 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  Input,
+  OnInit,
+  Output,
+  signal,
+} from '@angular/core';
 import { ImportsModule } from '../../../../imports';
 import { Expense } from '../../../interfaces/expense';
 import { ExpenseType } from '../../../interfaces/expenseType';
 import { ExpenseCategory } from '../../../interfaces/expenseCategory';
+import { ExpenseService } from '../../../services/expenseService/expense.service';
 
 @Component({
   selector: 'app-expenseTable',
   imports: [ImportsModule],
   templateUrl: './expenseTable.component.html',
-  styleUrls: ['./expenseTable.component.css']
+  styleUrls: ['./expenseTable.component.css'],
 })
-
 export class ExpenseTableComponent {
-  @Input() expenseList: Expense[] = [];
-  @Input() expenseTypeList: ExpenseType[] = [];
-  @Input() expenseCategoryList: ExpenseCategory[] = [];
-  
+  public expenseList = signal<Expense[]>([]);
+  public expenseTypeList = signal<ExpenseType[]>([]);
+  public expenseCategoryList = signal<ExpenseCategory[]>([]);
+
   @Output() editExpenseCallBack = new EventEmitter<Expense>();
   @Output() deleteExpenseCallBack = new EventEmitter<Expense>();
 
-  constructor() {}
+  constructor(expenseService: ExpenseService) {
+    this.expenseList = expenseService.expenseList;
+    this.expenseTypeList = expenseService.expenseTypeList;
+    this.expenseCategoryList = expenseService.expenseCategoryList;
+  }
 
   deleteExpense(expense: Expense) {
     this.deleteExpenseCallBack.emit(expense);

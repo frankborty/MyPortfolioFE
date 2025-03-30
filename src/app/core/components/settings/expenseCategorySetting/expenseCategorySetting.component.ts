@@ -1,66 +1,76 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, effect, OnInit, ViewChild } from '@angular/core';
 import { MessageService } from 'primeng/api';
 import { ImportsModule } from '../../../../imports';
 import { ExpenseCategory } from '../../../interfaces/expenseCategory';
 import { ExpenseService } from '../../../services/expenseService/expense.service';
 import { ParamConfirmationDialogComponent } from '../../paramConfirmationDialog/paramConfirmationDialog.component';
+import { ExpenseType } from '../../../interfaces/expenseType';
 
 @Component({
   selector: 'app-expenseCategorySetting',
   imports: [ImportsModule, ParamConfirmationDialogComponent],
   providers: [MessageService],
   templateUrl: './expenseCategorySetting.component.html',
-  styleUrls: ['./expenseCategorySetting.component.css']
+  styleUrls: ['./expenseCategorySetting.component.css'],
 })
 export class ExpenseCategorySettingComponent implements OnInit {
   @ViewChild(ParamConfirmationDialogComponent)
   confirmDialog!: ParamConfirmationDialogComponent;
   updatingItemCategory: ExpenseCategory;
-  expenseCategoryList: ExpenseCategory[] = [];
+  expenseTypeList : any;
+  expenseCategoryList : any;
+
   constructor(
     private expenseService: ExpenseService,
     private messageService: MessageService
   ) {
+    this.expenseTypeList = expenseService.expenseTypeList;
+    this.expenseCategoryList = expenseService.expenseCategoryList;
+    effect(() => {      
+      let updateError = this.expenseService.expenseError();
+      if (updateError) {
+        this.messageService.add({
+          severity: 'error',
+          summary: 'Error',
+          detail: this.expenseService.expenseErrorMessage(),
+        });
+        this.expenseService.expenseError.set(false);
+      }
+    });
+
     this.updatingItemCategory = {
       id: -1,
       name: '',
     };
   }
 
-  ngOnInit() {
-    this.loadExpenseCategories();
-  }
+  ngOnInit() {}
 
   loadExpenseCategories() {
-    this.expenseService.getExpenseCategories().subscribe({
-      next: (data: any) => {
-        (data as ExpenseCategory[]).sort((a, b) => a.name.localeCompare(b.name));
-        this.expenseCategoryList = data;
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
+    this.expenseService.fetchExpenseCategoryList();
+    this.expenseService.fetchExpenseTypeList();
   }
 
   editExpenseCategory(expenseCategory: ExpenseCategory) {
-    this.expenseService.editExpenseCategory(expenseCategory.id, expenseCategory).subscribe({
-      next: () => {
-        this.messageService.add({
-          severity: 'success',
-          summary: 'Success',
-          detail: 'ExpenseCategory modificata con successo',
-        });
-      },
-      error: (error: any) => {
-        this.messageService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: error,
-        });
-        this.loadExpenseCategories();
-      },
-    });
+    this.expenseService
+      .editExpenseCategory(expenseCategory.id, expenseCategory)
+      .subscribe({
+        next: () => {
+          this.messageService.add({
+            severity: 'success',
+            summary: 'Success',
+            detail: 'ExpenseCategory modificata con successo',
+          });
+          this.loadExpenseCategories();
+        },
+        error: (error: any) => {
+          this.messageService.add({
+            severity: 'error',
+            summary: 'Error',
+            detail: error,
+          });
+        },
+      });
   }
 
   onRowEditSave(expenseCategory: ExpenseCategory) {
@@ -72,7 +82,7 @@ export class ExpenseCategorySettingComponent implements OnInit {
 
   onRowEditCancel() {
     if (this.updatingItemCategory.id != -1) {
-      this.expenseCategoryList.forEach((it) => {
+      this.expenseCategoryList().forEach((it : ExpenseCategory) => {
         if (it.id == this.updatingItemCategory.id) {
           it.name = this.updatingItemCategory.name;
           this.updatingItemCategory.id = -1;
@@ -95,23 +105,28 @@ export class ExpenseCategorySettingComponent implements OnInit {
       )
       .then((confirmed) => {
         if (confirmed) {
-          this.expenseService.deleteExpenseCategory(expenseCategory.id).subscribe({
-            next: () => {
-              this.messageService.add({
-                severity: 'success',
-                summary: 'Success',
-                detail: 'ExpenseCategory rimossa con successo',
-              });
-              this.loadExpenseCategories();
-            },
-            error: (error: any) => {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Error',
-                detail: error["message"]=="Conflict" ? "Impossibile cancellare l'assetCategory in quanto è associata ad almeno un asset" : error,
-              });
-            },
-          });
+          this.expenseService
+            .deleteExpenseCategory(expenseCategory.id)
+            .subscribe({
+              next: () => {
+                this.messageService.add({
+                  severity: 'success',
+                  summary: 'Success',
+                  detail: 'ExpenseCategory rimossa con successo',
+                });
+                this.loadExpenseCategories();
+              },
+              error: (error: any) => {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Error',
+                  detail:
+                    error['message'] == 'Conflict'
+                      ? "Impossibile cancellare l'assetCategory in quanto è associata ad almeno un asset"
+                      : error,
+                });
+              },
+            });
         } else {
           this.messageService.add({
             severity: 'info',
@@ -141,4 +156,7 @@ export class ExpenseCategorySettingComponent implements OnInit {
       },
     });
   }
+}
+function signal<T>(arg0: never[]) {
+  throw new Error('Function not implemented.');
 }

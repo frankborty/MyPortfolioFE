@@ -31,15 +31,10 @@ import { ParamConfirmationDialogComponent } from '../../core/components/paramCon
   styleUrls: ['./incomesPage.component.css'],
 })
 export class IncomesPageComponent implements OnInit {
-
-
-
   @ViewChild(ParamConfirmationDialogComponent)
   confirmDialog!: ParamConfirmationDialogComponent;
   @ViewChild(EditIncomeComponent) editIncomeDialog!: EditIncomeComponent;
 
-  incomList: Income[] = [];
-  incomeTypeList: IncomeType[] = [];
   displayIncomeEditPanel: boolean = false;
 
   constructor(
@@ -49,33 +44,14 @@ export class IncomesPageComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.loadIncomes();
-    this.loadIncomeTypes();
   }
 
   loadIncomes() {
-    this.incomeService.getIncomes().subscribe({
-      next: (data: Income[]) => {
-        data.sort(
-          (a, b) => (b.date as Date).getTime() - (a.date as Date).getTime()
-        );
-        this.incomList = data;
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
+    this.incomeService.fetchIncomeList();    
   }
 
   loadIncomeTypes() {
-    this.incomeService.getIncomeTypes().subscribe({
-      next: (data: any) => {
-        this.incomeTypeList = data;
-      },
-      error: (error: any) => {
-        console.error(error);
-      },
-    });
+    this.incomeService.fetchIncomeTypeList();
   }
 
   showAddIncomeDialog() {
@@ -84,7 +60,7 @@ export class IncomesPageComponent implements OnInit {
       amount: 0,
       date: new Date(),
       note: '',
-      incomeType: this.incomeTypeList[0],
+      incomeType: this.incomeService.incomeTypeList()[0],
     };
     this.editIncomeDialog.setIncomeToEdit(defaultIncome);
     this.editIncomeDialog.setCurrentOperation(OperationType.ADD);

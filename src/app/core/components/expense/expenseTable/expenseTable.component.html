@@ -1,6 +1,6 @@
 <div class="card">
   <p-table
-  [value]="expenseList"
+  [value]="expenseList()"
   [scrollable]="true"
   [resizableColumns]="true"
   [size]="'small'"
@@ -50,7 +50,7 @@
             <p-multiselect
               [filter]="true"
               [ngModel]="value"
-              [options]="expenseTypeList"
+              [options]="expenseTypeList()"
               optionLabel="name"
               optionValue="name"
               placeholder="Any"
@@ -86,7 +86,7 @@
             <p-multiselect
               [filter]="true"
               [ngModel]="value"
-              [options]="expenseCategoryList"
+              [options]="expenseCategoryList()"
               optionLabel="name"
               optionValue="name"
               placeholder="Any"
