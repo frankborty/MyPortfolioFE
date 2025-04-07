@@ -50,7 +50,7 @@ export class IncomeSummaryTableComponent implements OnInit {
   totalAvg: number = 0;
   totalPerMese: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-  selectedYear: Date = new Date('2024-01-01');
+  selectedYear: Date = new Date();
 
   constructor(incomeService: IncomeService) {
     this.incomeList = incomeService.incomeList;

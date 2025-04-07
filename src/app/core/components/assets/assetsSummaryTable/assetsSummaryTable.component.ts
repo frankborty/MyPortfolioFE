@@ -23,7 +23,7 @@ export class AssetsSummaryTableComponent implements OnInit {
   assetSumTotalByMonth: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
   assetDeltaByMonth: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-  selectedYear: Date = new Date('2024-01-01'); //da sistemare con il 2025
+  selectedYear: Date = new Date(); //da sistemare con il 2025
   monthIndexArray: number[] = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   constructor(

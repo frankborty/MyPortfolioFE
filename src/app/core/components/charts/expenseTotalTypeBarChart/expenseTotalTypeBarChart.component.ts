@@ -31,7 +31,7 @@ export class ExpenseTotalTypeBarChartComponent implements OnInit, OnChanges {
   inputData: any;
   options: any;
 
-  selectedYear: Date = new Date('2024-01-01');
+  selectedYear: Date = new Date();
   filterType = 'category';
   constructor(expenseService: ExpenseService, private cd: ChangeDetectorRef) {
     this.expenseList = expenseService.expenseList;

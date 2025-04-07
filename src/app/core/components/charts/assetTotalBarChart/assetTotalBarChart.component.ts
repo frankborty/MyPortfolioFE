@@ -26,7 +26,7 @@ export class AssetTotalBarChartComponent implements OnInit {
 
   inputData: any;
   options: any;
-  selectedYear: Date = new Date('2024-01-01');
+  selectedYear: Date = new Date();
 
   constructor(
     private cd: ChangeDetectorRef,
@@ -100,7 +100,7 @@ export class AssetTotalBarChartComponent implements OnInit {
       plugins: {
         title: {
           display: true, // Mostra il titolo
-          text: 'Income', // Testo del titolo
+          text: 'Asset', // Testo del titolo
           font: {
             size: 18, // Dimensione del carattere
             weight: 'bold', // Spessore del carattere
