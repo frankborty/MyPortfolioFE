@@ -24,7 +24,7 @@ export class AssetCardComponent implements OnInit, OnChanges {
   @Input() assetOperationList: AssetOperation[] = [];
 
   assetResultPositive = false;
-  assetValueDeltaString = '--- $ / ---%';
+  assetValueDeltaString = '---$ / ---%';
   detailsPanelVisible = false;
 
   //@Input() assetOperation : any;

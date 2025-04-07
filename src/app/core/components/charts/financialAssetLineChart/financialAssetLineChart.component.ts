@@ -44,7 +44,7 @@ export class FinancialAssetLineChartComponent implements OnInit {
   }
 
   refreshData() {
-    this.updateAllAssetValueCallBack.emit();
+    //this.updateAllAssetValueCallBack.emit();
     this.assetService.fetchAssetsSummaryByMonth();
     this.assetService.fetchAssetsUnitPriceByMonth();
     this.initChart();
