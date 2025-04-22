@@ -73,7 +73,6 @@ export class ExpenseFilterPageComponent implements OnInit {
 
 
   //#region NEW
-
   showAddExpenseDialog(){
       let defaultExpense : Expense = {
         id: -1,

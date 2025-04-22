@@ -5,12 +5,10 @@ import { AssetsPageComponent } from './pages/assetPages/assetsPage/assetsPage.co
 import { FinancialAssetsPageComponent } from './pages/assetPages/financialAssetsPage/financialAssetsPage.component';
 import { IncomesPageComponent } from './pages/incomesPage/incomesPage.component';
 import { SettingPageComponent } from './pages/settingPage/settingPage.component';
-import { HomePageComponent } from './pages/homePage/homePage.component';
 
 
 export const routes: Routes = [
-    { path: '', redirectTo: 'home', pathMatch: 'full' }, // Route di default
-    { path: 'home', component: HomePageComponent, pathMatch: 'full' }, // Route di default
+    { path: '', redirectTo: 'expenses/partial', pathMatch: 'full' }, // Modificato per puntare a 'expenses/partial'
     { path: 'assets', component: AssetsPageComponent },
     { path: 'assets/total', component: AssetsPageComponent },
     { path: 'assets/financial', component: FinancialAssetsPageComponent },

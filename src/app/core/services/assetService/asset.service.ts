@@ -22,7 +22,6 @@ export class AssetService {
   public assetErrorMessage = signal('');
 
   private apiUrl = environment.backendUrl;
-  private pythonUrl = environment.pythonUrl;
   private options = { headers: { 'Content-Type': 'application/json' } };
   constructor(
     private http: HttpClient,
@@ -162,7 +161,7 @@ export class AssetService {
   getAssetCurrentValue(assetId: number) {
     return this.http
       .get(
-        `${this.apiUrl}/AssetValue/${assetId}/LoadFinancialValue?pythonUrl=${this.pythonUrl}`,
+        `${this.apiUrl}/AssetValue/${assetId}/LoadFinancialValue`,
         this.options
       )
       .pipe(catchError(this.errorHandler.handleError));
@@ -171,7 +170,7 @@ export class AssetService {
   getAllAssetCurrentValue() {
     return this.http
       .get(
-        `${this.apiUrl}/AssetValue/LoadAllFinancialValue?pythonUrl=${this.pythonUrl}`,
+        `${this.apiUrl}/AssetValue/LoadAllFinancialValue`,
         this.options
       )
       .pipe(catchError(this.errorHandler.handleError));
