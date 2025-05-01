@@ -193,6 +193,7 @@ export class AssetService {
   }
 
   addAssetOperation(assetOperation: AssetOperation) {
+    assetOperation.date.setHours(12); //pessimo modo per evitare problemi di timezone
     return this.http
       .post(`${this.apiUrl}/AssetOperation`, assetOperation, this.options)
       .pipe(catchError(this.errorHandler.handleError));
@@ -228,6 +229,10 @@ export class AssetService {
 
   //#regione UPDATE DATA
   updateAssetValueSummary(newAssetValueSummary: AssetValueSummary) {
+    newAssetValueSummary.assetValueList.forEach((value) => {
+      value.timeStamp.setHours(12); //pessimo modo per evitare problemi di timezone
+    });
+
     return this.http
       .put<AssetValueSummary>(
         `${this.apiUrl}/AssetValue/SummaryByMonth`,
@@ -257,6 +262,7 @@ export class AssetService {
     assetOperationId: number,
     newAssetOperation: AssetOperation
   ) {
+    newAssetOperation.date.setHours(12); //pessimo modo per evitare problemi di timezone
     return this.http
       .put(
         `${this.apiUrl}/AssetOperation/${assetOperationId}`,

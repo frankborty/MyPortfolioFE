@@ -83,6 +83,7 @@ export class ExpenseService {
 
   //#region ADD DATA
   addExpense(expenseToAdd: ExpenseToEdit) {
+    expenseToAdd.date.setHours(12); //pessimo modo per evitare problemi di timezone
     return this.http
       .post(`${this.apiUrl}/Expense`, expenseToAdd, this.options)
       .pipe(catchError(this.errorHandler.handleError));
@@ -141,6 +142,7 @@ export class ExpenseService {
 
   //region EDIT DATA
   editExpense(expenseId: number, expenseToAdd: ExpenseToEdit) {
+    expenseToAdd.date.setHours(12); //pessimo modo per evitare problemi di timezone
     return this.http
       .put(`${this.apiUrl}/Expense/${expenseId}`, expenseToAdd, this.options)
       .pipe(catchError(this.errorHandler.handleError));

@@ -72,6 +72,7 @@ export class IncomeService {
 
   //#region ADD DATA
   addIncome(incomeToAdd: Income) {
+    incomeToAdd.date.setHours(12); //pessimo modo per evitare problemi di timezone
     return this.http
       .post(`${this.apiUrl}/Income`, incomeToAdd, this.options)
       .pipe(catchError(this.errorHandler.handleError));
@@ -109,6 +110,7 @@ export class IncomeService {
 
   //#region EDIT DATA
   editIncome(incomeId: number, incomeToUpdate: Income) {
+    incomeToUpdate.date.setHours(12); //pessimo modo per evitare problemi di timezone
     return this.http
       .put(`${this.apiUrl}/Income/${incomeId}`, incomeToUpdate, this.options)
       .pipe(catchError(this.errorHandler.handleError));
