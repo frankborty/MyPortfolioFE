@@ -228,8 +228,6 @@ export class AssetService {
 
   //#regione UPDATE DATA
   updateAssetValueSummary(newAssetValueSummary: AssetValueSummary) {
-    console.log("+++++");
-    console.log(newAssetValueSummary);
     return this.http
       .put<AssetValueSummary>(
         `${this.apiUrl}/AssetValue/SummaryByMonth`,

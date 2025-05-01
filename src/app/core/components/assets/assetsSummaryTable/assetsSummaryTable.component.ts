@@ -33,7 +33,6 @@ export class AssetsSummaryTableComponent implements OnInit {
     this.assetValueSummaryOriginal = this.assetService.assetSummaryByMonth;
 
     effect(() => {      
-      console.log('Effect triggered: ', this.assetValueSummaryOriginal());
       this.filterAssetValueSummary();
     });
 
@@ -96,8 +95,6 @@ export class AssetsSummaryTableComponent implements OnInit {
         assetValueList[assetValue.timeStamp.getMonth()].note = assetValue.note;
       }
     });
-    console.log('Asset Value : ', assetSummary.asset.name);
-    console.log(assetValueList)
     return assetValueList;
   }
 
