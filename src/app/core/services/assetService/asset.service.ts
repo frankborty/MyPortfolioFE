@@ -7,6 +7,7 @@ import { AssetCategory } from '../../interfaces/assetCategory';
 import { AssetValueSummary } from '../../interfaces/assetValueSummary';
 import { ErrorHandlerService } from '../errorHandler/error-handler.service';
 import { AssetOperation } from '../../interfaces/assetOperation';
+import { GlobalUtilityService } from '../utils/global-utility.service';
 
 @Injectable({
   providedIn: 'root',
@@ -25,7 +26,8 @@ export class AssetService {
   private options = { headers: { 'Content-Type': 'application/json' } };
   constructor(
     private http: HttpClient,
-    private errorHandler: ErrorHandlerService
+    private errorHandler: ErrorHandlerService,
+    private globalUtils: GlobalUtilityService
   ) {}
 
 
@@ -72,7 +74,7 @@ export class AssetService {
             ...summary,
             assetValueList: summary.assetValueList.map((value) => ({
               ...value,
-              timeStamp: new Date(value.timeStamp), // Converte la stringa in Date
+              timeStamp: this.globalUtils.parseDateIgnoreTimezone(value.timeStamp.toString()), // Converte la stringa in Date
             })),
           }))
         ),
@@ -101,7 +103,7 @@ export class AssetService {
             ...summary,
             assetValueList: summary.assetValueList.map((value) => ({
               ...value,
-              timeStamp: new Date(value.timeStamp), // Converte la stringa in Date
+              timeStamp: this.globalUtils.parseDateIgnoreTimezone(value.timeStamp.toString()), // Converte la stringa in Date
             })),
           }))
         ),
@@ -125,7 +127,7 @@ export class AssetService {
         map((assets) =>
           assets.map((asset) => ({
             ...asset,
-            date: new Date(asset.date), // Converte la stringa in Date
+            date: this.globalUtils.parseDateIgnoreTimezone(asset.date.toString()), // Converte la stringa in Date
           }))
         ),
         catchError(this.errorHandler.handleError)
@@ -226,6 +228,8 @@ export class AssetService {
 
   //#regione UPDATE DATA
   updateAssetValueSummary(newAssetValueSummary: AssetValueSummary) {
+    console.log("+++++");
+    console.log(newAssetValueSummary);
     return this.http
       .put<AssetValueSummary>(
         `${this.apiUrl}/AssetValue/SummaryByMonth`,

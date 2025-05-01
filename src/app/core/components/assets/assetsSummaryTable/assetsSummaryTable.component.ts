@@ -33,6 +33,7 @@ export class AssetsSummaryTableComponent implements OnInit {
     this.assetValueSummaryOriginal = this.assetService.assetSummaryByMonth;
 
     effect(() => {      
+      console.log('Effect triggered: ', this.assetValueSummaryOriginal());
       this.filterAssetValueSummary();
     });
 
@@ -91,11 +92,12 @@ export class AssetsSummaryTableComponent implements OnInit {
       if (
         assetValue.timeStamp.getFullYear() == this.selectedYear.getFullYear()
       ) {
-        assetValueList[assetValue.timeStamp.getMonth()].value =
-          assetValue.value;
+        assetValueList[assetValue.timeStamp.getMonth()].value = assetValue.value;
         assetValueList[assetValue.timeStamp.getMonth()].note = assetValue.note;
       }
     });
+    console.log('Asset Value : ', assetSummary.asset.name);
+    console.log(assetValueList)
     return assetValueList;
   }
 

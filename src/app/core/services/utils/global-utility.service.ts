@@ -18,6 +18,11 @@ export class GlobalUtilityService {
     const zonedDate = toZonedTime(date, 'UTC');
     return format(zonedDate, 'dd/MM/yyyy');
   }
+
+  parseDateIgnoreTimezone(dateStr: string): Date {
+    const [year, month, day] = dateStr.substring(0, 10).split('-').map(Number);
+    return new Date(year, month - 1, day);
+  }
   
   getErrorMsg(error: HttpErrorResponse): string {
     if (error.status === HttpStatusCode.Unauthorized) {

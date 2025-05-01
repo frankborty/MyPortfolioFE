@@ -6,6 +6,7 @@ import { catchError, map, Observable, of } from 'rxjs';
 import { Expense, ExpenseToEdit } from '../../interfaces/expense';
 import { ExpenseCategory } from '../../interfaces/expenseCategory';
 import { ExpenseType } from '../../interfaces/expenseType';
+import { GlobalUtilityService } from '../utils/global-utility.service';
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +22,8 @@ export class ExpenseService {
   private options = { headers: { 'Content-Type': 'application/json' } };
   constructor(
     private http: HttpClient,
-    private errorHandler: ErrorHandlerService
+    private errorHandler: ErrorHandlerService,
+    private globalUtils: GlobalUtilityService
   ) {}
 
   //#region  GET DATA
@@ -65,7 +67,7 @@ export class ExpenseService {
         map((expenses) =>
           expenses.map((expense) => ({
             ...expense,
-            date: new Date(expense.date), // Converte la stringa in Date
+            date: this.globalUtils.parseDateIgnoreTimezone(expense.date.toString()), // Converte la stringa in Date
           }))
         ),
         catchError(this.errorHandler.handleError)

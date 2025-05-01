@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, map } from 'rxjs';
 import { Income } from '../../interfaces/income';
 import { IncomeType } from '../../interfaces/incomeType';
+import { GlobalUtilityService } from '../utils/global-utility.service';
 
 @Injectable({
   providedIn: 'root',
@@ -19,7 +20,8 @@ export class IncomeService {
   private options = { headers: { 'Content-Type': 'application/json' } };
   constructor(
     private http: HttpClient,
-    private errorHandler: ErrorHandlerService
+    private errorHandler: ErrorHandlerService,
+    private globalUtils: GlobalUtilityService
   ) {}
 
   //#region GET DATA
@@ -30,7 +32,7 @@ export class IncomeService {
         map((incomes) =>
           incomes.map((income) => ({
             ...income,
-            date: new Date(income.date), // Converte la stringa in Date
+            date: this.globalUtils.parseDateIgnoreTimezone(income.date.toString()), // Converte la stringa in Date
           }))
         ),
         catchError(this.errorHandler.handleError)
