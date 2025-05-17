@@ -84,7 +84,7 @@ export class AssetsSummaryTableComponent implements OnInit {
         assetId: -1,
         value: 0,
         note: '',
-        timeStamp: new Date(this.selectedYear.getFullYear(), i + 1, 1),
+        timeStamp: new Date(this.selectedYear.getFullYear(), i, 1),
       });
     }
     assetSummary.assetValueList.forEach((assetValue) => {
@@ -166,7 +166,7 @@ export class AssetsSummaryTableComponent implements OnInit {
         this.messageService.add({
           severity: 'success',
           summary: 'Success',
-          detail: 'ExpenseType modificata con successo',
+          detail: 'Valore asset modificato con successo',
         });
       },
       error: (error: any) => {
