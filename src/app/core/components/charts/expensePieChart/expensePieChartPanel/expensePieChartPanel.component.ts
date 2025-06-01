@@ -2,11 +2,7 @@ import {
   ChangeDetectorRef,
   Component,
   effect,
-  Input,
-  OnChanges,
-  OnInit,
-  signal,
-  SimpleChanges,
+  signal
 } from '@angular/core';
 import { ImportsModule } from '../../../../../imports';
 import { Expense } from '../../../../interfaces/expense';
@@ -31,8 +27,8 @@ export class ExpensePieChartPanelComponent {
 
   filteredExpenseList: Expense[] = [];
 
-  selectedYear: Date = new Date('2025-01-01');
-  selectedMonth: Date = new Date('2025-01-01');
+  selectedYear: Date = new Date();
+  selectedMonth: Date = new Date();
   selectedCategoryList: ExpenseCategory[] = [];
 
   constructor(expenseService: ExpenseService, private cd: ChangeDetectorRef) {

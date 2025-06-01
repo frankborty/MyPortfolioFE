@@ -69,9 +69,9 @@ export class FinancialAssetLineChartComponent implements OnInit {
 
     let assetValueList: AssetValueSummary[] = [];
     if (this.chartType === 'unit') {
-      assetValueList = this.assetUnitValueList().filter(x=>x.asset.category.isInvested);
+      assetValueList = this.assetUnitValueList().filter(x=>x.asset.category.isInvested && !x.asset.name.startsWith("M."));
     } else {
-      assetValueList = this.assetTotalValueList().filter(x=>x.asset.category.isInvested);
+      assetValueList = this.assetTotalValueList().filter(x=>x.asset.category.isInvested && !x.asset.name.startsWith("M."));
     }
 
     assetValueList.forEach((assetSummary) => {
@@ -79,6 +79,8 @@ export class FinancialAssetLineChartComponent implements OnInit {
         allDatesArray.push(assetValue.timeStamp);
       });
     });
+
+
 
     const uniqueDates = this.removeDuplicateDates(allDatesArray);
     // Se hai ancora bisogno di un array (ordinato) dopo aver raccolto tutte le date uniche
@@ -89,12 +91,13 @@ export class FinancialAssetLineChartComponent implements OnInit {
     this.inputData = {
       labels: allDatesList.map(
         (x) =>
-          x.toISOString().substring(5, 7) +
+          x.getMonth()+1 +
           '/' +
-          x.toISOString().substring(0, 4)
+          x.toISOString().substring(2, 4)
       ),
       datasets: [],
     };
+
 
     assetValueList.forEach((assetSummary) => {
       //creo il set di dati d usare nel dataset
@@ -223,6 +226,13 @@ export class FinancialAssetLineChartComponent implements OnInit {
   }
 
   removeDuplicateDates(dates: Date[]): Date[] {
+    dates.map((date) => {
+      if(date.getFullYear()==2025 && date.getMonth()==4 && date.getDay()==29){
+        const nuovaData = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+        console.log(nuovaData);
+      }
+    });
+
     return Array.from(
       new Set(
         dates.map((date) =>
