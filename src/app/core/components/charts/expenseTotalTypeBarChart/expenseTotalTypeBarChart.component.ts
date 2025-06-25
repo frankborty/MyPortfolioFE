@@ -161,7 +161,7 @@ export class ExpenseTotalTypeBarChartComponent implements OnInit, OnChanges {
               label += ': ';
             }
             if (context.parsed.y !== null) {
-              label += context.parsed.y + ' pippo';
+              label += context.parsed.y;
             }
             return label;
           },
