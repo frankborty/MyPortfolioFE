@@ -10,8 +10,8 @@ import { HttpErrorResponse, HttpStatusCode } from '@angular/common/http';
 })
 export class GlobalUtilityService {
   convertDateToYearMonthString(date: Date): string {
-    const zonedDate = toZonedTime(date, 'UTC');
-    return format(zonedDate, 'yyyyMM');
+    const dateTouse = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 12, 0, 0));
+    return format(dateTouse, 'yyyyMM');
   }
 
   convertDateToItaString(date: any): string {

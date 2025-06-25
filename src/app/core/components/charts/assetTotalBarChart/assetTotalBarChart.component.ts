@@ -74,8 +74,7 @@ export class AssetTotalBarChartComponent implements OnInit {
 
     this.inputData.datasets = [];
 
-    for (const [categoryName, assetValueByDate] of this
-      .assetCategoryValueDictionary) {
+    for (const [categoryName, assetValueByDate] of this.assetCategoryValueDictionary) {
       let dataset = {
         type: 'bar',
         label: categoryName,
@@ -166,9 +165,7 @@ export class AssetTotalBarChartComponent implements OnInit {
         );
       }
       assetSummary.assetValueList.forEach((assetValue) => {
-        const assetCategoryItem =
-          this.assetCategoryValueDictionary.get(categoryName);
-
+        const assetCategoryItem = this.assetCategoryValueDictionary.get(categoryName);
         this.addNewValueToCategory(assetCategoryItem, assetValue);
       });
     });

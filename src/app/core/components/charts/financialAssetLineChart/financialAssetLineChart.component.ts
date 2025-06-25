@@ -106,8 +106,7 @@ export class FinancialAssetLineChartComponent implements OnInit {
           (item) =>
             new Date(
               item.timeStamp.getFullYear(),
-              item.timeStamp.getMonth(),
-              item.timeStamp.getDate()
+              item.timeStamp.getMonth()
             ).getTime() === date.getTime()
         );
         return dataPoint ? dataPoint.value : null;
@@ -226,20 +225,12 @@ export class FinancialAssetLineChartComponent implements OnInit {
   }
 
   removeDuplicateDates(dates: Date[]): Date[] {
-    dates.map((date) => {
-      if(date.getFullYear()==2025 && date.getMonth()==4 && date.getDay()==29){
-        const nuovaData = new Date(date.getFullYear(), date.getMonth(), date.getDate());
-        console.log(nuovaData);
-      }
-    });
-
     return Array.from(
       new Set(
         dates.map((date) =>
           new Date(
             date.getFullYear(),
-            date.getMonth(),
-            date.getDate()
+            date.getMonth()
           ).getTime()
         )
       )

@@ -1,5 +1,13 @@
-<div class="card relative w-full p-3" style="border-color: #e5e7eb; border-width: 1px;"> 
-  <p-chart type="bar" [data]="inputData" [options]="options" class="w-full md:w-[30rem]" />
+<div
+  class="card relative w-full p-3"
+  style="border-color: #e5e7eb; border-width: 1px"
+>
+  <p-chart
+    type="bar"
+    [data]="inputData"
+    [options]="options"
+    class="w-full md:w-[30rem]"
+  />
   <div class="absolute top-3 right-3">
     <div class="flex gap-2">
       <p-button
@@ -8,19 +16,19 @@
         [rounded]="true"
         (onClick)="loadAssetsSummaryByMonth()"
       />
-    <p-floatlabel variant="on">
-      <p-datepicker
-        [(ngModel)]="selectedYear"
-        (ngModelChange)="initChart()"
-        styleClass="w-40"
-        view="year"
-        dateFormat="yy"
-        [showButtonBar]="true"
-        showIcon
-        iconDisplay="input"
-      />
-      <label for="YearLabel">Year</label>
-    </p-floatlabel>
+      <p-floatlabel variant="on">
+        <p-datepicker
+          [(ngModel)]="selectedYear"
+          (ngModelChange)="initChart()"
+          styleClass="w-40"
+          view="year"
+          dateFormat="yy"
+          [showButtonBar]="true"
+          showIcon
+          iconDisplay="input"
+        />
+        <label for="YearLabel">Year</label>
+      </p-floatlabel>
     </div>
   </div>
 </div>
