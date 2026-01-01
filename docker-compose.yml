@@ -1,0 +1,7 @@
+services:
+    mypf_fe:
+      build:
+        dockerfile: Dockerfile
+      ports:
+        - "4200:80"  # 4200 per convenzione FE Angular, esposto da NGINX su 80
+      restart: always  # Riavvia automaticamente in caso di errori

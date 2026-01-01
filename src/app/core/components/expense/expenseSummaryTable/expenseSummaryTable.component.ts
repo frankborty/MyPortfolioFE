@@ -65,7 +65,7 @@ export class ExpenseSummaryTableComponent implements OnInit {
   totalAvg: number = 0;
   totalPerMese: number[] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
-  selectedYear: Date = new Date('2025-01-01');
+  selectedYear: Date = new Date('2026-01-01');
 
   constructor(expenseService: ExpenseService) {
     this.expenseList = expenseService.expenseList;

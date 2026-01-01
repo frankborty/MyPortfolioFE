@@ -58,6 +58,11 @@ export class ExpenseTotalLinearChartComponent implements OnInit {
         (expense) => new Date(expense.date).getFullYear() === 2025
       )
     );
+    let data2026 = this.groupExpensesByMonth(
+      this.expenseList().filter(
+        (expense) => new Date(expense.date).getFullYear() === 2026
+      )
+    );
 
     this.inputData = {
       labels: [
@@ -104,6 +109,15 @@ export class ExpenseTotalLinearChartComponent implements OnInit {
         },
         {
           type: 'line',
+          label: '2026MC',
+          borderColor: 'rgb(100, 255, 0)',
+          borderWidth: 2,
+          fill: false,
+          tension: 0.5,
+          data: this.calcolaMediaCumulativa(data2026),
+        },
+        {
+          type: 'line',
           hidden: true,
           label: '2023SC',
           borderColor: 'rgb(255, 159, 64)',
@@ -133,6 +147,16 @@ export class ExpenseTotalLinearChartComponent implements OnInit {
           data: this.calcolaSommaCumulativa(data2025),
         },
         {
+          type: 'line',
+          hidden: true,
+          label: '2026SC',
+          borderColor: 'rgb(20, 100, 20)', // Dark Green
+          borderWidth: 2,
+          fill: false,
+          tension: 0.5,
+          data: this.calcolaSommaCumulativa(data2026),
+        },
+        {
           type: 'bar',
           label: '2023',
           backgroundColor: 'rgb(255, 100, 130)', // Red
@@ -149,6 +173,12 @@ export class ExpenseTotalLinearChartComponent implements OnInit {
           label: '2025',
           backgroundColor: 'rgb(130, 192, 192)', // Teal
           data: data2025,
+        },
+        {
+          type: 'bar',
+          label: '2026',
+          backgroundColor: 'rgb(130, 192, 192)', // Teal
+          data: data2026,
         },
       ],
     };

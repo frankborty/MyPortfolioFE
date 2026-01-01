@@ -25,7 +25,7 @@ export class IncomeStackedBarChartComponent {
   inputData: any;
   options: any;
 
-  selectedYear: Date = new Date('2025-01-01');
+  selectedYear: Date = new Date('2026-01-01');
 
   constructor(incomeService: IncomeService, private cd: ChangeDetectorRef) {
     this.incomeList = incomeService.incomeList;
